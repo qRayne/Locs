@@ -31,11 +31,7 @@ mongoose.connection.on("error",(err)=>{
 
 // tout ce qui est lier au server node.js
 app.get('/',(req,res)=>{
-    Chat.find({}).then(data=>{
-        res.send(data);
-    }).catch(err=>{
-        console.log(err);
-    })
+    
 })
 
 app.listen(3000,()=>{
