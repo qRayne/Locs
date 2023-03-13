@@ -22,39 +22,38 @@ server.listen(3000, () => {
 })
 
 // pour tout ce qui est post/get pour le chat ↓
-// pour delete un chat dans notre db
-// cette methode recupère l'id inscrit dans l'url => id d'un message
-// va dans la collection chat et l'enlève 
-// s'il n'est pas enlever -> c'est qu'il n'existe pas
-server.post('/delete-chat', async (req, res) => {
+
+
+// pour send un chat dans un chat Room
+// il faut le nom du chatRoom
+// creer une instance de chat et l'envoie dans la liste de chats du chatRoom
+server.post('/chatroom/:name', async (req, res) => {
+    const ChatRoom = mongooseConnection.model("ChatRoom");
     const Chat = mongooseConnection.model("Chat");
-    const id = req.query._id;
+    const { name } = req.params;
+    const { sender, message, timestamp } = req.body;
+
     try {
-        const deletedChat = await Chat.findByIdAndRemove(id).exec();
-        if (!deletedChat) {
-            throw new Error('Chat not found');
+        const chatRoom = await ChatRoom.findOne({ 'place.name': name }).populate('users chats');
+
+        if (!chatRoom) {
+            return res.status(404).send('Chat room not found');
         }
-        res.send(deletedChat);
-    } catch (err) {
-        res.status(500).send(err.message);
+        const chat = new Chat({ sender,message,timestamp,});
+
+        chatRoom.chats.push(chat);
+        await chat.save();
+        await chatRoom.save();
+
+        res.status(201).json(chat);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
     }
 });
 
-// pour send un chat
-server.post('/send-chat', async (req, res) => {
-    const Chat = mongooseConnection.model("Chat");
-    const chatObject = new Chat(req.body);
-    await chatObject.save().then(() => console.log(chatObject));
-    res.send('chat sent');
-})
 
-// pour avoir la liste de chats d'un sender
-server.get('/chat-sender', async (req, res) => {
-    const Chat = mongooseConnection.model("Chat");
-    const sender = req.query.sender;
-    const chats = await Chat.find({ sender: sender });
-    res.send(chats);
-})
+
 
 
 // pour tout ce qui est post/get pour le chatRoom
@@ -70,10 +69,10 @@ server.post('/create-chatRoom', async (req, res) => {
 
 // pour supprimer un chatRoom
 // prend en paramètre le nom du room
-server.post('/delete-chatRoom',async(req,res) =>{
+server.post('/delete-chatRoom', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const name = req.query.name;
-    const returnChatRoomObject = await ChatRoom.findOneAndDelete({'place.name':name});
+    const returnChatRoomObject = await ChatRoom.findOneAndDelete({ 'place.name': name });
     res.send(returnChatRoomObject);
 })
 
@@ -129,14 +128,12 @@ server.post('/chatroom/:name/removeUser', async (req, res) => {
     const User = mongooseConnection.model("User");
 
     try {
-        // Find the user by username
         const user = await User.findOne({ 'profile.username': username });
 
         if (!user) {
             return res.status(404).send('User not found');
         }
 
-        // Find the chatroom by name and update the users array
         const chatroom = await ChatRoom.findOneAndUpdate(
             { 'place.name': chatroomName },
             { $pull: { users: user._id } },
