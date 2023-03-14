@@ -3,5 +3,6 @@ module.exports = {
       ios: {},
       android: {}, // grouped into "project"
     },
-    assets: ["./assets/fonts/"], // stays the same
+    assets: ["./assets/fonts/"], // stays the same,
+    JWT_SECRET: process.env.JWT_SECRET || 'secretkey'
   };

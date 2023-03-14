@@ -1,5 +1,3 @@
-// librarire permettant de hasher le mot de passe en utilisant l'algorithme de SHA-3
-const CryptoJS = require("crypto-js");
 
 class User {
     // ma class user prend en paramètre un email, une location,un password, un profil et un status
@@ -27,13 +25,7 @@ class User {
         this.profile = profil;
         this.status = status;
     }
-
-    hashPassword(){
-        // prend le mot de password de l'instance et le hash et le met en string
-        return CryptoJS.SHA3(this.password).toString();
-    }
-
-
+    
     get email(){
         return this.email;
     }
