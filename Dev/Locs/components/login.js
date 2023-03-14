@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
 import loginStyles from '../styles/loginStyles';
 
-export default function Login() {
+export default function Login({navigation}) {
     const [email, setEmail] = useState("");
     const [pwd, setPwd] = useState("");
 
@@ -10,6 +10,7 @@ export default function Login() {
         <View style={loginStyles.container}>
           <View>
             <Text style={loginStyles.title}>Locs</Text>
+            <Text>Login</Text>
           </View>
           <TextInput 
             style={loginStyles.inputbox}
@@ -30,7 +31,10 @@ export default function Login() {
           </Pressable>
 
           <Pressable
-            onPressIn={() => {console.log("move to register screen")}}>
+            onPressIn={() => {
+              console.log("move to register screen");
+              navigation.navigate('Register');
+            }}>
             <Text style={loginStyles.register}> Register? </Text>
           </Pressable>
         </View>
