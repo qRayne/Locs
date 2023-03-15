@@ -30,7 +30,7 @@ server.listen(3000, () => {
 // pour send un chat dans un chat Room
 // il faut le nom du chatRoom
 // creer une instance de chat et l'envoie dans la liste de chats du chatRoom
-server.post('/chatroom/:name', async (req, res) => {
+server.post('/chatroom-sendChat/:name', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const Chat = mongooseConnection.model("Chat");
     const User = mongooseConnection.model("User");
@@ -89,7 +89,7 @@ server.post('/delete-chatRoom', async (req, res) => {
 })
 
 // pour recuperer les donnes d'un chatRoom 
-// prend en paramètre un nom et retourne les donnes d'un chat room {users,chats,localisation,isPublic)
+// prend en paramètre un nom et retourne les donnes d'un chat room localisation,isPublic
 server.get('/chatRoom-info', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const name = req.query.name;

@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Pressable, Text, TextInput, View, Modal, Image } from 'react-native';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
@@ -15,18 +15,38 @@ export default function Chatroom({ navigation }) {
     setChat(enteredText);
   }
 
-  function addChat(text) {
-    setText((currentText) => [
-      ...currentText,
-      chat,
-    ]);
+  async function sendChat() {
+    // test
+    // remplacer le nom du chatroom par le context
+    // ici faut changer l'ip par l'ip de ton ordinateur
+    fetch(`http://192.168.2.20:3000/chatroom-sendChat/McDonald`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: 'john_smith', // a remplacer avec le user connecter = localstorage
+        message: chat,
+        timestamp: new Date().toString()
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    // Clear the chat input
+    setChat('');
   }
 
   useEffect(() => {
     async function fetchChatMessages(chatroomName) {
       try {
         // ici faut changer l'ip par l'ip de ton ordinateur
-        const response = await fetch('http://192.168.2.20:3000/chatRoom-messages?name='+ encodeURIComponent(chatroomName));
+        const response = await fetch('http://192.168.2.20:3000/chatRoom-messages?name=' + encodeURIComponent(chatroomName));
         const data = await response.json();
         setChatMessages(data);
       } catch (error) {
@@ -35,8 +55,8 @@ export default function Chatroom({ navigation }) {
     }
 
     // on doit creer la location si elle n'existe pas
-    fetchChatMessages("McDonald's"); // ici on passe le context/nom de la location 
-  },[]);
+    fetchChatMessages("McDonald"); // ici on passe le context/nom de la location 
+  }, []);
 
   return (
     <View style={globalStyles.container}>
@@ -51,9 +71,9 @@ export default function Chatroom({ navigation }) {
 
       {/* barre de texte */}
       <View style={chatStyles.chatbox}>
-        {chatMessages.map((message,index)=>(
-          <View key={index}> 
-          {/* il faudrait changer le visuel pour que sa soit plus beau */}
+        {chatMessages.map((message, index) => (
+          <View key={index}>
+            {/* il faudrait changer le visuel pour que sa soit plus beau */}
             <Text>username : {message.sender} message : {message.message} {message.timestamp}</Text>
           </View>
         ))}
@@ -62,7 +82,7 @@ export default function Chatroom({ navigation }) {
             style={chatStyles.chatInput}
             // value={chat}
             onChangeText={chatInput}
-            onSubmitEditing={addChat}
+            onSubmitEditing={sendChat}
           >
 
           </TextInput>
