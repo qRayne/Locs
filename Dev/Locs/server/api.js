@@ -33,8 +33,9 @@ server.listen(3000, () => {
 server.post('/chatroom/:name', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const Chat = mongooseConnection.model("Chat");
+    const User = mongooseConnection.model("User");
     const { name } = req.params;
-    const { sender, message, timestamp } = req.body;
+    const {sender, message, timestamp } = req.body;
 
     try {
         const chatRoom = await ChatRoom.findOne({ 'place.name': name }).populate('users chats');
@@ -42,7 +43,15 @@ server.post('/chatroom/:name', async (req, res) => {
         if (!chatRoom) {
             return res.status(404).send('Chat room not found');
         }
-        const chat = new Chat({ sender, message, timestamp, });
+
+        const senderUser = await User.findOne({ 'profile.username': sender });
+
+        if (!senderUser) {
+            return res.status(404).send('Sender not found');
+        }
+
+
+        const chat = new Chat({sender: senderUser._id, message, timestamp});
 
         chatRoom.chats.push(chat);
         await chat.save();
@@ -86,6 +95,26 @@ server.get('/chatRoom-info', async (req, res) => {
     const name = req.query.name;
     const returnedChatRoomObject = await ChatRoom.findOne({ 'place.name': name });
     res.send(returnedChatRoomObject);
+})
+
+// pour recuperer les messages d'un chatroom avec le username et le timestamp
+// on recupère tous les id des chats dans le chatroom et on get tous leurs infos qui eux sont dans une autre collection
+server.get('/chatRoom-messages', async (req, res) => {
+    const ChatRoom = mongooseConnection.model("ChatRoom");
+    const Chats = mongooseConnection.model("Chat");
+    const name = req.query.name;
+    const returnedChatRoomObject = await ChatRoom.findOne({ 'place.name': name });
+    
+    const chatIds = returnedChatRoomObject.chats;
+    
+    const chats = await Chats.find({ _id: { $in: chatIds } }).populate('sender');
+
+    const messageHistory = chats.map(chat => ({
+        message: chat.message,
+        sender: chat.sender.profile.username,
+        timestamp: chat.timestamp,
+    }));
+    res.send(messageHistory);
 })
 
 // pour ajouter un user à un chatRoom
