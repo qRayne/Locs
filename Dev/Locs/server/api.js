@@ -2,6 +2,9 @@ const express = require('express')
 const server = express()
 const bodyParser = require('body-parser')
 const mongooseConnection = require('./connection')
+const bcrypt = require('bcrypt')
+const { JWT_SECRET } = require('../react-native.config')
+const jwt = require('jsonwebtoken')
 require("./collections/ChatCollection")
 require("./collections/ChatRoomCollection")
 require("./collections/UserCollection")
@@ -39,7 +42,7 @@ server.post('/chatroom/:name', async (req, res) => {
         if (!chatRoom) {
             return res.status(404).send('Chat room not found');
         }
-        const chat = new Chat({ sender,message,timestamp,});
+        const chat = new Chat({ sender, message, timestamp, });
 
         chatRoom.chats.push(chat);
         await chat.save();
@@ -93,6 +96,7 @@ server.post('/chatroom/:name/addUser', async (req, res) => {
     const chatroomName = req.params.name;
     const { username } = req.body;
     const User = mongooseConnection.model("User");
+    const ChatRoom = mongooseConnection.model("ChatRoom");
 
     try {
         const user = await User.findOne({ 'profile.username': username });
@@ -126,6 +130,7 @@ server.post('/chatroom/:name/removeUser', async (req, res) => {
     const chatroomName = req.params.name;
     const { username } = req.body;
     const User = mongooseConnection.model("User");
+    const ChatRoom = mongooseConnection.model("ChatRoom");
 
     try {
         const user = await User.findOne({ 'profile.username': username });
@@ -150,3 +155,57 @@ server.post('/chatroom/:name/removeUser', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+
+// pour tout ce qui post/get pour le user
+// pour register un user 
+server.post('/create-User', async (req, res) => {
+    const User = mongooseConnection.model('User');
+    const userObject = new User(req.body);
+
+    const hashedPassword = await bcrypt.hash(userObject.password,10);
+    userObject.password = hashedPassword;
+
+    await userObject.save().then(() => console.log(userObject));
+    res.send('created a new user');
+});
+
+// pour login un user
+// si le login est successful on generer un token
+// le token doit être enregister avec un local storage (asyncStorage en react-native)
+server.post('/login-User', async (req, res) => {
+    const { email, password } = req.body;
+    const User = mongooseConnection.model('User');
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Authentication failed' });
+        }
+
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) {
+            return res.status(401).json({ message: 'Authentication failed' });
+        }
+
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+        return res.status(200).json({ token });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// pour recuperer les infos d'un usager
+server.get("/User-info",async(req,res)=>{
+    const User = mongooseConnection.model("User");
+    const username = req.query.username;
+    const returnUserObject = await User.findOne({ 'profile.username': username });
+    res.send(returnUserObject);
+})
+
+// pour updater les infos d'un usager
+// ici c'est la geolocalisation qui doit être updater à chaque x temps
+server.post("/User-updateLocation",async(req,res)=>{
+    const User = mongooseConnection.model("User");
+})
