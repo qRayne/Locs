@@ -1,33 +1,55 @@
 import { useState } from 'react';
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
-import loginStyles from '../styles/loginStyles';
+import globalStyles from '../styles/globalStyles';
 
 export default function Register({navigation}) {
-    const [email, setEmail] = useState("");
+    const [user, setUser] = useState("");
     const [pwd, setPwd] = useState("");
+    const [rpwd, setRpwd] = useState("");
+    const [email, setEmail] = useState("");
+    const [remail, setRemail] = useState("");
 
     return (
-        <View style={loginStyles.container}>
+        <View style={globalStyles.container}>
           <View>
-            <Text style={loginStyles.title}>Locs</Text>
-            <Text>Register</Text>
+            <Text style={globalStyles.title}>Locs</Text>
           </View>
           <TextInput 
-            style={loginStyles.inputbox}
-            placeholder="Username ou email"
-            value={email}
-            onChangeText={setEmail}
+            style={globalStyles.inputbox}
+            placeholder="Username"
+            value={user}
+            onChangeText={setUser}
            />
           <TextInput 
-            style={loginStyles.inputbox}
+            style={globalStyles.inputbox}
             placeholder="Mot de passe"
+            secureTextEntry={true}
             value={pwd}
             onChangeText={setPwd}
           />
+          <TextInput 
+            style={globalStyles.inputbox}
+            placeholder="Re-entrer mot de passe"
+            secureTextEntry={true}
+            value={rpwd}
+            onChangeText={setRpwd}
+          />
+          <TextInput 
+            style={globalStyles.inputbox}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput 
+            style={globalStyles.inputbox}
+            placeholder="Comfirmez votre email"
+            value={remail}
+            onChangeText={setRemail}
+          />
           <Pressable 
-            style={loginStyles.button}
-            onPressIn={() => {console.log(email, pwd)}}>
-                <Text style={loginStyles.text}>Register</Text>
+            style={globalStyles.button}
+            onPressIn={() => {console.log(user, pwd, email)}}>
+                <Text style={globalStyles.text}>Register</Text>
           </Pressable>
 
           <Pressable
@@ -35,7 +57,7 @@ export default function Register({navigation}) {
               console.log("move to login screen");
               navigation.navigate('Login')
             }}>
-            <Text style={loginStyles.register}> Login? </Text>
+            <Text style={globalStyles.register}> Login? </Text>
           </Pressable>
         </View>
     );

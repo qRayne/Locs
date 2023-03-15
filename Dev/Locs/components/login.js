@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
 
 export default function Login({navigation}) {
@@ -7,27 +8,32 @@ export default function Login({navigation}) {
     const [pwd, setPwd] = useState("");
 
     return (
-        <View style={loginStyles.container}>
+        <View style={globalStyles.container}>
           <View>
             <Text style={loginStyles.title}>Locs</Text>
-            <Text>Login</Text>
           </View>
           <TextInput 
-            style={loginStyles.inputbox}
+            style={globalStyles.inputbox}
             placeholder="Username ou email"
             value={email}
+            autoComplete="username"
             onChangeText={setEmail}
            />
           <TextInput 
-            style={loginStyles.inputbox}
+            style={globalStyles.inputbox}
             placeholder="Mot de passe"
+            autoComplete="password"
+            secureTextEntry={true}
             value={pwd}
             onChangeText={setPwd}
           />
           <Pressable 
-            style={loginStyles.button}
-            onPressIn={() => {console.log(email, pwd)}}>
-                <Text style={loginStyles.text}>Login</Text>
+            style={globalStyles.button}
+            onPressIn={() => {
+              console.log(email, pwd);
+              navigation.navigate('ChatAutour');
+            }}>
+            <Text style={globalStyles.text}>Login</Text>
           </Pressable>
 
           <Pressable
@@ -35,7 +41,7 @@ export default function Login({navigation}) {
               console.log("move to register screen");
               navigation.navigate('Register');
             }}>
-            <Text style={loginStyles.register}> Register? </Text>
+            <Text style={globalStyles.register}> Register? </Text>
           </Pressable>
         </View>
     );
