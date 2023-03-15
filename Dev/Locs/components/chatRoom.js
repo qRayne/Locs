@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Pressable, Text, TextInput, View, Modal, Image } from 'react-native';
+import jwtDecode from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
@@ -16,7 +18,11 @@ export default function Chatroom({ navigation }) {
   }
 
   async function sendChat() {
-    // test
+    const token = await AsyncStorage.getItem('token');
+    const decoded = jwtDecode(token);
+    const username = decoded.username
+    
+
     // remplacer le nom du chatroom par le context
     // ici faut changer l'ip par l'ip de ton ordinateur
     fetch(`http://192.168.2.20:3000/chatroom-sendChat/McDonald`, {
@@ -25,7 +31,7 @@ export default function Chatroom({ navigation }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        sender: 'john_smith', // a remplacer avec le user connecter = localstorage
+        sender: username, // fixed, on recupère le token qui lui en le decodant => username
         message: chat,
         timestamp: new Date().toString()
       }),

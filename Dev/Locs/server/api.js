@@ -217,7 +217,10 @@ server.post('/login-User', async (req, res) => {
             return res.status(401).json({ message: 'Authentication failed' });
         }
 
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+        // on creer un token d'authentification
+        // on passe aussi le username dans le token pour pouvoir send des chats
+        const token = jwt.sign({ userId: user._id, username: user.profile.username}, JWT_SECRET);
+
         return res.status(200).json({ token });
     } catch (err) {
         console.error(err);
