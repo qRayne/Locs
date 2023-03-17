@@ -5,13 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
+const {IP}  = require('./constNames.js')
 
 
 export default function Chatroom({ navigation }) {
   const [chat, setChat] = useState('');
   const [text, setText] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
-
 
   function chatInput(enteredText) {
     setChat(enteredText);
@@ -25,7 +25,7 @@ export default function Chatroom({ navigation }) {
 
     // remplacer le nom du chatroom par le context
     // ici faut changer l'ip par l'ip de ton ordinateur
-    fetch(`http://192.168.2.20:3000/chatroom-sendChat/McDonald`, {
+    fetch(`${IP}/chatroom-sendChat/McDonald`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export default function Chatroom({ navigation }) {
     async function fetchChatMessages(chatroomName) {
       try {
         // ici faut changer l'ip par l'ip de ton ordinateur
-        const response = await fetch('http://192.168.2.20:3000/chatRoom-messages?name=' + encodeURIComponent(chatroomName));
+        const response = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatroomName));
         const data = await response.json();
         setChatMessages(data);
       } catch (error) {

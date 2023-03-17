@@ -8,6 +8,11 @@ export default function ChatAutour({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [km, setKm] = useState("");
 
+    // ajoute un chatBox pour chaque endroit (au lieu de manuellement)
+    function chatBox(){
+
+    }
+
     return (
         <View style={autourStyles.container}>
           <View>

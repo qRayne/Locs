@@ -6,7 +6,7 @@ const globalStyles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
-      fontFamily: 'Galdeano-Regular'
+      // fontFamily: 'Galdeano-Regular'
     },
   
     title:{
