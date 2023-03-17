@@ -4,25 +4,10 @@ const mongoose = require('mongoose')
 
 // on créer un schema avec toutes nos champs et leurs types
 const UserSchema = new mongoose.Schema({
-    email:String,
-    location:{
-        latitude:Number,
-        longitude:Number
-    },
+    email:String, 
+    location:String, 
     password:String,
-    profile:{
-        username:String,
-        pronouns:String,
-        avatar:String,
-        interests:String,
-        firstName:String,
-        lastName:String,
-        age:Number,
-        facialPhoto:Buffer,
-        socialMediaLinks:[String],
-        occupation:String
-    },
-    status:Boolean
+    profile : { type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 })
 
 // on créer le schema

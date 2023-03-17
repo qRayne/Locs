@@ -8,6 +8,7 @@ const {IP}  = require('./constNames.js')
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
+  
 
   async function login() {
     try {
