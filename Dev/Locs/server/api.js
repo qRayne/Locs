@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 require("./collections/ChatCollection")
 require("./collections/ChatRoomCollection")
 require("./collections/UserCollection")
+require("./collections/ProfileCollection")
 
 // va parser le data recupérer en get/post en format json
 server.use(bodyParser.json())
@@ -35,7 +36,7 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
     const Chat = mongooseConnection.model("Chat");
     const User = mongooseConnection.model("User");
     const { name } = req.params;
-    const {sender, message, timestamp } = req.body;
+    const { sender, message, timestamp } = req.body;
 
     try {
         const chatRoom = await ChatRoom.findOne({ 'place.name': name }).populate('users chats');
@@ -51,7 +52,7 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
         }
 
 
-        const chat = new Chat({sender: senderUser._id, message, timestamp});
+        const chat = new Chat({ sender: senderUser._id, message, timestamp });
 
         chatRoom.chats.push(chat);
         await chat.save();
@@ -102,18 +103,29 @@ server.get('/chatRoom-info', async (req, res) => {
 server.get('/chatRoom-messages', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const Chats = mongooseConnection.model("Chat");
+    const Profiles = mongooseConnection.model("Profile");
+    const Users = mongooseConnection.model("User");
+
     const name = req.query.name;
     const returnedChatRoomObject = await ChatRoom.findOne({ 'place.name': name });
-    
+
     const chatIds = returnedChatRoomObject.chats;
-    
-    const chats = await Chats.find({ _id: { $in: chatIds } }).populate('sender');
+
+    const chats = await Chats.find({ _id: { $in: chatIds } }).populate({
+        path: 'sender',
+        model: Users,
+        populate: {
+            path: 'profile',
+            model: Profiles,
+        },
+    });
 
     const messageHistory = chats.map(chat => ({
         message: chat.message,
-        sender: chat.sender.profile.username,
+        sender: chat.sender.profile.username, // assuming that the `Profile` model has a `username` field
         timestamp: chat.timestamp,
     }));
+
     res.send(messageHistory);
 })
 
@@ -191,8 +203,9 @@ server.post('/chatroom/:name/removeUser', async (req, res) => {
 server.post('/create-User', async (req, res) => {
     const User = mongooseConnection.model('User');
     const userObject = new User(req.body);
+    userObject.profile = null; // il est pour le moment null
 
-    const hashedPassword = await bcrypt.hash(userObject.password,10);
+    const hashedPassword = await bcrypt.hash(userObject.password, 10);
     userObject.password = hashedPassword;
 
     await userObject.save().then(() => console.log(userObject));
@@ -219,7 +232,7 @@ server.post('/login-User', async (req, res) => {
 
         // on creer un token d'authentification
         // on passe aussi le username dans le token pour pouvoir send des chats
-        const token = jwt.sign({ userId: user._id, username: user.profile.username}, JWT_SECRET);
+        const token = jwt.sign({ userId: user._id, username: user.profile.username }, JWT_SECRET);
 
         return res.status(200).json({ token });
     } catch (err) {
@@ -229,7 +242,7 @@ server.post('/login-User', async (req, res) => {
 });
 
 // pour recuperer les infos d'un usager
-server.get("/User-info",async(req,res)=>{
+server.get("/User-info", async (req, res) => {
     const User = mongooseConnection.model("User");
     const username = req.query.username;
     const returnUserObject = await User.findOne({ 'profile.username': username });
@@ -238,6 +251,6 @@ server.get("/User-info",async(req,res)=>{
 
 // pour updater les infos d'un usager
 // ici c'est la geolocalisation qui doit être updater à chaque x temps
-server.post("/User-updateLocation",async(req,res)=>{
+server.post("/User-updateLocation", async (req, res) => {
     const User = mongooseConnection.model("User");
 })
