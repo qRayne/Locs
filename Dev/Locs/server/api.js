@@ -76,6 +76,7 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
 server.post('/create-chatRoom', async (req, res) => {
     const ChatRoom = mongooseConnection.model("ChatRoom");
     const chatRoomObject = new ChatRoom(req.body);
+    console.log(chatRoomObject);
     await chatRoomObject.save().then(() => console.log(chatRoomObject));
     res.send('created a new chat Room');
 })

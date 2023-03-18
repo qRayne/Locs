@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 
 // on créer un schema avec toutes nos champs et leurs types
 const ProfileSchema = new mongoose.Schema({
-    username:String, // profil public
+    username:{type:String,unique:true,required:true}, // profil public
     pronouns:String, // profil public
     avatar:String, // profil public
     interests:String, // profil public
