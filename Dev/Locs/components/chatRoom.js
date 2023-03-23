@@ -20,8 +20,8 @@ export default function Chatroom({ navigation }) {
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
     const decoded = jwtDecode(token);
-    const username = decoded.username
-
+    const username = decoded.username;
+    
     // remplacer le nom du chatroom par le context
     // ici faut changer l'ip par l'ip de ton ordinateur
     fetch(`${IP}/chatroom-sendChat/McDonald`, {
