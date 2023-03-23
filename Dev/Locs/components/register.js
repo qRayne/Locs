@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
 import globalStyles from '../styles/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const {IP}  = require('./constNames.js')
 
 export default function Register({ navigation }) {
@@ -21,9 +22,14 @@ export default function Register({ navigation }) {
           password: pwd
         })
       });
-      const responseData = await response;
+      const responseData = await response.json();
       if (response.ok) {
-        // navigation.navigate('Login'); // faut bouger à la page register Profil 
+        // si le user s'est register alors on garde en memoire son id
+        // utile -> car il doit créer un profile qui est un sous schema de user
+        // en ayant le user_id -> on créer le profile sur le bon user
+        await AsyncStorage.setItem('user_id',responseData);
+        // on le fait changer de page 
+        // navigation.navigate('profile')
       } else {
         console.log(responseData.message);
       }

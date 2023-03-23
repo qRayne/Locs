@@ -59,8 +59,13 @@ export default function Chatroom({ navigation }) {
       }
     }
 
-    // on doit creer la location si elle n'existe pas
-    fetchChatMessages("McDonald"); // ici on passe le context/nom de la location 
+    const interval = setInterval(() => {
+      fetchChatMessages("McDonald");
+    }, 1000); // update chat messages every 1 second
+
+    // cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(interval);
+
   }, []);
 
   return (

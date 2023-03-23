@@ -210,9 +210,41 @@ server.post('/create-User', async (req, res) => {
     userObject.password = hashedPassword;
 
     await userObject.save().then(() => console.log(userObject));
-    res.send('created a new user');
+    res.send(userObject._id);
 });
 
+// pour register un profil
+// on utilisera l'id pour register un user parce que le username n'est pas encore defini 
+// vu qu'il est dans un souschema profil
+server.post('/create-Profile-User/:user_id', async (req, res) => {
+    const Profile = mongooseConnection.model('Profile');
+    const User = mongooseConnection.model('User');
+    const user_id = req.params.user_id;
+    const profilObject = new Profile(req.body);
+
+    try {
+        // on trouve le user
+        const user = await User.findById(user_id);
+
+        if (!user) {
+            return res.status(401).json({ message: 'user does not exist' });
+        }
+
+        // on créer le user 
+        await profilObject.save();
+
+        // on prend l'id du profil créer et on le met dans le profile du user
+        user.profile = profilObject._id;
+        await user.save();
+
+        res.json({ message: 'Profile initialised' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+
+})
 // pour login un user
 // si le login est successful on generer un token
 // le token doit être enregister avec un local storage (asyncStorage en react-native)
@@ -248,10 +280,4 @@ server.get("/User-info", async (req, res) => {
     const username = req.query.username;
     const returnUserObject = await User.findOne({ 'profile.username': username });
     res.send(returnUserObject);
-})
-
-// pour updater les infos d'un usager
-// ici c'est la geolocalisation qui doit être updater à chaque x temps
-server.post("/User-updateLocation", async (req, res) => {
-    const User = mongooseConnection.model("User");
 })
