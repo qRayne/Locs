@@ -6,6 +6,7 @@ import Login from './components/login';
 import Register from './components/register';
 import ChatAutour from './components/chatAutour';
 import Chatroom from './components/chatRoom';
+import Profiler from './components/profiler';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,10 @@ export default function App() {
         <Stack.Screen 
           name="Register" 
           component={Register}
+        />
+        <Stack.Screen 
+          name="Profiler" 
+          component={Profiler}
         />
         <Stack.Screen 
           name="ChatAutour" 
