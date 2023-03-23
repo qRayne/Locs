@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NetworkInfo } from "react-native-network-info";
 
-const IP = "http://192.168.2.20:3000";
+const IP = "http://10.57.38.20:3000";
 
 
 exports.IP = IP;

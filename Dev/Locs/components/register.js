@@ -8,7 +8,6 @@ export default function Register({ navigation }) {
   const [rpwd, setRpwd] = useState("");
   const [email, setEmail] = useState("");
   const [remail, setRemail] = useState("");
-  const [location, setLocation] = useState("");
 
   async function register() {
     try {
@@ -19,7 +18,6 @@ export default function Register({ navigation }) {
         },
         body: JSON.stringify({
           email: email,
-          location: location,
           password: pwd
         })
       });
@@ -64,12 +62,6 @@ export default function Register({ navigation }) {
         secureTextEntry={true}
         value={rpwd}
         onChangeText={setRpwd}
-      />
-      <TextInput
-        style={globalStyles.inputbox}
-        placeholder="Votre lieu en ce moment"
-        value={location}
-        onChangeText={setLocation}
       />
       <Pressable
         style={globalStyles.button}
