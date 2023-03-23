@@ -15,10 +15,10 @@ export default function Location({navigation}) {
 
           <Pressable
             onPressIn={() => {
-              console.log("move to login screen");
-              navigation.navigate('Login')
+              console.log("move to chatAutour screen");
+              navigation.navigate('ChatAutour')
             }}>
-            <Text style={globalStyles.register}> Login? </Text>
+            <Text style={globalStyles.register}> Leave? </Text>
           </Pressable>
         </View>
     );

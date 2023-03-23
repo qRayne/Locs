@@ -71,7 +71,11 @@ export default function Register({ navigation }) {
       />
       <Pressable
         style={globalStyles.button}
-        onPressIn={register}>
+        onPressIn={() =>{
+          register;
+          console.log("move to profiler screen")
+          navigation.navigate('Profiler')
+        }}>
         <Text style={globalStyles.text}>Register</Text>
       </Pressable>
     </View>

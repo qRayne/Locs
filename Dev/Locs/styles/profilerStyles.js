@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const locationStyles = StyleSheet.create({
+const profilerStyles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
@@ -14,4 +14,4 @@ const locationStyles = StyleSheet.create({
     }
   });
 
-  export default locationStyles;
+  export default profilerStyles;
