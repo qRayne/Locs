@@ -3,14 +3,32 @@ import { Button, Pressable, Text, TextInput, View, Modal } from 'react-native';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ChatAutour({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [km, setKm] = useState("");
 
     // ajoute un chatBox pour chaque endroit (au lieu de manuellement)
-    function chatBox(){
+    function chatBox(name, chatInfo){
+      return(
+        <View>
+          <Text style={globalStyles.undertext}>
+            {name}
+          </Text>
 
+          <Pressable
+            onPressIn={() => {
+              // TODO: somehow send info from this box to chat 
+              navigation.navigate('ChatRoom')
+              setKm
+            }}>
+            <View style={autourStyles.collapsedBox}>
+              {chatInfo}
+            </View>
+          </Pressable>
+        </View>
+      )
     }
 
     return (
@@ -56,24 +74,17 @@ export default function ChatAutour({navigation}) {
                     <Text style={globalStyles.text}>{km} KM</Text>
               </Pressable>
             </View>
-
-            {/* replicate this box somehow */}
-            <View>
-              <Text style={globalStyles.undertext}>
-                McDonald's
-              </Text>
-
-              <Pressable
-                onPressIn={() => {
-                  // TODO: somehow send info from this box to chat 
-                  navigation.navigate('ChatRoom')
-                }}>
-                <View style={autourStyles.collapsedBox}>
-                  <Text>sejfbhjsd</Text>
-                </View>
-              </Pressable>
-            </View>
-
+            
+            {chatBox(<Text>McDonalds</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>Subway</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
             
 
           </View>

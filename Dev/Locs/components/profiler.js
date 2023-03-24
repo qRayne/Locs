@@ -48,7 +48,12 @@ export default function Location({navigation}) {
                 <Text style={globalStyles.subtitle}>Create your profile</Text>
             </View>
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Button title="Set a Profile Icon" onPress={pickImage} />
+                <Pressable
+                style={globalStyles.circle} 
+                title="icon" 
+                onPressIn={pickImage} 
+
+                />
                 {image && <Image source={{ uri: image }} style={{ width: 110, height: 110 }} />}
             </View>
             <TextInput

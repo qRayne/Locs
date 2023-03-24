@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native"; 
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const globalStyles = StyleSheet.create({
     container: {
@@ -83,6 +84,14 @@ const globalStyles = StyleSheet.create({
       shadowRadius: 4,
       elevation: 5,
     },
+
+    circle:{
+      width: 75,
+      height: 75,
+      borderRadius: 100/2,
+      borderWidth:2,
+      backgroundColor: "light-grey"
+    }
 
   });
 
