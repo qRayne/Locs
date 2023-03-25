@@ -209,6 +209,7 @@ server.post('/create-User', async (req, res) => {
 server.post('/create-Profile-User/:user_id', async (req, res) => {
     const user_id = req.params.user_id;
     const profilObject = new Profile(req.body);
+    profilObject.avatar = null;
 
     try {
         // on trouve le user

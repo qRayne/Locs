@@ -3,12 +3,12 @@ import { Button, Pressable, Text, TextInput, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
-const {IP}  = require('./constNames.js')
+const { IP } = require('./constNames.js')
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
-  
+
 
   async function login() {
     try {
