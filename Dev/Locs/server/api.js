@@ -46,7 +46,9 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
             return res.status(404).send('Chat room not found');
         }
 
-        const senderUser = await User.findOne({ 'profile.username': sender });
+        const profileID = await Profile.findOne({username:sender});
+        const senderUser = await User.findOne({ profile: profileID });
+
 
         if (!senderUser) {
             return res.status(404).send('Sender not found');
