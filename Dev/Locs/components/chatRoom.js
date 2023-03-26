@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
-const {IP}  = require('./constNames.js')
+const { IP } = require('./constNames.js')
 
 
 export default function Chatroom({ navigation }) {
@@ -19,32 +19,39 @@ export default function Chatroom({ navigation }) {
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
-    const decoded = jwtDecode(token);
-    const username = decoded.username;
-    
-    // remplacer le nom du chatroom par le context
-    // ici faut changer l'ip par l'ip de ton ordinateur
-    fetch(`${IP}/chatroom-sendChat/McDonald`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sender: username, // fixed, on recupère le token qui lui en le decodant => username
-        message: chat,
-        timestamp: new Date().toString()
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
 
-    // Clear the chat input
-    setChat('');
+    if (token) {
+      const decoded = jwtDecode(token);
+      const username = decoded.username;
+
+      // remplacer le nom du chatroom par le context
+      // ici faut changer l'ip par l'ip de ton ordinateur
+      fetch(`${IP}/chatroom-sendChat/McDonald`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: username, // fixed, on recupère le token qui lui en le decodant => username
+          message: chat,
+          timestamp: new Date().toString()
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      // Clear the chat input
+      setChat('');
+    }
+    else{
+      console.log('the user need to be connected to send to the chatroom');
+    }
+
   }
 
   useEffect(() => {
@@ -67,6 +74,14 @@ export default function Chatroom({ navigation }) {
     return () => clearInterval(interval);
 
   }, []);
+
+  // ici pas besoin d'une route pour se logout
+  // juste d'enlever tous les async storage que le user connecter a
+  async function logout() {
+    AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("user_id");
+    navigation.navigate('Login');
+  }
 
   return (
     <View style={globalStyles.container}>
@@ -101,8 +116,7 @@ export default function Chatroom({ navigation }) {
 
       <Pressable
         onPressIn={() => {
-          console.log("move to register screen");
-          navigation.navigate('Login');
+          logout();
         }}>
         <Text style={globalStyles.register}> Logout? </Text>
       </Pressable>
