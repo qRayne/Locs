@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const { IP } = require('./constNames.js')
 
 
-export default function Location({ navigation }) {
+export default function Profiler({ navigation }) {
     const [username, setUsername] = useState("");
     const [age, setAge] = useState("");
     const [prenom, setPrenom] = useState("");
@@ -119,12 +119,15 @@ export default function Location({ navigation }) {
                 style={globalStyles.inputbox}
                 title="Date de Naissance"
                 onPress={showDatePicker}
-            />
+            >
+                <Text>{ddn}</Text>
+            </Pressable>
             <DateTimePickerModal
                 isVisible={isDatePickerVisible}
                 mode="date"
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
+                onChangeText={setDdn}
             />
             <TextInput
                 style={globalStyles.inputbox}
@@ -139,12 +142,13 @@ export default function Location({ navigation }) {
                 onChangeText={setOccupation}
             />
             <Pressable
+                style={globalStyles.button}
                 onPressIn={() => {
                     registerProfil();
                     console.log("move to Login");
                     navigation.navigate('Login')
                 }}>
-                <Text style={globalStyles.register}> Login? </Text>
+                <Text style={globalStyles.register}> Finish </Text>
             </Pressable>
         </View>
     );

@@ -73,10 +73,10 @@ export default function Register({ navigation }) {
         style={globalStyles.button}
         onPressIn={() =>{
           register();
-          console.log("move to profiler screen")
-          navigation.navigate('Profiler')
+          console.log("move to avatar screen")
+          navigation.navigate('Avatar')
         }}>
-        <Text style={globalStyles.text}>Register</Text>
+        <Text style={globalStyles.text}>Next</Text>
       </Pressable>
     </View>
   );

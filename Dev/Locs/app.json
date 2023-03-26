@@ -25,6 +25,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-  }
+    },
+    "sdkVersion": "48.0.0"
+  },
+  "name": "locs"
 }
