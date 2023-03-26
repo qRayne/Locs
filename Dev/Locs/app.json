@@ -4,7 +4,7 @@
     "slug": "Locs",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/img/logo/Locs.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
