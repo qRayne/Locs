@@ -142,13 +142,13 @@ export default function Profiler({ navigation }) {
                 onChangeText={setOccupation}
             />
             <Pressable
-                style={globalStyles.button}
+            style={globalStyles.button}
                 onPressIn={() => {
                     registerProfil();
                     console.log("move to Login");
                     navigation.navigate('Login')
                 }}>
-                <Text style={globalStyles.register}> Finish </Text>
+                <Text style={globalStyles.text}> Finish </Text>
             </Pressable>
         </View>
     );

@@ -3,11 +3,12 @@ import { Button, Pressable, Text, TextInput, View, Modal } from 'react-native';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Slider from '@react-native-community/slider';
+import { ScrollView } from 'react-native';
 
 export default function ChatAutour({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [km, setKm] = useState("");
+    const [km, setKm] = useState(0);
 
     // ajoute un chatBox pour chaque endroit (au lieu de manuellement)
     function chatBox(name, chatInfo){
@@ -48,15 +49,17 @@ export default function ChatAutour({navigation}) {
                 <View style={globalStyles.centeredView}>
                   <View style={globalStyles.modalView}>
                     <Text>How far?</Text>
-                    <View style={globalStyles.row}>
-                      <TextInput 
-                        style={autourStyles.centerText}
-                        inputMode="numeric"
-                        value={km}
-                        onChangeText={setKm}/>
-                      <Text style={autourStyles.centerText}>KM</Text>
-                    </View>
-
+                    <Slider 
+                      style={{width: 200, height: 40}}
+                      step={1}
+                      minimumValue={0}
+                      maximumValue={50}
+                      minimumTrackTintColor="#FFFFFF"
+                      maximumTrackTintColor="#000000"
+                      value={km}
+                      onSlidingComplete={setKm}
+                    />
+                    <Text>{km + " KM"}</Text>
                     <Pressable
                       style={globalStyles.button}
                       onPressIn={() => setModalVisible(!modalVisible)}>
@@ -75,16 +78,21 @@ export default function ChatAutour({navigation}) {
               </Pressable>
             </View>
             
-            {chatBox(<Text>McDonalds</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>Subway</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
-            {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+            <View>
+              <ScrollView>
+                {chatBox(<Text>McDonalds</Text>, <Text>FAST FOOD</Text> )}
+                {chatBox(<Text>Subway</Text>, <Text>FAST FOOD</Text> )}
+                {chatBox(<Text>A&W</Text>, <Text>FAST FOOD</Text> )}
+                {chatBox(<Text>Poulet Rouge</Text>, <Text>FAST FOOD</Text> )}
+                {chatBox(<Text>Cineplex Cartier Latin</Text>, <Text>CINEMA</Text> )}
+                {chatBox(<Text>Randolph's</Text>, <Text>PUB</Text> )}
+                {chatBox(<Text>Arcade MTL</Text>, <Text>GAMING PUB</Text> )}
+                {chatBox(<Text>Chatime</Text>, <Text>BUBLLE TEA</Text> )}
+                {chatBox(<Text>Cegep du Vieux-Montreal</Text>, <Text>EDUCATION</Text> )}
+                {chatBox(<Text>UQAM</Text>, <Text>EDUCATION</Text> )}
+              </ScrollView>
+
+            </View>
             
 
           </View>

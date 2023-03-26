@@ -63,6 +63,15 @@ export default function Login({ navigation }) {
       </Pressable>
 
       <Pressable
+        style={globalStyles.button}
+        onPressIn={() =>{
+          console.log("move to chatAutour screen");
+          navigation.navigate('ChatAutour');
+        }}>
+        <Text style={globalStyles.text}>ChatAutour</Text>
+      </Pressable>
+
+      <Pressable
         onPressIn={() => {
           console.log("move to register screen");
           navigation.navigate('Register');

@@ -41,7 +41,7 @@ const globalStyles = StyleSheet.create({
 
     button:{
       backgroundColor: "#000",
-      width:75,
+      width:100,
       height: 30,
       flex:-1,
       marginTop: 15,
