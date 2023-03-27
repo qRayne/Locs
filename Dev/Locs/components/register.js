@@ -28,8 +28,8 @@ export default function Register({ navigation }) {
         // utile -> car il doit créer un profile qui est un sous schema de user
         // en ayant le user_id -> on créer le profile sur le bon user
         await AsyncStorage.setItem('user_id',responseData);
-        // on le fait changer de page 
-        // navigation.navigate('profile')
+        console.log("succesfully registered")
+        navigation.navigate('Avatar')
       } else {
         console.log(responseData.message);
       }
@@ -73,8 +73,6 @@ export default function Register({ navigation }) {
         style={globalStyles.button}
         onPressIn={() =>{
           register();
-          console.log("move to avatar screen")
-          navigation.navigate('Avatar')
         }}>
         <Text style={globalStyles.text}>Next</Text>
       </Pressable>

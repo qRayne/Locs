@@ -14,24 +14,26 @@ export default function Profiler({ navigation }) {
     const [prenom, setPrenom] = useState("");
     const [nom, setNom] = useState("");
     const [pronoms, setPronoms] = useState("");
-    const [ddn, setDdn] = useState("");
+    const [interests,setInterests] = useState("");
+    //const [ddn, setDdn] = useState("");
     const [lien, setLien] = useState("");
     const [occupation, setOccupation] = useState("");
     const [image, setImage] = useState(null);
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    
+    //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-    const showDatePicker = () => {
-        setDatePickerVisibility(true);
-    };
+    // const showDatePicker = () => {
+    //     setDatePickerVisibility(true);
+    // };
 
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-    };
+    // const hideDatePicker = () => {
+    //     setDatePickerVisibility(false);
+    // };
 
-    const handleConfirm = (date) => {
-        console.warn("A date has been picked: ", date);
-        hideDatePicker();
-    };
+    // const handleConfirm = (date) => {
+    //     console.warn("A date has been picked: ", date);
+    //     hideDatePicker();
+    // };
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -49,7 +51,8 @@ export default function Profiler({ navigation }) {
 
     async function registerProfil() {
         const user_id = await AsyncStorage.getItem('user_id');
-        try {
+        const choosenAvatar = await AsyncStorage.getItem('avatar');
+        try {   
             const response = await fetch(`${IP}/create-Profile-User/` + encodeURIComponent(user_id), {
                 method: "POST",
                 headers: {
@@ -59,8 +62,10 @@ export default function Profiler({ navigation }) {
                     username: username,
                     firstName: prenom,
                     lastName: nom,
+                    avatar:choosenAvatar,
+                    interests:interests,
                     pronouns: pronoms,
-                    age: '10', // a modifier en trouvant l'age à l'aide de la date de naissance,
+                    age: age,
                     facialPhoto: image,
                     socialMediaLinks: lien,
                     occupation: occupation
@@ -69,6 +74,8 @@ export default function Profiler({ navigation }) {
             const responseData = await response.json();
             if (response.ok) {
                 console.log(responseData);
+                console.log("move to Login");
+                navigation.navigate('Login');
             } else {
                 console.log(responseData.message);
             }
@@ -89,7 +96,8 @@ export default function Profiler({ navigation }) {
                     onPressIn={pickImage}
 
                 />
-                {image && <Image source={{ uri: image }} style={{ width: 110, height: 110 }} />}
+                {/* revoir la taille de l'image car si trop grosse, cache le bouton register  */}
+                {image && <Image source={{ uri: image }} style={{ width: 110, height: 20 }} />} 
             </View>
             <TextInput
                 style={globalStyles.inputbox}
@@ -115,7 +123,7 @@ export default function Profiler({ navigation }) {
                 value={pronoms}
                 onChangeText={setPronoms}
             />
-            <Pressable
+            {/* <Pressable
                 style={globalStyles.inputbox}
                 title="Date de Naissance"
                 onPress={showDatePicker}
@@ -128,6 +136,18 @@ export default function Profiler({ navigation }) {
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
                 onChangeText={setDdn}
+            /> */}
+            <TextInput
+                style={globalStyles.inputbox}
+                placeholder="Interests"
+                value={interests}
+                onChangeText={setInterests}
+            />
+            <TextInput
+                style={globalStyles.inputbox}
+                placeholder="Age"
+                value={age}
+                onChangeText={setAge}
             />
             <TextInput
                 style={globalStyles.inputbox}
@@ -145,8 +165,6 @@ export default function Profiler({ navigation }) {
             style={globalStyles.button}
                 onPressIn={() => {
                     registerProfil();
-                    console.log("move to Login");
-                    navigation.navigate('Login')
                 }}>
                 <Text style={globalStyles.text}> Finish </Text>
             </Pressable>

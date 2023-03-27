@@ -3,38 +3,41 @@ import { Button, Pressable, Text, TextInput, View, Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import avatarStyles from '../styles/avatarStyles';
 import { ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const {possibleAvatars} = require('./constNames');
 
-export default function Avatar({navigation}) {
-    return (
-        <View style={globalStyles.container}>
-          <View>
-            <Text style={globalStyles.subtitle}>Pick an Avatar</Text>
-          </View>
+export default function Avatar({ navigation }) {
 
-          <Pressable>
-            <Image style={avatarStyles.image} source={require('../assets/img/avatar/rayane.png')}/>
-          </Pressable>
-          <Pressable>
-            <Image style={avatarStyles.image} source={require('../assets/img/avatar/beer.gif')}/>
-          </Pressable>
-          <Pressable>
-            <Image style={avatarStyles.image} source={require('../assets/img/avatar/mad.png')}/>
-          </Pressable>
-          <Pressable>
-            <Image style={avatarStyles.image} source={require('../assets/img/avatar/mex.png')}/>
-          </Pressable>
-          <Pressable>
-            <Image style={avatarStyles.image} source={require('../assets/img/avatar/thumbsup.png')}/>
-          </Pressable>
+  // on store le nom de l'avatar choisi, pas l'image car elle peut être directement recuperer
+  // dans nos assets
 
-          <Pressable
-            style={globalStyles.button}
-            onPressIn={() =>{
-                console.log("move to profiler screen")
-                navigation.navigate('Profiler')
-            }}>
-            <Text style={globalStyles.text}>Next</Text>
-           </Pressable>
-        </View>
-    );
+  const handleAvatarPress = async (avatarName) => {
+    try {
+      await AsyncStorage.setItem('avatar',avatarName);
+      navigation.navigate('Profiler');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return (
+    <View style={globalStyles.container}>
+      <View>
+        <Text style={globalStyles.subtitle}>Pick an Avatar</Text>
+      </View>
+
+      {Object.keys(possibleAvatars).map((avatarName) => (
+        <Pressable key={avatarName} onPress={() => handleAvatarPress(avatarName)}>
+          <Image style={avatarStyles.image} source={possibleAvatars[avatarName]} />
+        </Pressable>
+      ))}
+
+      <Pressable
+        style={globalStyles.button}
+        onPressIn={() => {
+          console.log("move to profiler screen")
+        }}>
+        <Text style={globalStyles.text}>Next</Text>
+      </Pressable>
+    </View>
+  );
 }

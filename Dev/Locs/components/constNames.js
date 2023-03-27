@@ -2,9 +2,16 @@ import { useState } from 'react';
 import { NetworkInfo } from "react-native-network-info";
 
 const IP = "http://192.168.2.20:3000";
-
+const POSSIBLEAVATARS = {
+    "nerd": require('../assets/img/avatar/rayane.png'),
+    "beer": require('../assets/img/avatar/beer.gif'),
+    "mad": require('../assets/img/avatar/mad.png'),
+    "mex": require('../assets/img/avatar/mex.png'),
+    "thumbsup": require('../assets/img/avatar/thumbsup.png')
+}
 
 exports.IP = IP;
+exports.possibleAvatars = POSSIBLEAVATARS;
 
 
 // cd locs/dev/locs/server
