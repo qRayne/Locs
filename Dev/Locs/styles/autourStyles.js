@@ -38,7 +38,15 @@ const autourStyles = StyleSheet.create({
     centerText:{
         paddingTop: 0,
         paddingBottom: 0,
-        fontSize: 20      
+        fontSize: 20
+    },
+
+    profile:{
+        width: 40,
+        height: 40,
+        borderRadius: 100/2,
+        borderWidth:2,
+        backgroundColor: "light-grey"
     }
 
   });

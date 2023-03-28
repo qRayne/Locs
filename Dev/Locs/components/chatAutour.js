@@ -39,6 +39,13 @@ export default function ChatAutour({navigation}) {
         <View style={autourStyles.container}>
           <View>
             <Text style={globalStyles.subtitle}>Autour de vous</Text>
+            <Pressable 
+              style={autourStyles.profile}
+              onPressIn={()=>{
+                console.log("move to profile screen");
+                navigation.navigate('Profile');
+              }}
+            />
 
             {/* Boite qui permet de changer la distance */}
             <Modal
