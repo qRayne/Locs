@@ -2,20 +2,20 @@ import { useState, useEffect } from 'react';
 import { Button, Pressable, Text, TextInput, View, Modal, Image } from 'react-native';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute } from '@react-navigation/native';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
-const { IP } = require('./constNames.js')
+const { IP } = require('./constNames.js');
 
 
-export default function Chatroom({ navigation }) {
+export default function Chatroom({ navigation, route }) {
   const [chat, setChat] = useState('');
   const [text, setText] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const chatRoomName = route.params.chatRoom;
+  const chatRoomIsCreated = false;
 
-  function chatInput(enteredText) {
-    setChat(enteredText);
-  }
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
@@ -26,7 +26,7 @@ export default function Chatroom({ navigation }) {
 
       // remplacer le nom du chatroom par le context
       // ici faut changer l'ip par l'ip de ton ordinateur
-      fetch(`${IP}/chatroom-sendChat/McDonald`, {
+      fetch(`${IP}/chatroom-sendChat/McDonalds`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,26 +48,59 @@ export default function Chatroom({ navigation }) {
       // Clear the chat input
       setChat('');
     }
-    else{
+    else {
       console.log('the user need to be connected to send to the chatroom');
     }
 
   }
 
+  async function createChatRoom() {
+    fetch(`${IP}/create-chatRoom`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        place: {
+          name: chatRoomName,
+          location: {
+            latitude: 192.158, // à changer selon la localisation du lieu
+            longitude: 192.158 // à changer selon la localisation du lieu
+          }
+        },
+        isPublic: true
+      })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   useEffect(() => {
-    async function fetchChatMessages(chatroomName) {
+    async function fetchChatMessages() {
       try {
-        // ici faut changer l'ip par l'ip de ton ordinateur
-        const response = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatroomName));
-        const data = await response.json();
-        setChatMessages(data);
+        // Check if the chatroom exists
+        const response = await fetch(`${IP}/chatRoom-info/` + encodeURIComponent(chatRoomName));
+        if (!response.ok) {
+          // If the chatroom doesn't exist, create it
+          await createChatRoom();
+        }
+
+        // Fetch the chat messages
+        const messagesResponse = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
+        const messagesData = await messagesResponse.json();
+        setChatMessages(messagesData);
       } catch (error) {
         console.error(error);
       }
     }
 
     const interval = setInterval(() => {
-      fetchChatMessages("McDonald");
+      fetchChatMessages();
     }, 1000); // update chat messages every 1 second
 
     // cleanup function to clear the interval when the component unmounts
@@ -88,7 +121,7 @@ export default function Chatroom({ navigation }) {
       <View style={chatStyles.infoBox}>
         {/* TODO: use context to pass along the name of the location */}
         <Image></Image>
-        <Text style={globalStyles.subtitle}>McDonald's</Text>
+        <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
         <Text> lorem ipsum </Text>
         <Text> lorem ipsum </Text>
         <Text> lorem ipsum </Text>
@@ -106,7 +139,6 @@ export default function Chatroom({ navigation }) {
           <TextInput
             style={chatStyles.chatInput}
             // value={chat}
-            onChangeText={chatInput}
             onSubmitEditing={sendChat}
           >
 

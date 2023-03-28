@@ -46,12 +46,22 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
             return res.status(404).send('Chat room not found');
         }
 
-        const profileID = await Profile.findOne({username:sender});
+        const profileID = await Profile.findOne({ username: sender });
         const senderUser = await User.findOne({ profile: profileID });
 
 
         if (!senderUser) {
             return res.status(404).send('Sender not found');
+        }
+
+        const addUserToChatRoom = await ChatRoom.findOneAndUpdate(
+            { 'place.name': name },
+            { $addToSet: { users: senderUser._id } },
+            { new: true }
+        );
+
+        if (!addUserToChatRoom) {
+            return res.status(404).send('User cannot be added');
         }
 
 
@@ -93,10 +103,16 @@ server.post('/delete-chatRoom', async (req, res) => {
 
 // pour recuperer les donnes d'un chatRoom 
 // prend en paramètre un nom et retourne les donnes d'un chat room localisation,isPublic
-server.get('/chatRoom-info', async (req, res) => {
-    const name = req.query.name;
-    const returnedChatRoomObject = await ChatRoom.findOne({ 'place.name': name });
-    res.send(returnedChatRoomObject);
+server.get('/chatRoom-info/:name', async (req, res) => {
+    const { name } = req.params;
+    const chatRoom = await ChatRoom.findOne({ 'place.name': name });
+    if (chatRoom) {
+        // A ChatRoom with the given name already exists
+        res.status(200).json({ message: 'ChatRoom already exists' });
+    } else {
+        // A ChatRoom with the given name does not exist
+        res.status(404).json({ message: 'ChatRoom not found' });
+    }
 })
 
 // pour recuperer les messages d'un chatroom avec le username et le timestamp
@@ -104,6 +120,16 @@ server.get('/chatRoom-info', async (req, res) => {
 server.get('/chatRoom-messages', async (req, res) => {
     const name = req.query.name;
     const returnedChatRoomObject = await ChatRoom.findOne({ 'place.name': name });
+    const chatRoom = await ChatRoom.findOne({ 'place.name': name }).populate('users chats');
+
+
+    // ici on est oubliger d'ajouter un premier chat pour être sur que le chatrom n'est pas vide
+    if (returnedChatRoomObject.chats.length === 0) {
+        // l'id c'est le super usager qui envoie des welcome to the chatroom par defaut
+        const chat = new Chat({ sender: "642235e9d89a19d3a22ab02b", message: "Welcome to the chatroom!" });
+        chatRoom.chats.push(chat);
+        await chatRoom.save();
+    }
 
     const chatIds = returnedChatRoomObject.chats;
 
@@ -115,12 +141,15 @@ server.get('/chatRoom-messages', async (req, res) => {
             model: Profile,
         },
     });
+    
+    console.log(chats);
 
     const messageHistory = chats.map(chat => ({
         message: chat.message,
         sender: chat.sender.profile.username, // assuming that the `Profile` model has a `username` field
         timestamp: chat.timestamp,
     }));
+
 
     res.send(messageHistory);
 })
@@ -256,7 +285,7 @@ server.post('/login-User', async (req, res) => {
         const profile = await Profile.findById(user.profile);
 
         const token = jwt.sign({ userId: user._id, username: profile.username }, JWT_SECRET);
-        
+
         return res.status(200).json({ token });
     } catch (err) {
         console.error(err);

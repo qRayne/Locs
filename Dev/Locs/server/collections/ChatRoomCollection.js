@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 // on créer un schema avec toutes nos champs et leurs types
 const ChatRoomSchema = new mongoose.Schema({
     place:{
-        name:{ type: String, unique: true,required: true },
+        name:{ type: String, unique: true},
         location:{
             latitude:Number,
             longitude:Number

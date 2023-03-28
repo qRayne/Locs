@@ -5,6 +5,8 @@ import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function ChatAutour({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,9 +21,10 @@ export default function ChatAutour({navigation}) {
           </Text>
 
           <Pressable
-            onPressIn={() => {
+            onPressIn={async () => {
               // TODO: somehow send info from this box to chat 
-              navigation.navigate('ChatRoom')
+              // solution : on envoit le chatroom name vers le prochain component
+              navigation.navigate('ChatRoom',{ chatRoom: name.props.children })
               setKm
             }}>
             <View style={autourStyles.collapsedBox}>
