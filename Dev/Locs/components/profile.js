@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View, Modal, LogBox,Image } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Button, Pressable, Text, TextInput, View, Modal, LogBox, Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
@@ -14,29 +14,36 @@ export default function Profile({ navigation }) {
     const [username, setUsername] = useState('');
     const [facialPhoto, setFacialPhoto] = useState('');
 
-    async function getInfos() {
-        const token = await AsyncStorage.getItem('token');
+    // on attend que la page charge avant de se get les infos
+    useEffect(() => {
+        async function getInfos() {
+            const token = await AsyncStorage.getItem('token');
 
-        if (token) {
-            const decoded = jwtDecode(token);
-            const username = decoded.username;
-            try {
-                // tu peux te get tous les infos du profil
-                const profildata = await fetch(`${IP}/profil-info/?username=` + encodeURIComponent(username));
-                const jsonProfil = await profildata.json();
-                setUsername(username);
-                setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
-            } catch (error) {
-                console.error(error);
+            if (token) {
+                const decoded = jwtDecode(token);
+                const username = decoded.username;
+                try {
+                    // on ce get les principales infos de l'utilisateurs
+                    const profildata = await fetch(`${IP}/profil-info/?username=` + encodeURIComponent(username));
+                    const jsonProfil = await profildata.json();
+                    setUsername(username);
+                    setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
+                    setFacialPhoto(jsonProfil.facialPhoto);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
-    }
 
-    getInfos();
+        getInfos();
+    }, []);
+
     return (
 
         <View style={globalStyles.container}>
             <View>
+                <Image source={facialPhoto ? { uri: facialPhoto } : null}
+                    style={{ width: 200, height: 200 }} />
                 <Text style={globalStyles.subtitle}>{fullName}</Text>
                 <Text style={globalStyles.undertext}>{username}</Text>
             </View>

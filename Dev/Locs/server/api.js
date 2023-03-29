@@ -101,7 +101,6 @@ server.post('/create-chatRoom', async (req, res) => {
     const chatRoomObject = new ChatRoom(req.body);
 
     await chatRoomObject.save().then(() => console.log(chatRoomObject));
-    res.send.json('created a new chat Room');
 });
 
 
