@@ -14,6 +14,7 @@ const ProfileSchema = new mongoose.Schema({
     facialPhoto:{type:String,required:true},
     socialMediaLinks:{type:[String],required:true},
     occupation:{type:String,required:true},
+    DeLocdList : {type:[String]}
 })
 
 // on créer le schema
