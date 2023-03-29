@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Pressable, Text, TextInput, View, Modal, Image } from 'react-native';
+import { Button, Pressable, Text, TextInput, View, Modal, Image,Alert } from 'react-native';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
@@ -46,9 +46,9 @@ export default function Chatroom({ navigation, route }) {
       setChat('');
     }
     else {
-      console.log('the user need to be connected to send to the chatroom');
+      Alert.alert('Sending Message Failed', 'the user need to be connected to send to the chatroom');
+      navigation.navigate('Login');
     }
-
   }
 
   useEffect(() => {

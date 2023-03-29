@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native'
+import { useState,useEffect } from 'react';
+import { Button, Pressable, Text, TextInput, View,Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
@@ -29,12 +29,27 @@ export default function Login({ navigation }) {
         await AsyncStorage.setItem('token', responseData.token);
         navigation.navigate('ChatAutour');
       } else {
-        console.log(responseData.message);
+        Alert.alert('Authentication failed', 'Please check your credentials and try again.');
       }
     } catch (error) {
       console.log(error.message);
     }
   }
+
+  // si l'usager revient dans le login alors on attend que la page charge pour lui enlever son token
+  // de connexion
+  async function removeToken() {
+    try {
+      await AsyncStorage.removeItem('token');
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  useEffect(() => {
+    removeToken();
+  }, []);
 
   return (
     <View style={globalStyles.container}>
@@ -64,7 +79,7 @@ export default function Login({ navigation }) {
 
       <Pressable
         style={globalStyles.button}
-        onPressIn={() =>{
+        onPressIn={() => {
           console.log("move to chatAutour screen");
           navigation.navigate('ChatAutour');
         }}>
