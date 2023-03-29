@@ -11,11 +11,8 @@ const { IP } = require('./constNames.js');
 
 export default function Chatroom({ navigation, route }) {
   const [chat, setChat] = useState('');
-  const [text, setText] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const chatRoomName = route.params.chatRoom;
-  const chatRoomIsCreated = false;
-
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
@@ -26,7 +23,7 @@ export default function Chatroom({ navigation, route }) {
 
       // remplacer le nom du chatroom par le context
       // ici faut changer l'ip par l'ip de ton ordinateur
-      fetch(`${IP}/chatroom-sendChat/McDonalds`, {
+      fetch(`${IP}/chatroom-sendChat/` + chatRoomName, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,42 +51,9 @@ export default function Chatroom({ navigation, route }) {
 
   }
 
-  async function createChatRoom() {
-    fetch(`${IP}/create-chatRoom`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        place: {
-          name: chatRoomName,
-          location: {
-            latitude: 192.158, // à changer selon la localisation du lieu
-            longitude: 192.158 // à changer selon la localisation du lieu
-          }
-        },
-        isPublic: true
-      })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   useEffect(() => {
     async function fetchChatMessages() {
       try {
-        // Check if the chatroom exists
-        const response = await fetch(`${IP}/chatRoom-info/` + encodeURIComponent(chatRoomName));
-        if (!response.ok) {
-          // If the chatroom doesn't exist, create it
-          await createChatRoom();
-        }
-
         // Fetch the chat messages
         const messagesResponse = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
@@ -138,10 +102,10 @@ export default function Chatroom({ navigation, route }) {
         <View>
           <TextInput
             style={chatStyles.chatInput}
-            // value={chat}
+            value={chat}
+            onChangeText={(text) => setChat(text)}
             onSubmitEditing={sendChat}
           >
-
           </TextInput>
         </View>
       </View>
