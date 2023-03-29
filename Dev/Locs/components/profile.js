@@ -13,6 +13,7 @@ export default function Profile({ navigation }) {
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
     const [facialPhoto, setFacialPhoto] = useState('');
+    const [delocdList,setdelocdList] = useState('');
 
     // on attend que la page charge avant de se get les infos
     useEffect(() => {
@@ -29,6 +30,7 @@ export default function Profile({ navigation }) {
                     setUsername(username);
                     setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
                     setFacialPhoto(jsonProfil.facialPhoto);
+                    setdelocdList(jsonProfil.DeLocdList);
                 } catch (error) {
                     console.error(error);
                 }
