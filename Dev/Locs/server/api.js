@@ -295,8 +295,8 @@ server.post('/login-User', async (req, res) => {
 });
 
 // pour recuperer les infos d'un usager
-server.get("/User-info", async (req, res) => {
+server.get("/profil-info", async (req, res) => {
     const username = req.query.username;
-    const returnUserObject = await User.findOne({ 'profile.username': username });
-    res.send(returnUserObject);
+    const returnProfileObject = await Profile.findOne({username:username});
+    res.send(returnProfileObject);
 })
