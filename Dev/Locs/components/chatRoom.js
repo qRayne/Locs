@@ -65,9 +65,9 @@ export default function Chatroom({ navigation, route }) {
 
     const interval = setInterval(() => {
       fetchChatMessages();
-    }, 1000); // update chat messages every 1 second
+    }, 1000); 
 
-    // cleanup function to clear the interval when the component unmounts
+    
     return () => clearInterval(interval);
 
   }, []);

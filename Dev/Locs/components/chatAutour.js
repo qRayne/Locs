@@ -46,13 +46,13 @@ export default function ChatAutour({ navigation }) {
         isPublic: true
       })
     })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async function createChatRooms() {
@@ -65,27 +65,27 @@ export default function ChatAutour({ navigation }) {
 
   // ajoute un chatBox pour chaque endroit (au lieu de manuellement)
   // a changer ou a reformater 
-  function chatBox(name, chatInfo) {
-    return (
-      <View>
-        <Text style={globalStyles.undertext}>
-          {name}
-        </Text>
+  // function chatBox(name, chatInfo) {
+  //   return (
+  //     <View>
+  //       <Text style={globalStyles.undertext}>
+  //         {name}
+  //       </Text>
 
-        <Pressable
-          onPressIn={async () => {
-            // TODO: somehow send info from this box to chat 
-            // solution : on envoit le chatroom name vers le prochain component
-            navigation.navigate('ChatRoom', { chatRoom: name.props.children })
-            setKm
-          }}>
-          <View style={autourStyles.collapsedBox}>
-            {chatInfo}
-          </View>
-        </Pressable>
-      </View>
-    )
-  }
+  //       <Pressable
+  //         onPressIn={async () => {
+  //           // TODO: somehow send info from this box to chat 
+  //           // solution : on envoit le chatroom name vers le prochain component
+  //           navigation.navigate('ChatRoom', { chatRoom: name.props.children })
+  //           setKm
+  //         }}>
+  //         <View style={autourStyles.collapsedBox}>
+  //           {chatInfo}
+  //         </View>
+  //       </Pressable>
+  //     </View>
+  //   )
+  // }
 
   return (
     <View style={autourStyles.container}>
@@ -140,22 +140,24 @@ export default function ChatAutour({ navigation }) {
           </Pressable>
         </View>
 
-        {chatRooms.map((room, index) => (
-          <View key={index}>
-            <Text style={globalStyles.undertext}>
-              {room.name}
-            </Text>
+        <ScrollView>
+          {chatRooms.map((room, index) => (
+            <View key={index}>
+              <Text style={globalStyles.undertext}>
+                {room.name}
+              </Text>
 
-            <Pressable
-              onPressIn={() => {
-                navigation.navigate('ChatRoom', { chatRoom: room.name });
-              }}>
-              <View style={autourStyles.collapsedBox}>
-                <Text>{room.type}</Text>
-              </View>
-            </Pressable>
-          </View>
-        ))}
+              <Pressable
+                onPressIn={() => {
+                  navigation.navigate('ChatRoom', { chatRoom: room.name });
+                }}>
+                <View style={autourStyles.collapsedBox}>
+                  <Text>{room.type}</Text>
+                </View>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
 
 
       </View>

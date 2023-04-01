@@ -14,12 +14,12 @@ export default function Profiler({ navigation }) {
     const [prenom, setPrenom] = useState("");
     const [nom, setNom] = useState("");
     const [pronoms, setPronoms] = useState("");
-    const [interests,setInterests] = useState("");
+    const [interests, setInterests] = useState("");
     //const [ddn, setDdn] = useState("");
     const [lien, setLien] = useState("");
     const [occupation, setOccupation] = useState("");
     const [image, setImage] = useState(null);
-    
+
     //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
     // const showDatePicker = () => {
@@ -52,7 +52,7 @@ export default function Profiler({ navigation }) {
     async function registerProfil() {
         const user_id = await AsyncStorage.getItem('user_id');
         const choosenAvatar = await AsyncStorage.getItem('avatar');
-        try {   
+        try {
             const response = await fetch(`${IP}/create-Profile-User/` + encodeURIComponent(user_id), {
                 method: "POST",
                 headers: {
@@ -62,8 +62,8 @@ export default function Profiler({ navigation }) {
                     username: username,
                     firstName: prenom,
                     lastName: nom,
-                    avatar:choosenAvatar,
-                    interests:interests,
+                    avatar: choosenAvatar,
+                    interests: interests,
                     pronouns: pronoms,
                     age: age,
                     facialPhoto: image,
@@ -92,12 +92,17 @@ export default function Profiler({ navigation }) {
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Pressable
                     style={globalStyles.circle}
-                    title="icon"
                     onPressIn={pickImage}
-
-                />
-                {/* revoir la taille de l'image car si trop grosse, cache le bouton register  */}
-                {image && <Image source={{ uri: image }} style={{ width: 110, height: 20 }} />} 
+                >
+                    {image ? (
+                        <Image
+                            source={{ uri: image }}
+                            style={{ width: '100%', height: '100%', borderRadius: 50 }}
+                        />
+                    ) : (
+                        <Text style={{ fontSize: 30, color: '#000', textAlign: 'center', lineHeight: 80 }}>+</Text>
+                    )}
+                </Pressable>
             </View>
             <TextInput
                 style={globalStyles.inputbox}
@@ -162,7 +167,7 @@ export default function Profiler({ navigation }) {
                 onChangeText={setOccupation}
             />
             <Pressable
-            style={globalStyles.button}
+                style={globalStyles.button}
                 onPressIn={() => {
                     registerProfil();
                 }}>

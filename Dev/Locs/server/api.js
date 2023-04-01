@@ -79,9 +79,6 @@ server.post('/chatroom-sendChat/:name', async (req, res) => {
 });
 
 
-
-
-
 // pour tout ce qui est post/get pour le chatRoom
 // ici c'est pour creer un chatRoom
 // lorsqu'on creer un chatRoom, il n'y a pas de chat et de users
@@ -113,23 +110,9 @@ server.post('/delete-chatRoom', async (req, res) => {
     res.send(returnChatRoomObject);
 })
 
-// pour recuperer les donnes d'un chatRoom 
-// prend en paramètre un nom et retourne les donnes d'un chat room localisation,isPublic
-server.get('/chatRoom-info/:name', async (req, res) => {
-    const { name } = req.params;
-    const chatRoom = await ChatRoom.findOne({ 'place.name': name });
-    if (chatRoom) {
-        // A ChatRoom with the given name already exists
-        res.status(200).json({ message: 'ChatRoom ' + name + " exits" });
-    } else {
-        // A ChatRoom with the given name does not exist
-        res.status(404).json({ message: 'ChatRoom not found' });
-    }
-})
 
 // pour recuperer les messages d'un chatroom avec le username et le timestamp
 // on recupère tous les id des chats dans le chatroom et on get tous leurs infos qui eux sont dans une autre collection
-
 server.get('/chatRoom-messages', async (req, res) => {
     const name = req.query.name;
     const chatRoom = await ChatRoom.findOne({ 'place.name': name }).populate('users chats');
@@ -153,72 +136,6 @@ server.get('/chatRoom-messages', async (req, res) => {
 
     res.send(messageHistory);
 })
-
-
-// pour ajouter un user à un chatRoom
-// on recupère d'abord le user qui a un username 
-// après on recupère le user et on update le chatRoom avec ce user
-// il faut donc passer le nom du chatRoom ainsi que le username 
-server.post('/chatroom/:name/addUser', async (req, res) => {
-    const chatroomName = req.params.name;
-    const { username } = req.body;
-
-    try {
-        const user = await User.findOne({ 'profile.username': username });
-
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
-
-        const chatroom = await ChatRoom.findOneAndUpdate(
-            { 'place.name': chatroomName },
-            { $addToSet: { users: user._id } },
-            { new: true }
-        );
-
-        if (!chatroom) {
-            return res.status(404).send('Chatroom not found');
-        }
-
-        res.json(chatroom);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
-    }
-});
-
-// pour enlever un user à un chatRoom s'il ne respecte pas les conditions
-// on recupère d'abord le user qui a un username 
-// après on recupère le user et on enleve le user de ce chatRoom
-// il faut donc passer le nom du chatRoom ainsi que le username 
-server.post('/chatroom/:name/removeUser', async (req, res) => {
-    const chatroomName = req.params.name;
-    const { username } = req.body;
-
-    try {
-        const user = await User.findOne({ 'profile.username': username });
-
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
-
-        const chatroom = await ChatRoom.findOneAndUpdate(
-            { 'place.name': chatroomName },
-            { $pull: { users: user._id } },
-            { new: true }
-        );
-
-        if (!chatroom) {
-            return res.status(404).send('Chatroom not found');
-        }
-
-        res.json(chatroom);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
-    }
-});
-
 
 // pour tout ce qui post/get pour le user
 // pour register un user 

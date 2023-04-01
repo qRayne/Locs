@@ -17,7 +17,7 @@ const globalStyles = StyleSheet.create({
     },
 
     subtitle:{
-      fontSize: 40,
+      fontSize: 35,
     },
 
     undertext:{
@@ -86,8 +86,8 @@ const globalStyles = StyleSheet.create({
     },
 
     circle:{
-      width: 75,
-      height: 75,
+      width: 85,
+      height:85,
       borderRadius: 100/2,
       borderWidth:2,
       backgroundColor: "light-grey"
