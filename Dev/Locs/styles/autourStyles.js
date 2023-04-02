@@ -41,12 +41,18 @@ const autourStyles = StyleSheet.create({
         fontSize: 20
     },
 
+    row:{
+        justifyContent: "space-between",
+        flexDirection: "row"
+    },
+
     profile:{
+        marginTop: 5,
         width: 40,
         height: 40,
         borderRadius: 100/2,
         borderWidth:2,
-        backgroundColor: "light-grey"
+        backgroundColor: "light-grey",
     }
 
   });

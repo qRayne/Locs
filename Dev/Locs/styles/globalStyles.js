@@ -66,7 +66,8 @@ const globalStyles = StyleSheet.create({
     },
 
     centeredProp:{
-      alignSelf:"center"
+      alignSelf:"center",
+      marginBottom: 15
     },
     
     modalView: {

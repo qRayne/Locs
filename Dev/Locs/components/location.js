@@ -10,8 +10,7 @@ export default function Location({navigation}) {
             <Text style={globalStyles.subtitle}>Location</Text>
           </View>
 
-          
-
+          {/* Sprint 2 - A commencer */}
 
           <Pressable
             onPressIn={() => {

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View, Modal } from 'react-native';
+import { useState, useCallback } from 'react';
+import { Button, Pressable, Text, View, Modal, RefreshControl } from 'react-native';
 // import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
@@ -28,6 +28,14 @@ const chatRooms = [
 export default function ChatAutour({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [km, setKm] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   async function createChatRoom(chatRoom) {
     fetch(`${IP}/create-chatRoom`, {
@@ -90,14 +98,18 @@ export default function ChatAutour({ navigation }) {
   return (
     <View style={autourStyles.container}>
       <View>
-        <Text style={globalStyles.subtitle}>Autour de vous</Text>
-        <Pressable
-          style={autourStyles.profile}
-          onPressIn={() => {
-            console.log("move to profile screen");
-            navigation.navigate('Profile');
-          }}
-        />
+        <View style={autourStyles.row}>
+          <Text style={globalStyles.subtitle}>Autour de vous</Text>
+
+          {/* ce bouton doit avoir l'image de profile */}
+          <Pressable
+            style={autourStyles.profile}
+            onPressIn={() => {
+              console.log("move to profile screen");
+              navigation.navigate('Profile');
+            }}
+          />
+        </View>
 
         {/* Boite qui permet de changer la distance */}
         <Modal
@@ -131,7 +143,7 @@ export default function ChatAutour({ navigation }) {
           </View>
         </Modal>
 
-        {/* Bouton qui affiche la DISTANCE */}
+        {/* Bouton qui change la DISTANCE */}
         <View style={globalStyles.centeredProp}>
           <Pressable
             style={globalStyles.button}
@@ -140,7 +152,8 @@ export default function ChatAutour({ navigation }) {
           </Pressable>
         </View>
 
-        <ScrollView>
+        <ScrollView
+          refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }>
           {chatRooms.map((room, index) => (
             <View key={index}>
               <Text style={globalStyles.undertext}>
