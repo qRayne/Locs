@@ -17,6 +17,7 @@ const globalStyles = StyleSheet.create({
     },
 
     subtitle:{
+      marginTop: 40,
       fontSize: 35,
     },
 

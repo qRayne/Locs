@@ -47,7 +47,7 @@ const autourStyles = StyleSheet.create({
     },
 
     profile:{
-        marginTop: 5,
+        marginTop: 40,
         width: 40,
         height: 40,
         borderRadius: 100/2,

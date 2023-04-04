@@ -19,34 +19,37 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}>
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{title:"Welcome"}}
+          options={{ title: "Welcome" }}
         />
-        <Stack.Screen 
-          name="Register" 
+        <Stack.Screen
+          name="Register"
           component={Register}
         />
         <Stack.Screen
           name="Avatar"
           component={Avatar}
         />
-        <Stack.Screen 
-          name="Profiler" 
+        <Stack.Screen
+          name="Profiler"
           component={Profiler}
         />
-        <Stack.Screen 
-          name="ChatAutour" 
+        <Stack.Screen
+          name="ChatAutour"
           component={ChatAutour}
         />
-        <Stack.Screen 
-          name="ChatRoom" 
+        <Stack.Screen
+          name="ChatRoom"
           component={Chatroom}
         />
-        <Stack.Screen 
-          name="Profile" 
+        <Stack.Screen
+          name="Profile"
           component={Profile}
         />
       </Stack.Navigator>
