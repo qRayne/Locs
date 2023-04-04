@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button, Pressable, Text, TextInput, View, Modal, LogBox, Image } from 'react-native';
+import { Pressable, Text,View, Modal,Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
-import profileStyles from '../styles/profileStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import FastImage from 'react-native-fast-image'; utile pour après
 const { IP } = require('./constNames.js')
 
 
@@ -13,7 +13,7 @@ export default function Profile({ navigation }) {
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
     const [facialPhoto, setFacialPhoto] = useState('');
-    const [delocdList,setdelocdList] = useState('');
+    const [delocdList, setdelocdList] = useState('');
 
     // on attend que la page charge avant de se get les infos
     useEffect(() => {
@@ -27,9 +27,12 @@ export default function Profile({ navigation }) {
                     // on ce get les principales infos de l'utilisateurs
                     const profildata = await fetch(`${IP}/profil-info/?username=` + encodeURIComponent(username));
                     const jsonProfil = await profildata.json();
+                    // on recupère l'image en base64 et on la transforme en image
+                    const base64Image = jsonProfil.facialPhoto.data;
+                    const bufferImage = Buffer.from(base64Image, 'base64');
+                    setFacialPhoto(bufferImage);
                     setUsername(username);
                     setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
-                    setFacialPhoto(jsonProfil.facialPhoto);
                     setdelocdList(jsonProfil.DeLocdList);
                 } catch (error) {
                     console.error(error);
@@ -44,8 +47,14 @@ export default function Profile({ navigation }) {
 
         <View style={globalStyles.container}>
             <View>
-                <Image source={facialPhoto ? { uri: facialPhoto } : null}
-                    style={{ width: 200, height: 200 }} />
+                {facialPhoto ? (
+                    <Image
+                        source={{
+                            uri: `data:image/jpg;base64,${facialPhoto}`
+                        }}
+                        style={{ width: 200, height: 200 }}
+                    />
+                ) : null}
                 <Text style={globalStyles.subtitle}>{fullName}</Text>
                 <Text style={globalStyles.undertext}>{username}</Text>
             </View>

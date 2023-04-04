@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View, Image } from 'react-native';
+import {Pressable, Text, TextInput, View, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import globalStyles from '../styles/globalStyles';
 import profilerStyles from '../styles/profilerStyles';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { IP } = require('./constNames.js')
 
@@ -19,6 +19,7 @@ export default function Profiler({ navigation }) {
     const [lien, setLien] = useState("");
     const [occupation, setOccupation] = useState("");
     const [image, setImage] = useState(null);
+    const [base64Image,setBase64Image] = useState(null);
 
     //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -42,10 +43,13 @@ export default function Profiler({ navigation }) {
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
+            base64: true // Add this line to get the base64 representation
         });
 
         if (!result.canceled) {
+            const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: 'base64' });
             setImage(result.assets[0].uri);
+            setBase64Image(base64);
         };
     }
 
@@ -66,7 +70,7 @@ export default function Profiler({ navigation }) {
                     interests: interests,
                     pronouns: pronoms,
                     age: age,
-                    facialPhoto: image,
+                    facialPhoto: base64Image,
                     socialMediaLinks: lien,
                     occupation: occupation
                 })

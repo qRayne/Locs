@@ -15,7 +15,9 @@ const User = mongooseConnection.model("User")
 const Profile = mongooseConnection.model('Profile')
 
 // va parser le data recupérer en get/post en format json
-server.use(bodyParser.json())
+// on augmente la limite à cause de la taille des images 
+server.use(bodyParser.json({limit: '50mb'}));
+server.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 
 server.get('/', (req, res) => {

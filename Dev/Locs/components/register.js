@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import {Pressable, Text, TextInput, View } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const {IP}  = require('./constNames.js')

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import {Pressable, Text,View } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import locationStyles from '../styles/locationStyles';
 

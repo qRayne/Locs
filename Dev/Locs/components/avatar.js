@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Button, Pressable, Text, TextInput, View, Image } from 'react-native';
+import {Pressable, Text, View, Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import avatarStyles from '../styles/avatarStyles';
-import { ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const {possibleAvatars} = require('./constNames');
 

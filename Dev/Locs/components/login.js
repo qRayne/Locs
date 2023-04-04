@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react';
-import { Button, Pressable, Text, TextInput, View,Alert } from 'react-native'
+import { Pressable, Text, TextInput, View,Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';

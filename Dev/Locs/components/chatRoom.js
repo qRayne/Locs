@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button, Pressable, Text, TextInput, View, Modal, Image,Alert } from 'react-native';
+import {Pressable, Text, TextInput, View, Modal, Image,Alert } from 'react-native';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRoute } from '@react-navigation/native';
-// import { SelectList } from 'react-native-dropdown-select-list'
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
 const { IP } = require('./constNames.js');

@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react';
-import { Button, Pressable, Text, View, Modal, RefreshControl } from 'react-native';
-// import { SelectList } from 'react-native-dropdown-select-list'
+import {Pressable, Text, View, Modal, RefreshControl } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 const { IP } = require('./constNames.js');
 
 
@@ -71,30 +69,7 @@ export default function ChatAutour({ navigation }) {
 
   createChatRooms();
 
-  // ajoute un chatBox pour chaque endroit (au lieu de manuellement)
-  // a changer ou a reformater 
-  // function chatBox(name, chatInfo) {
-  //   return (
-  //     <View>
-  //       <Text style={globalStyles.undertext}>
-  //         {name}
-  //       </Text>
-
-  //       <Pressable
-  //         onPressIn={async () => {
-  //           // TODO: somehow send info from this box to chat 
-  //           // solution : on envoit le chatroom name vers le prochain component
-  //           navigation.navigate('ChatRoom', { chatRoom: name.props.children })
-  //           setKm
-  //         }}>
-  //         <View style={autourStyles.collapsedBox}>
-  //           {chatInfo}
-  //         </View>
-  //       </Pressable>
-  //     </View>
-  //   )
-  // }
-
+  
   return (
     <View style={autourStyles.container}>
       <View>

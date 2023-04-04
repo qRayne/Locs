@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { NetworkInfo } from "react-native-network-info";
-
 const IP = "http://192.168.2.20:3000";
 const POSSIBLEAVATARS = {
     "nerd": require('../assets/img/avatar/rayane.png'),

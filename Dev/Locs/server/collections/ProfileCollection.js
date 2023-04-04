@@ -11,7 +11,7 @@ const ProfileSchema = new mongoose.Schema({
     firstName:{type:String,required:true},
     lastName:{type:String,required:true},
     age:{type:Number,required:true},
-    facialPhoto:{type:String,required:true},
+    facialPhoto:{type:Buffer,required:true},
     socialMediaLinks:{type:[String],required:true},
     occupation:{type:String,required:true},
     DeLocdList : {type:[String]}
