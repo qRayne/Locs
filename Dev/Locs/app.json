@@ -1,5 +1,14 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
+    ],
     "name": "Locs",
     "slug": "Locs",
     "version": "1.0.0",
@@ -15,12 +24,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.Locs",
+      "config":{
+        "googleMapsApiKey": "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#fa4d"
+      },
+      "config":{
+        "googleMapsApiKey": "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
       }
     },
     "web": {

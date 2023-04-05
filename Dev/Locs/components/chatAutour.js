@@ -127,6 +127,15 @@ export default function ChatAutour({ navigation }) {
           </Pressable>
         </View>
 
+        <Pressable
+          style={globalStyles.button}
+          onPressIn={() => {
+            console.log("move to location screen");
+            navigation.navigate('Location');
+          }}>
+        <Text style={globalStyles.text}>Location</Text>
+        </Pressable>
+
         <ScrollView
           refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }>
           {chatRooms.map((room, index) => (

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
 import Register from './components/register';
 import ChatAutour from './components/chatAutour';
+import Location from './components/location';
 import Chatroom from './components/chatRoom';
 import Profiler from './components/profiler';
 import Profile from './components/profile';
@@ -39,6 +40,10 @@ export default function App() {
         <Stack.Screen
           name="Profiler"
           component={Profiler}
+        />
+        <Stack.Screen
+          name="Location"
+          component={Location}
         />
         <Stack.Screen
           name="ChatAutour"

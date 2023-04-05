@@ -11,6 +11,12 @@ const locationStyles = StyleSheet.create({
     title:{
       fontSize: 50,
       marginBottom: 15,
+    },
+
+    map:{
+      flex: 1,
+      width: 720,
+      height:480
     }
   });
 
