@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Pressable, Text,View, Modal,Image } from 'react-native';
+import { Pressable, Text, View, Modal, Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import FastImage from 'react-native-fast-image'; utile pour après
 const { IP } = require('./constNames.js')
+
+
 
 
 export default function Profile({ navigation }) {

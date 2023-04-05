@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import {Pressable, Text, TextInput, View, Modal, Image,Alert } from 'react-native';
+import { Pressable, Text, TextInput, View, Modal, Image, Alert } from 'react-native';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
 const { IP } = require('./constNames.js');
+const {possibleAvatars} = require('./constNames');
+
 
 
 export default function Chatroom({ navigation, route }) {
@@ -56,6 +58,7 @@ export default function Chatroom({ navigation, route }) {
         const messagesResponse = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
         setChatMessages(messagesData);
+        console.log(messagesData);
       } catch (error) {
         console.error(error);
       }
@@ -63,9 +66,9 @@ export default function Chatroom({ navigation, route }) {
 
     const interval = setInterval(() => {
       fetchChatMessages();
-    }, 1000); 
+    }, 1000);
 
-    
+
     return () => clearInterval(interval);
 
   }, []);
@@ -92,9 +95,13 @@ export default function Chatroom({ navigation, route }) {
       {/* barre de texte */}
       <View style={chatStyles.chatbox}>
         {chatMessages.map((message, index) => (
-          <View key={index}>
+          <View 
+            key={index}
+            style={globalStyles.row}
+          >
             {/* il faudrait changer le visuel pour que sa soit plus beau */}
-            <Text>username : {message.sender} message : {message.message} {message.timestamp}</Text>
+            <Image source={possibleAvatars[message.avatar]} style={chatStyles.avatar} />
+            <Text> username : {message.sender} message : {message.message} {message.timestamp}</Text>
           </View>
         ))}
         <View>

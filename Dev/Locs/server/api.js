@@ -131,7 +131,8 @@ server.get('/chatRoom-messages', async (req, res) => {
 
     const messageHistory = chats.map(chat => ({
         message: chat.message,
-        sender: chat.sender.profile.username, // assuming that the `Profile` model has a `username` field
+        sender: chat.sender.profile.username,
+        avatar:chat.sender.profile.avatar,
         timestamp: chat.timestamp,
     }));
 

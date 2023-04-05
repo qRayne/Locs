@@ -19,6 +19,11 @@ const chatStyles = StyleSheet.create({
 
     },
 
+    avatar:{
+        height:20,
+        width:20
+    },
+
     chatbox:{
         flex: 1,
         width: 375,
