@@ -10,7 +10,6 @@ const { IP } = require('./constNames.js')
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
-  const [status, setStatus] = useState("");
 
   async function login() {
     try {
@@ -53,34 +52,7 @@ export default function Login({ navigation }) {
     removeToken();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await  Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setStatus('Permission to access location was denied');
-        return;
-      } else {
-       console.log('Access granted!!')
-       setStatus(status)    
-      }
-    })();
-    }, 
-  []);
 
-  const watch_location = async () => {  
-    if (status === 'granted') {     
-      let location = await Location.watchPositionAsync({
-        accuracy:Location.Accuracy.High,
-        timeInterval: 10000,
-        distanceInterval: 80,
-        }, 
-        false,
-        (location_update) => {
-          console.log('update location!', location_update.coords)
-        }   
-      )
-    }
-  }
 
   return (
     <View style={globalStyles.container}>

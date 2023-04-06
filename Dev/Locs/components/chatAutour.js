@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {Pressable, Text, View, Modal, RefreshControl } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
@@ -24,6 +24,7 @@ const chatRooms = [
 ];
 
 export default function ChatAutour({ navigation }) {
+  const [status, setStatus] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [km, setKm] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,6 +67,20 @@ export default function ChatAutour({ navigation }) {
       await createChatRoom(chatRoom);
     }
   }
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await  Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setStatus('Permission to access location was denied');
+        return;
+      } else {
+       console.log('Access granted!!')
+       setStatus(status)    
+      }
+    })();
+    }, 
+  []);
 
   createChatRooms();
 
