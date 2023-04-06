@@ -58,7 +58,6 @@ export default function Chatroom({ navigation, route }) {
         const messagesResponse = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
         setChatMessages(messagesData);
-        console.log(messagesData);
       } catch (error) {
         console.error(error);
       }

@@ -17,7 +17,7 @@ export default function App() {
   const [loaded] = useFonts({
     'Galdeano-Regular': require('./assets/fonts/Galdeano-Regular.ttf')
   })
-
+  
   return (
     <NavigationContainer>
       <Stack.Navigator

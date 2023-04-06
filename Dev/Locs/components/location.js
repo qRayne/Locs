@@ -5,19 +5,30 @@ import locationStyles from '../styles/locationStyles';
 import * as Loc from 'expo-location';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
-export default function Location({navigation}) {
-  async function getCurrentLocation() {
-    const { status } = await Loc.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Permission to access location was denied');
-      return;
-    }
-  
-    const location = await Loc.getCurrentPositionAsync({});
-    console.log(location.coords.latitude, location.coords.longitude);
-  }
+export default function Location({ navigation }) {
+  const [location, setLocation] = useState(null);
 
-  setTimeout(getCurrentLocation,5000);
+  // on récupère le la permission de l'usager
+  // et on utilise un callback pour surveiller s'il y a un changement de position
+  useEffect(() => {
+    (async () => {
+      let { status } = await Loc.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      let location = await Loc.watchPositionAsync(
+        { accuracy: Loc.Accuracy.High },
+        (newLocation) => {
+          setLocation(newLocation.coords);
+        }
+      );
+
+      return () => {
+        location.remove();
+      };
+    })();
+  }, []);
 
   return (
     <View style={globalStyles.container}>
@@ -36,7 +47,7 @@ export default function Location({navigation}) {
           longitude: -73.5664,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421
-        }}        
+        }}
         showsUserLocation={true}
         followsUserLocation={true}
       />

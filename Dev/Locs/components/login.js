@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Pressable, Text, TextInput, View,Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as TaskManager from 'expo-task-manager';
-import * as Location from 'expo-location';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
 const { IP } = require('./constNames.js')

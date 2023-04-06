@@ -4,6 +4,7 @@ import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
+import * as Location from 'expo-location';
 const { IP } = require('./constNames.js');
 
 

@@ -1,4 +1,4 @@
-const IP = "http://10.57.38.19:3000";
+const IP = "http://10.57.38.20:3000";
 const POSSIBLEAVATARS = {
     "nerd": require('../assets/img/avatar/rayane.png'),
     "beer": require('../assets/img/avatar/beer.gif'),
