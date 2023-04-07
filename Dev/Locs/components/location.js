@@ -4,6 +4,9 @@ import globalStyles from '../styles/globalStyles';
 import locationStyles from '../styles/locationStyles';
 import * as Loc from 'expo-location';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+const { KEY } = require('./constNames.js')
+
 
 export default function Location({ navigation }) {
   const [location, setLocation] = useState(null);
@@ -36,9 +39,17 @@ export default function Location({ navigation }) {
         <Text style={globalStyles.subtitle}>Location</Text>
       </View>
 
-      <TextInput>
-
-      </TextInput>
+      {/* <GooglePlacesAutocomplete
+        placeholder='Search'
+        onPress={(data, details = null)=>{
+          console.log(data, details)
+        }}
+        query={{
+          key: KEY,
+          language: "en",
+        }}
+      /> */}
+      
       <MapView
         provider={PROVIDER_GOOGLE}
         style={locationStyles.map}
@@ -50,6 +61,10 @@ export default function Location({ navigation }) {
         }}
         showsUserLocation={true}
         followsUserLocation={true}
+        onPoiClick={(e)=>{
+          // setLocation(JSON.stringify(e.data));
+          console.log(e)
+        }}
       />
       {/* Sprint 2 - A commencer */}
 

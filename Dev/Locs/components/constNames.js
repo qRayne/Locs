@@ -1,4 +1,5 @@
 const IP = "http://10.57.38.20:3000";
+const KEY = "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0";
 const POSSIBLEAVATARS = {
     "nerd": require('../assets/img/avatar/rayane.png'),
     "beer": require('../assets/img/avatar/beer.gif'),
@@ -8,6 +9,7 @@ const POSSIBLEAVATARS = {
 }
 
 exports.IP = IP;
+exports.KEY = KEY;
 exports.possibleAvatars = POSSIBLEAVATARS;
 
 
