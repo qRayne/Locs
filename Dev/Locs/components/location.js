@@ -10,6 +10,7 @@ const { KEY } = require('./constNames.js')
 
 export default function Location({ navigation }) {
   const [location, setLocation] = useState(null);
+  const [poi, setPoi] = useState("");
 
   // on récupère le la permission de l'usager
   // et on utilise un callback pour surveiller s'il y a un changement de position
@@ -39,7 +40,7 @@ export default function Location({ navigation }) {
         <Text style={globalStyles.subtitle}>Location</Text>
       </View>
 
-      {/* <GooglePlacesAutocomplete
+      <GooglePlacesAutocomplete
         placeholder='Search'
         onPress={(data, details = null)=>{
           console.log(data, details)
@@ -48,7 +49,10 @@ export default function Location({ navigation }) {
           key: KEY,
           language: "en",
         }}
-      /> */}
+        GooglePlacesDetailsQuery={{
+          fields: "website"
+        }}
+      />
       
       <MapView
         provider={PROVIDER_GOOGLE}
@@ -62,9 +66,11 @@ export default function Location({ navigation }) {
         showsUserLocation={true}
         followsUserLocation={true}
         onPoiClick={(e)=>{
-          // setLocation(JSON.stringify(e.data));
-          console.log(e)
+          console.log(e.nativeEvent.name)
+          setPoi(JSON.stringify(e.nativeEvent.placeId))
+          console.log("poi: " + poi)
         }}
+
       />
       {/* Sprint 2 - A commencer */}
 
