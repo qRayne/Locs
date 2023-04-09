@@ -42,8 +42,8 @@ export default function Profiler({ navigation }) {
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 1,
-            base64: true // Add this line to get the base64 representation
+            quality: 0.5, // permet de compresser l'image pour eviter des temps de chargements trop long
+            base64: true 
         });
 
         if (!result.canceled) {
