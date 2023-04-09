@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
-const { IP } = require('./constNames.js');
+const { URL } = require('./constNames.js');
 const {possibleAvatars} = require('./constNames');
 
 
@@ -22,8 +22,7 @@ export default function Chatroom({ navigation, route }) {
       const username = decoded.username;
 
       // remplacer le nom du chatroom par le context
-      // ici faut changer l'ip par l'ip de ton ordinateur
-      fetch(`${IP}/chatroom-sendChat/` + chatRoomName, {
+      fetch(`${URL}/chatroom-sendChat/` + chatRoomName, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +54,7 @@ export default function Chatroom({ navigation, route }) {
     async function fetchChatMessages() {
       try {
         // Fetch the chat messages
-        const messagesResponse = await fetch(`${IP}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
+        const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
         setChatMessages(messagesData);
       } catch (error) {

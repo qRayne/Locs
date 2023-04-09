@@ -1,4 +1,4 @@
-const IP = "http://192.168.0.113:19000";
+const URL = "https://locs.io.ngrok.dev";
 const KEY = "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0";
 const POSSIBLEAVATARS = {
     "nerd": require('../assets/img/avatar/rayane.png'),
@@ -8,7 +8,7 @@ const POSSIBLEAVATARS = {
     "thumbsup": require('../assets/img/avatar/thumbsup.png')
 }
 
-exports.IP = IP;
+exports.URL = URL;
 exports.KEY = KEY;
 exports.possibleAvatars = POSSIBLEAVATARS;
 

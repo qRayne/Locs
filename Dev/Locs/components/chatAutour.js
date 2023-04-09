@@ -5,7 +5,7 @@ import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
-const { IP } = require('./constNames.js');
+const { URL } = require('./constNames.js');
 
 
 // lorsqu'on va se get l'api pour la localistaion le array va toujours changer
@@ -38,7 +38,7 @@ export default function ChatAutour({ navigation }) {
   }, []);
 
   async function createChatRoom(chatRoom) {
-    fetch(`${IP}/create-chatRoom`, {
+    fetch(`${URL}/create-chatRoom`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

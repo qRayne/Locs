@@ -3,7 +3,7 @@ import { Pressable, Text, TextInput, View,Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
-const { IP } = require('./constNames.js')
+const { URL } = require('./constNames.js')
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ export default function Login({ navigation }) {
 
   async function login() {
     try {
-      const response = await fetch(`${IP}/login-User`, {
+      const response = await fetch(`${URL}/login-User`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

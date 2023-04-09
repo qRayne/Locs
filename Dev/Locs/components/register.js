@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {Pressable, Text, TextInput, View } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const {IP}  = require('./constNames.js')
+const {URL}  = require('./constNames.js')
 
 export default function Register({ navigation }) {
   const [pwd, setPwd] = useState("");
@@ -12,7 +12,7 @@ export default function Register({ navigation }) {
 
   async function register() {
     try {
-      const response = await fetch(`${IP}/create-User`, {
+      const response = await fetch(`${URL}/create-User`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

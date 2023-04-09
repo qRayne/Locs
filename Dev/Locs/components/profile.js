@@ -4,7 +4,7 @@ import globalStyles from '../styles/globalStyles';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const { IP } = require('./constNames.js')
+const { URL } = require('./constNames.js')
 
 
 
@@ -26,7 +26,7 @@ export default function Profile({ navigation }) {
                 const username = decoded.username;
                 try {
                     // on ce get les principales infos de l'utilisateurs
-                    const profildata = await fetch(`${IP}/profil-info/?username=` + encodeURIComponent(username));
+                    const profildata = await fetch(`${URL}/profil-info/?username=` + encodeURIComponent(username));
                     const jsonProfil = await profildata.json();
                     // on recupère l'image en base64 et on la transforme en image
                     const base64Image = jsonProfil.facialPhoto.data;

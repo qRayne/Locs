@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import globalStyles from '../styles/globalStyles';
 import profilerStyles from '../styles/profilerStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const { IP } = require('./constNames.js')
+const { URL } = require('./constNames.js')
 
 
 export default function Profiler({ navigation }) {
@@ -57,7 +57,7 @@ export default function Profiler({ navigation }) {
         const user_id = await AsyncStorage.getItem('user_id');
         const choosenAvatar = await AsyncStorage.getItem('avatar');
         try {
-            const response = await fetch(`${IP}/create-Profile-User/` + encodeURIComponent(user_id), {
+            const response = await fetch(`${URL}/create-Profile-User/` + encodeURIComponent(user_id), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
