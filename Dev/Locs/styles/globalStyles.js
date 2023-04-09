@@ -6,7 +6,7 @@ const globalStyles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center'
       // fontFamily: 'Galdeano-Regular'
     },
   
@@ -18,7 +18,7 @@ const globalStyles = StyleSheet.create({
 
     subtitle:{
       marginTop: 40,
-      fontSize: 35,
+      fontSize: 35
     },
 
     undertext:{
@@ -48,7 +48,7 @@ const globalStyles = StyleSheet.create({
       marginTop: 15,
       justifyContent: 'center',
       alignItems: 'center', 
-      borderRadius: 10,
+      borderRadius: 10
     },
 
     text:{
@@ -63,7 +63,7 @@ const globalStyles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 22,
+      marginTop: 22
     },
 
     centeredProp:{
@@ -80,11 +80,11 @@ const globalStyles = StyleSheet.create({
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
-        height: 2,
+        height: 2
       },
       shadowOpacity: 0.25,
       shadowRadius: 4,
-      elevation: 5,
+      elevation: 3
     },
 
     circle:{
