@@ -16,8 +16,8 @@ const Profile = mongooseConnection.model('Profile')
 
 // va parser le data recupérer en get/post en format json
 // on augmente la limite à cause de la taille des images 
-server.use(bodyParser.json({limit: '50mb'}));
-server.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+server.use(bodyParser.json({ limit: '50mb' }));
+server.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 
 server.get('/', (req, res) => {
@@ -102,6 +102,18 @@ server.post('/create-chatRoom', async (req, res) => {
     await chatRoomObject.save().then(() => console.log(chatRoomObject));
 });
 
+// pour savoir si un chatroom existe deja
+server.get("/check-privateChatroom", async (req, res) => {
+    const name = req.query.name;
+    const existingChatRoom = await ChatRoom.findOne({ 'place.name': name });
+
+    if (existingChatRoom) {
+        return res.send("A chatroom with this name already exists");
+    }
+
+    return res.send("The chatroom doesnt exist");
+})
+
 
 
 // pour supprimer un chatRoom
@@ -132,12 +144,15 @@ server.get('/chatRoom-messages', async (req, res) => {
     const messageHistory = chats.map(chat => ({
         message: chat.message,
         sender: chat.sender.profile.username,
-        avatar:chat.sender.profile.avatar,
+        avatar: chat.sender.profile.avatar,
         timestamp: chat.timestamp,
     }));
 
 
-    res.send(messageHistory);
+    res.send({
+        messageHistory: messageHistory,
+        isPublic: chatRoom.isPublic
+    });
 })
 
 // pour tout ce qui post/get pour le user
@@ -216,6 +231,6 @@ server.post('/login-User', async (req, res) => {
 // pour recuperer les infos d'un usager
 server.get("/profil-info", async (req, res) => {
     const username = req.query.username;
-    const returnProfileObject = await Profile.findOne({username:username});
+    const returnProfileObject = await Profile.findOne({ username: username });
     res.send(returnProfileObject);
 })

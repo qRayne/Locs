@@ -5,6 +5,7 @@ import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
+import { createChatRoom } from './newChatroom';
 const { URL } = require('./constNames.js');
 
 
@@ -12,16 +13,16 @@ const { URL } = require('./constNames.js');
 // so on creer les chatroom directement lorsqu'il est autour d'eux
 // on se getterai tous les lieux autours de L'usager et on les creerait 
 const chatRooms = [
-  { name: "McDonalds", type: "FAST FOOD" },
-  { name: "Subway", type: "FAST FOOD" },
-  { name: "A&W", type: "FAST FOOD" },
-  { name: "Poulet Rouge", type: "FAST FOOD" },
-  { name: "Cineplex Cartier Latin", type: "CINEMA" },
-  { name: "Randolph's", type: "PUB" },
-  { name: "Arcade MTL", type: "GAMING PUB" },
-  { name: "Chatime", type: "BUBLLE TEA" },
-  { name: "Cegep du Vieux-Montreal", type: "EDUCATION" },
-  { name: "UQAM", type: "EDUCATION" },
+  { name: "McDonalds", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true },
+  { name: "Subway", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "A&W", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Poulet Rouge", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Cineplex Cartier Latin", type: "CINEMA",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Randolph's", type: "PUB",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Arcade MTL", type: "GAMING PUB",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Chatime", type: "BUBLLE TEA",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "Cegep du Vieux-Montreal", type: "EDUCATION",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "UQAM", type: "EDUCATION",location :{latitude:192.123,longitude:123}, isPublic:true  },
 ];
 
 export default function ChatAutour({ navigation }) {
@@ -36,32 +37,6 @@ export default function ChatAutour({ navigation }) {
       setRefreshing(false);
     }, 2000);
   }, []);
-
-  async function createChatRoom(chatRoom) {
-    fetch(`${URL}/create-chatRoom`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        place: {
-          name: chatRoom.name,
-          location: {
-            latitude: 192.158, // à changer selon la localisation du lieu
-            longitude: 192.158 // à changer selon la localisation du lieu
-          }
-        },
-        isPublic: true
-      })
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
 
   async function createChatRooms() {
     for (const chatRoom of chatRooms) {
