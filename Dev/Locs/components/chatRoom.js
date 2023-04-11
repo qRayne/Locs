@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Pressable, Text, TextInput, View, Modal, Image, Alert } from 'react-native';
+import { Pressable, Text, TextInput, View, Modal, Image, Alert, FlatList, TouchableOpacity } from 'react-native';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
 const { URL } = require('./constNames.js');
-const {possibleAvatars} = require('./constNames');
+import { createChatRoom } from './newChatroom';
+const { possibleAvatars } = require('./constNames');
 
 
 
 export default function Chatroom({ navigation, route }) {
   const [chat, setChat] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [currentlySelectedUser, setCurrentlySelectedUser] = useState("");
+  const [isPublicChatroom, setIsPublicChatroom] = useState('');
   const chatRoomName = route.params.chatRoom;
 
   async function sendChat() {
@@ -50,26 +53,45 @@ export default function Chatroom({ navigation, route }) {
     }
   }
 
+  async function goToChatPrivate() {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      const username = decoded.username;
+      if (username !== currentlySelectedUser && currentlySelectedUser !== "") {
+        const chatRoomName = [username, currentlySelectedUser].sort().join('_');
+        const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
+        const messageResponse = await response.text();
+        if (messageResponse === "The chatroom doesnt exist") {
+          const chatRoom = { name: chatRoomName, location: { latitude: 192.123, longitude: 123 }, isPublic: false };
+          await createChatRoom(chatRoom);
+        }
+        navigation.navigate('ChatRoom', { chatRoom: chatRoomName });
+      }
+    }
+  }
+
   useEffect(() => {
     async function fetchChatMessages() {
       try {
         // Fetch the chat messages
         const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
-        setChatMessages(messagesData);
+        setChatMessages(messagesData.messageHistory);
+        setIsPublicChatroom(messagesData.isPublic);
       } catch (error) {
         console.error(error);
       }
     }
 
+    fetchChatMessages();
+
     const interval = setInterval(() => {
       fetchChatMessages();
     }, 1000);
 
-
     return () => clearInterval(interval);
-
-  }, []);
+  }, [chatRoomName]);
 
   // ici pas besoin d'une route pour se logout
   // juste d'enlever tous les async storage que le user connecter a
@@ -92,16 +114,20 @@ export default function Chatroom({ navigation, route }) {
 
       {/* barre de texte */}
       <View style={chatStyles.chatbox}>
-        {chatMessages.map((message, index) => (
-          <View 
-            key={index}
-            style={globalStyles.row}
-          >
-            {/* il faudrait changer le visuel pour que sa soit plus beau */}
-            <Image source={possibleAvatars[message.avatar]} style={chatStyles.avatar} />
-            <Text> username : {message.sender} message : {message.message} {message.timestamp}</Text>
-          </View>
-        ))}
+        <FlatList
+          data={chatMessages}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => setCurrentlySelectedUser(item.sender)}>
+              <View style={globalStyles.row}>
+                <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
+                <Text>
+                  username: {item.sender} message: {item.message} {item.timestamp}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
         <View>
           <TextInput
             style={chatStyles.chatInput}
@@ -113,12 +139,21 @@ export default function Chatroom({ navigation, route }) {
         </View>
       </View>
 
-      <Pressable
-        onPressIn={() => {
-          logout();
-        }}>
-        <Text style={globalStyles.register}> Logout? </Text>
-      </Pressable>
+      <View>
+        {isPublicChatroom ? (
+          <View style={globalStyles.row}>
+            <Pressable onPressIn={() => { goToChatPrivate(); }}>
+              <Text>Start private chat</Text>
+            </Pressable>
+          </View>
+        ) : null}
+        <Pressable
+          onPressIn={() => {
+            logout();
+          }}>
+          <Text style={globalStyles.register}> Logout? </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
