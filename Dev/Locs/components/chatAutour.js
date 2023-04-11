@@ -7,7 +7,6 @@ import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 const { URL } = require('./constNames.js');
 
-
 // lorsqu'on va se get l'api pour la localistaion le array va toujours changer
 // so on creer les chatroom directement lorsqu'il est autour d'eux
 // on se getterai tous les lieux autours de L'usager et on les creerait 
@@ -23,6 +22,10 @@ const chatRooms = [
   { name: "Cegep du Vieux-Montreal", type: "EDUCATION" },
   { name: "UQAM", type: "EDUCATION" },
 ];
+// location.js -> (dans < GooglePlacesAutocomplete /> )
+  // name:        details.name, 
+  // type:        details.references[1], 
+  // description: details.editorial_summary.overview
 
 export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");
