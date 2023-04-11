@@ -12,21 +12,22 @@ const { URL } = require('./constNames.js');
 // so on creer les chatroom directement lorsqu'il est autour d'eux
 // on se getterai tous les lieux autours de L'usager et on les creerait 
 const chatRooms = [
-  { name: "McDonalds", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true },
-  { name: "Subway", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "A&W", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Poulet Rouge", type: "FAST FOOD",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Cineplex Cartier Latin", type: "CINEMA",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Randolph's", type: "PUB",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Arcade MTL", type: "GAMING PUB",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Chatime", type: "BUBLLE TEA",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "Cegep du Vieux-Montreal", type: "EDUCATION",location :{latitude:192.123,longitude:123}, isPublic:true  },
-  { name: "UQAM", type: "EDUCATION",location :{latitude:192.123,longitude:123}, isPublic:true  },
+  { name: "McDonalds", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Subway", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "A&W", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Poulet Rouge", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Cineplex Cartier Latin", type: "CINEMA", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Randolph's", type: "PUB", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Arcade MTL", type: "GAMING PUB", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Chatime", type: "BUBLLE TEA", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "Cegep du Vieux-Montreal", type: "EDUCATION", location: {latitude:192.123, longitude:123}, isPublic: true },
+  { name: "UQAM", type: "EDUCATION", location: {latitude:192.123, longitude:123}, isPublic: true },
 ];
-// location.js -> (dans < GooglePlacesAutocomplete /> )
-  // name:        details.name, 
+// info chatRooms -> location.js -> ( < GooglePlacesAutocomplete /> )
+  // name:        details.name, -> const autocomplete
   // type:        details.references[1], 
   // description: details.editorial_summary.overview
+  // location:    details.geometry.location.lat, details.geometry.location.lng -> const lat, lng
 
 export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");

@@ -12,7 +12,6 @@ export default function Location({ navigation }) {
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
   const [desc, setDesc] = useState("");
-  const [region, setRegion] = useState(null);
   const [autocomplete, setAutocomplete] = useState("");
   const [km, setKm] = useState(0);
 
@@ -21,8 +20,6 @@ export default function Location({ navigation }) {
   const [poi, setPoi] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  // on récupère le la permission de l'usager
-  // et on utilise un callback pour surveiller s'il y a un changement de position
   async function getCurrentLocation() {
     const { status } = await Loc.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -85,6 +82,7 @@ export default function Location({ navigation }) {
         </View>
       </Modal>
 
+      {/* VIEW DE GOOGLE MAPS */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={locationStyles.map}
@@ -105,7 +103,6 @@ export default function Location({ navigation }) {
         }}>
         <Marker 
           coordinate={{latitude: lat, longitude: lng}}
-          // coordinate={{latitude: 45.5147, longitude: -73.5664}}
           title={"autocomplete.toString"} //fix later 
           description={"location.toString"} //fix later 
         />
@@ -113,8 +110,7 @@ export default function Location({ navigation }) {
       
       <Text>{location}</Text>
       <Text>{lat}, {lng}</Text>
-      {/* Sprint 2 - A commencer */}
-
+      
       <Pressable
         onPressIn={() => {
           console.log("move to chatAutour screen");
