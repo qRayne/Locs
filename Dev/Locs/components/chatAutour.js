@@ -1,39 +1,38 @@
 import { useState, useCallback, useEffect } from 'react';
-import {Pressable, Text, View, Modal, RefreshControl } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import { createChatRoom } from './newChatroom';
-const { URL } = require('./constNames.js');
-
 // lorsqu'on va se get l'api pour la localistaion le array va toujours changer
 // so on creer les chatroom directement lorsqu'il est autour d'eux
 // on se getterai tous les lieux autours de L'usager et on les creerait 
-const chatRooms = [
-  { name: "McDonalds", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Subway", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "A&W", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Poulet Rouge", type: "FAST FOOD", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Cineplex Cartier Latin", type: "CINEMA", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Randolph's", type: "PUB", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Arcade MTL", type: "GAMING PUB", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Chatime", type: "BUBLLE TEA", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "Cegep du Vieux-Montreal", type: "EDUCATION", location: {latitude:192.123, longitude:123}, isPublic: true },
-  { name: "UQAM", type: "EDUCATION", location: {latitude:192.123, longitude:123}, isPublic: true },
-];
+// const chatRooms = [
+//   { name: "McDonalds", type: "FAST FOOD", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Subway", type: "FAST FOOD", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "A&W", type: "FAST FOOD", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Poulet Rouge", type: "FAST FOOD", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Cineplex Cartier Latin", type: "CINEMA", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Randolph's", type: "PUB", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Arcade MTL", type: "GAMING PUB", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Chatime", type: "BUBLLE TEA", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "Cegep du Vieux-Montreal", type: "EDUCATION", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+//   { name: "UQAM", type: "EDUCATION", location: { latitude: 192.123, longitude: 123 }, isPublic: true },
+// ];
 // info chatRooms -> location.js -> ( < GooglePlacesAutocomplete /> )
-  // name:        details.name, -> const autocomplete
-  // type:        details.references[1], 
-  // description: details.editorial_summary.overview
-  // location:    details.geometry.location.lat, details.geometry.location.lng -> const lat, lng
+// name:        details.name, -> const autocomplete
+// type:        details.references[1], 
+// description: details.editorial_summary.overview
+// location:    details.geometry.location.lat, details.geometry.location.lng -> const lat, lng
 
 export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [km, setKm] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [chatRooms, setChatRooms] = useState([]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -43,28 +42,61 @@ export default function ChatAutour({ navigation }) {
   }, []);
 
   async function createChatRooms() {
-    for(let i = 0; i < chatRooms.length; i++){
-        await createChatRoom(chatRooms[i]);
+    for (let i = 0; i < chatRooms.length; i++) {
+      await createChatRoom(chatRooms[i]);
     }
   }
 
   useEffect(() => {
     (async () => {
-      let { status } = await  Location.requestForegroundPermissionsAsync();
+      let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setStatus('Permission to access location was denied');
         return;
       } else {
-       console.log('Access granted!!')
-       setStatus(status)    
+        console.log('Access granted!!')
+        setStatus(status)
       }
     })();
-    }, 
-  []);
+    getChatRoomsByUserLocation();
+
+  }, []);
 
   createChatRooms();
 
-  
+  async function getChatRoomsByUserLocation() {
+    // changer le latitude/longitude 
+    let places = []
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=100&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+    fetch(url)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        for (let googlePlace of res.results) {
+          let place = {};
+          let myLat = googlePlace.geometry.location.lat;
+          let myLong = googlePlace.geometry.location.lng;
+          let coordinate = {
+            latitude: myLat,
+            longitude: myLong,
+          };
+          place['placeTypes'] = googlePlace.types;
+          place['coordinate'] = coordinate;
+          place['placeName'] = googlePlace.name;
+          places.push(place);
+        }
+        // Show all the places around 4 km from San Francisco.
+
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    setChatRooms(places);
+  };
+
+
+
   return (
     <View style={autourStyles.container}>
       <View>
@@ -128,20 +160,20 @@ export default function ChatAutour({ navigation }) {
             console.log("move to location screen");
             navigation.navigate('Location');
           }}>
-        <Text style={globalStyles.text}>Location</Text>
+          <Text style={globalStyles.text}>Location</Text>
         </Pressable>
 
         <ScrollView
-          refreshControl={ <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }>
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {chatRooms.map((room, index) => (
             <View key={index}>
               <Text style={globalStyles.undertext}>
-                {room.name}
+                {room.placeName}
               </Text>
 
               <Pressable
                 onPressIn={() => {
-                  navigation.navigate('ChatRoom', { chatRoom: room.name });
+                  navigation.navigate('ChatRoom', { chatRoom: room.placeName });
                 }}>
                 <View style={autourStyles.collapsedBox}>
                   <Text>{room.type}</Text>

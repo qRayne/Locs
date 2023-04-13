@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import locationStyles from '../styles/locationStyles';
@@ -24,6 +24,14 @@ export default function Location({ navigation }) {
   const [details, setDetails] = useState(null);
   const [poi, setPoi] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+
+  // 
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.getCurrentLocation();
+  }, []);
+
 
   async function getCurrentLocation() {
     const { status } = await Loc.requestForegroundPermissionsAsync();
@@ -70,19 +78,17 @@ export default function Location({ navigation }) {
             <GooglePlacesAutocomplete
               fetchDetails={true}
               placeholder="Search"
+              ref={ref}
+
               onPress={(data, details = null) => {
                 console.log(data, details)
                 setDetails(details)
                 setType(details.types);
-                // console.log(JSON.stringify(details))
-                // console.log(JSON.stringify(details.adr_address))
-                // console.log(JSON.stringify(details.geometry.location))
                 setLocation(details.name)
                 setAdress(details.vicinity);
                 setLng(details.geometry.location.lng)
                 setLat(details.geometry.location.lat)
                 setIcon(details.icon)
-                // setDesc(details.editorial_summary.overview)
               }}
               query={{
                 key: KEY,
@@ -113,17 +119,18 @@ export default function Location({ navigation }) {
           setAutocomplete(JSON.stringify(e.nativeEvent.name))
           console.log("poi: " + poi)
         }}>
+
         <Marker
           coordinate={{ latitude: lat, longitude: lng }}
           title={location} //fix later 
           description={"location.toString"} //fix later
           onPress={() => {
-            if (type.includes("point_of_interest")){
+            if (type.includes("point_of_interest")) {
               const chatRoom = { name: location, adress: adress, location: { latitude: lat, longitude: lng }, isPublic: true }
               createChatRoomOnClick(chatRoom);
               navigation.navigate('ChatRoom', { chatRoom: chatRoom, icon: icon });
             }
-            else{
+            else {
               Alert.alert("This location is off limits");
             }
           }}

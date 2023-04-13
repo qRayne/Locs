@@ -8,13 +8,13 @@ export async function createChatRoom(chatRoom) {
       },
       body: JSON.stringify({
         place: {
-          name: chatRoom.name,
+          name: chatRoom.placeName,
           location: {
-            latitude: chatRoom.location.latitude, // à changer selon la localisation du lieu
-            longitude: chatRoom.location.longitude // à changer selon la localisation du lieu
+            latitude: chatRoom.coordinate.latitude, // à changer selon la localisation du lieu
+            longitude: chatRoom.coordinate.longitude // à changer selon la localisation du lieu
           }
         },
-        isPublic: chatRoom.isPublic
+        isPublic: true
       })
     })
     const data = await response.json();
