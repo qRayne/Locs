@@ -15,7 +15,10 @@ export default function Chatroom({ navigation, route }) {
   const [chatMessages, setChatMessages] = useState([]);
   const [currentlySelectedUser, setCurrentlySelectedUser] = useState("");
   const [isPublicChatroom, setIsPublicChatroom] = useState('');
-  const chatRoomName = route.params.chatRoom;
+  const chatRoom = route.params.chatRoom;
+  const icon = route.params.icon;
+
+  console.log(chatRoom.adress);
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
@@ -25,7 +28,7 @@ export default function Chatroom({ navigation, route }) {
       const username = decoded.username;
 
       // remplacer le nom du chatroom par le context
-      fetch(`${URL}/chatroom-sendChat/` + chatRoomName, {
+      fetch(`${URL}/chatroom-sendChat/` + chatRoom.name, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +78,7 @@ export default function Chatroom({ navigation, route }) {
     async function fetchChatMessages() {
       try {
         // Fetch the chat messages
-        const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
+        const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoom.name));
         const messagesData = await messagesResponse.json();
         setChatMessages(messagesData.messageHistory);
         setIsPublicChatroom(messagesData.isPublic);
@@ -91,7 +94,7 @@ export default function Chatroom({ navigation, route }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [chatRoomName]);
+  }, [chatRoom.name]);
 
   // ici pas besoin d'une route pour se logout
   // juste d'enlever tous les async storage que le user connecter a
@@ -105,9 +108,9 @@ export default function Chatroom({ navigation, route }) {
     <View style={globalStyles.container}>
       <View style={chatStyles.infoBox}>
         {/* TODO: use context to pass along the name of the location */}
-        <Image></Image>
-        <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
-        <Text> lorem ipsum </Text>
+        <Image source={{ uri : icon}}></Image>
+        <Text style={globalStyles.subtitle}>{chatRoom.name}</Text>
+        <Text> {chatRoom.adress}</Text>
         <Text> lorem ipsum </Text>
         <Text> lorem ipsum </Text>
       </View>

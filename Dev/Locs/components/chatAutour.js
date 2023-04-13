@@ -43,8 +43,8 @@ export default function ChatAutour({ navigation }) {
   }, []);
 
   async function createChatRooms() {
-    for (const chatRoom of chatRooms) {
-      await createChatRoom(chatRoom);
+    for(let i = 0; i < chatRooms.length; i++){
+        await createChatRoom(chatRooms[i]);
     }
   }
 
