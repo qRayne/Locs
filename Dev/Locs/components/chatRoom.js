@@ -56,6 +56,7 @@ export default function Chatroom({ navigation, route }) {
     }
   }
 
+  //TODO: le chat priver reste a fix la compte de tes morts
   async function goToChatPrivate() {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -66,7 +67,7 @@ export default function Chatroom({ navigation, route }) {
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
         if (messageResponse === "The chatroom doesnt exist") {
-          const chatRoom = { name: chatRoomName, location: { latitude: 192.123, longitude: 123 }, isPublic: false };
+          const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 192.123, longitude: 123 }, isPublic: false };
           await createChatRoom(chatRoom);
         }
         navigation.navigate('ChatRoom', { chatRoom: chatRoomName });

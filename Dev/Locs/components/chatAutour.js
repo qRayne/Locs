@@ -30,7 +30,7 @@ import { createChatRoom } from './newChatroom';
 export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [km, setKm] = useState(0);
+  const [m, setM] = useState(25);
   const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const alreadyCreatedChatrooms = []
@@ -63,7 +63,7 @@ export default function ChatAutour({ navigation }) {
   async function getChatRoomsByUserLocation() {
     // changer le latitude/longitude 
     let places = []
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=25&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=" + m + "&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
     fetch(url)
       .then(res => {
         return res.json();
@@ -129,13 +129,13 @@ export default function ChatAutour({ navigation }) {
                 style={{ width: 200, height: 40 }}
                 step={1}
                 minimumValue={0}
-                maximumValue={50}
+                maximumValue={100}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
-                value={km}
-                onSlidingComplete={setKm}
+                value={m}
+                onSlidingComplete={setM}
               />
-              <Text>{km + " KM"}</Text>
+              <Text>{m + " M"}</Text>
               <Pressable
                 style={globalStyles.button}
                 onPressIn={() => setModalVisible(!modalVisible)}>
@@ -150,7 +150,7 @@ export default function ChatAutour({ navigation }) {
           <Pressable
             style={globalStyles.button}
             onPressIn={() => setModalVisible(true)}>
-            <Text style={globalStyles.text}>{km} KM</Text>
+            <Text style={globalStyles.text}>{m} M</Text>
           </Pressable>
         </View>
 

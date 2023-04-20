@@ -81,7 +81,7 @@ export default function Location({ navigation }) {
               ref={ref}
 
               onPress={(data, details = null) => {
-                console.log(data, details)
+                // console.log(data, details)
                 setDetails(details)
                 setType(details.types);
                 setLocation(details.name)
@@ -125,10 +125,16 @@ export default function Location({ navigation }) {
           title={location} //fix later 
           description={"location.toString"} //fix later
           onPress={() => {
+            console.log(location);
             if (type.includes("point_of_interest")) {
-              const chatRoom = { name: location, adress: adress, location: { latitude: lat, longitude: lng }, isPublic: true }
+              console.log(lat);
+              console.log(lng);
+              const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
+              console.log(chatRoom);
               createChatRoomOnClick(chatRoom);
-              navigation.navigate('ChatRoom', { chatRoom: chatRoom, icon: icon });
+              // navigation.navigate('ChatRoom', { chatRoom: chatRoom, icon: icon });
+              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress});
+
             }
             else {
               Alert.alert("This location is off limits");
