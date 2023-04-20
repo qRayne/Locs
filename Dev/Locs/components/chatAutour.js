@@ -6,6 +6,8 @@ import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import { createChatRoom } from './newChatroom';
+const { KEY } = require('./constNames.js')
+
 // lorsqu'on va se get l'api pour la localistaion le array va toujours changer
 // so on creer les chatroom directement lorsqu'il est autour d'eux
 // on se getterai tous les lieux autours de L'usager et on les creerait 
@@ -29,6 +31,8 @@ import { createChatRoom } from './newChatroom';
 
 export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [m, setM] = useState(25);
   const [refreshing, setRefreshing] = useState(false);
@@ -44,8 +48,17 @@ export default function ChatAutour({ navigation }) {
 
   setTimeout(() => {
     getChatRoomsByUserLocation();
+    getLocationOfUser();
   }, 2000);
 
+  async function getLocationOfUser(){
+    let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
+    setLat(location.coords.latitude);
+    setLng(location.coords.longitude);
+
+    console.log(lat);
+    console.log(lng);
+  }
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -58,12 +71,14 @@ export default function ChatAutour({ navigation }) {
       }
     })();
     getChatRoomsByUserLocation();
+    getLocationOfUser();
   }, []);
+
 
   async function getChatRoomsByUserLocation() {
     // changer le latitude/longitude 
     let places = []
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=" + m + "&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat + "%2C" + lng + "&radius=" + m + "&type=point_of_interest&key="+ KEY +""
     fetch(url)
       .then(res => {
         return res.json();
