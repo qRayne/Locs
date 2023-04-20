@@ -15,12 +15,10 @@ export default function Chatroom({ navigation, route }) {
   const [chatMessages, setChatMessages] = useState([]);
   const [currentlySelectedUser, setCurrentlySelectedUser] = useState("");
   const [isPublicChatroom, setIsPublicChatroom] = useState('');
-  const chatRoom = route.params.placeName;
-  const icon = route.params.icon;
+  const chatRoomName = route.params.chatRoomName;
+  const chatRoomType = route.params.chatRoomType;
+  const chatRoomAdress = route.params.chatRoomTypeAdress;
 
-  console.log(chatRoom);
-
-  // console.log(chatRoom.adress);
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
@@ -30,7 +28,7 @@ export default function Chatroom({ navigation, route }) {
       const username = decoded.username;
 
       // remplacer le nom du chatroom par le context
-      fetch(`${URL}/chatroom-sendChat/` + chatRoom, {
+      fetch(`${URL}/chatroom-sendChat/` + chatRoomName, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +78,7 @@ export default function Chatroom({ navigation, route }) {
     async function fetchChatMessages() {
       try {
         // Fetch the chat messages
-        const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoom));
+        const messagesResponse = await fetch(`${URL}/chatRoom-messages?name=` + encodeURIComponent(chatRoomName));
         const messagesData = await messagesResponse.json();
         setChatMessages(messagesData.messageHistory);
         setIsPublicChatroom(messagesData.isPublic);
@@ -96,7 +94,7 @@ export default function Chatroom({ navigation, route }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [chatRoom]);
+  }, [chatRoomName]);
 
   // ici pas besoin d'une route pour se logout
   // juste d'enlever tous les async storage que le user connecter a
@@ -110,11 +108,11 @@ export default function Chatroom({ navigation, route }) {
     <View style={globalStyles.container}>
       <View style={chatStyles.infoBox}>
         {/* TODO: use context to pass along the name of the location */}
-        <Image source={{ uri : icon}}></Image>
-        <Text style={globalStyles.subtitle}>{chatRoom}</Text>
+        {/* <Image source={{ uri : icon}}></Image> */}
+        <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
         {/* <Text> {chatRoom.adress}</Text> */}
-        <Text> lorem ipsum </Text>
-        <Text> lorem ipsum </Text>
+        <Text> {chatRoomType}</Text>
+        <Text> {chatRoomAdress}</Text>
       </View>
 
       {/* barre de texte */}

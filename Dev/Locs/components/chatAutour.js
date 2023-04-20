@@ -33,6 +33,7 @@ export default function ChatAutour({ navigation }) {
   const [km, setKm] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
+  const alreadyCreatedChatrooms = []
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -41,11 +42,9 @@ export default function ChatAutour({ navigation }) {
     }, 2000);
   }, []);
 
-  async function createChatRooms() {
-    for (let i = 0; i < chatRooms.length; i++) {
-      await createChatRoom(chatRooms[i]);
-    }
-  }
+  setTimeout(() => {
+    getChatRoomsByUserLocation();
+  }, 2000);
 
   useEffect(() => {
     (async () => {
@@ -59,15 +58,12 @@ export default function ChatAutour({ navigation }) {
       }
     })();
     getChatRoomsByUserLocation();
-
   }, []);
-
-  createChatRooms();
 
   async function getChatRoomsByUserLocation() {
     // changer le latitude/longitude 
     let places = []
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=100&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=45.5147%2C-73.5664&radius=25&type=point_of_interest&key=AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
     fetch(url)
       .then(res => {
         return res.json();
@@ -84,15 +80,19 @@ export default function ChatAutour({ navigation }) {
           place['placeTypes'] = googlePlace.types;
           place['coordinate'] = coordinate;
           place['placeName'] = googlePlace.name;
-          places.push(place);
+          place['vicinity'] = googlePlace.vicinity;
+          if (!alreadyCreatedChatrooms.includes(place['vicinity'])){
+            createChatRoom(place);
+            alreadyCreatedChatrooms.push(place['vicinity']);
+            places.push(place);
+          }
         }
         // Show all the places around 4 km from San Francisco.
-
+        setChatRooms(places); // récupère tous les places autour d'un certain radius
       })
       .catch(error => {
         console.log(error);
       });
-    setChatRooms(places);
   };
 
 
@@ -164,26 +164,28 @@ export default function ChatAutour({ navigation }) {
         </Pressable>
 
         <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          {chatRooms.map((room, index) => (
-            <View key={index}>
-              <Text style={globalStyles.undertext}>
-                {room.placeName}
-              </Text>
+        // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+        >
+          {chatRooms ? (
+            chatRooms.map((room, index) => (
+              <View key={index}>
+                <Text style={globalStyles.undertext}>
+                  {room.placeName}
+                </Text>
 
-              <Pressable
-                onPressIn={() => {
-                  navigation.navigate('ChatRoom', { chatRoom: room.placeName });
-                }}>
-                <View style={autourStyles.collapsedBox}>
-                  <Text>{room.type}</Text>
-                </View>
-              </Pressable>
-            </View>
-          ))}
+                <Pressable
+                  onPressIn={() => {
+                    console.log(room);
+                    navigation.navigate('ChatRoom', { chatRoomName: room.placeName,chatRoomType:room.placeTypes[0], chatRoomTypeAdress:room.vicinity});
+                  }}>
+                  <View style={autourStyles.collapsedBox}>
+                    <Text>{room.placeTypes[0]}</Text>
+                  </View>
+                </Pressable>
+              </View>
+            ))
+          ) : null}
         </ScrollView>
-
-
       </View>
 
       <Pressable
