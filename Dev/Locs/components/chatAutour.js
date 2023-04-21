@@ -55,9 +55,6 @@ export default function ChatAutour({ navigation }) {
     let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
     setLat(location.coords.latitude);
     setLng(location.coords.longitude);
-
-    console.log(lat);
-    console.log(lng);
   }
   useEffect(() => {
     (async () => {
@@ -102,7 +99,6 @@ export default function ChatAutour({ navigation }) {
             places.push(place);
           }
         }
-        // Show all the places around 4 km from San Francisco.
         setChatRooms(places); // récupère tous les places autour d'un certain radius
       })
       .catch(error => {

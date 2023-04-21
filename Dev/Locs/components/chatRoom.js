@@ -67,10 +67,12 @@ export default function Chatroom({ navigation, route }) {
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
         if (messageResponse === "The chatroom doesnt exist") {
-          const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 192.123, longitude: 123 }, isPublic: false };
+          console.log("yes");
+          const chatRoom = { placeName: chatRoomName, coordinate : {latitude:0,longitude:0},isPublic: false };
           await createChatRoom(chatRoom);
         }
-        navigation.navigate('ChatRoom', { chatRoom: chatRoomName });
+        navigation.navigate('ChatRoom', { chatRoomName: chatRoomName,chatRoomType : "private chat between " + username + " and " + currentlySelectedUser,
+        chatRoomTypeAdress:""});
       }
     }
   }
