@@ -18,45 +18,51 @@ export default function Chatroom({ navigation, route }) {
   const chatRoomName = route.params.chatRoomName;
   const chatRoomType = route.params.chatRoomType;
   const chatRoomAdress = route.params.chatRoomTypeAdress;
+  const nearestLocation = route.params.nearestLocation; // true or false;
 
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
 
+    // il peut send des chats seulements s'il est dans le lieu
     if (token) {
-      const decoded = jwtDecode(token);
-      const username = decoded.username;
 
-      // remplacer le nom du chatroom par le context
-      fetch(`${URL}/chatroom-sendChat/` + chatRoomName, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sender: username, // fixed, on recupère le token qui lui en le decodant => username
-          message: chat,
-          timestamp: new Date().toString()
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
+      if (nearestLocation) {
+        const decoded = jwtDecode(token);
+        const username = decoded.username;
+
+        // remplacer le nom du chatroom par le context
+        fetch(`${URL}/chatroom-sendChat/` + chatRoomName, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sender: username, // fixed, on recupère le token qui lui en le decodant => username
+            message: chat,
+            timestamp: new Date().toString()
+          }),
         })
-        .catch((error) => {
-          console.error(error);
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
 
-      // Clear the chat input
-      setChat('');
+        // Clear the chat input
+        setChat('');
+      }
+      else{
+        Alert.alert('bro u need to be in this place to chat to others');
+      }
     }
     else {
       Alert.alert('Sending Message Failed', 'the user need to be connected to send to the chatroom');
       navigation.navigate('Login');
     }
   }
-
-  //TODO: le chat priver reste a fix la compte de tes morts
   async function goToChatPrivate() {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -67,12 +73,13 @@ export default function Chatroom({ navigation, route }) {
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
         if (messageResponse === "The chatroom doesnt exist") {
-          console.log("yes");
-          const chatRoom = { placeName: chatRoomName, coordinate : {latitude:0,longitude:0},isPublic: false };
+          const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 }, isPublic: false };
           await createChatRoom(chatRoom);
         }
-        navigation.navigate('ChatRoom', { chatRoomName: chatRoomName,chatRoomType : "private chat between " + username + " and " + currentlySelectedUser,
-        chatRoomTypeAdress:""});
+        navigation.navigate('ChatRoom', {
+          chatRoomName: chatRoomName, chatRoomType: "private chat between " + username + " and " + currentlySelectedUser,
+          chatRoomTypeAdress: "",nearestLocation:true
+        });
       }
     }
   }

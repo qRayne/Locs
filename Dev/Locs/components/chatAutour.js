@@ -6,6 +6,7 @@ import Slider from '@react-native-community/slider';
 import { ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import { createChatRoom } from './newChatroom';
+import { calculateDistanceBetweenLocations } from './distanceCalculation';
 const { KEY } = require('./constNames.js')
 
 // lorsqu'on va se get l'api pour la localistaion le array va toujours changer
@@ -38,6 +39,8 @@ export default function ChatAutour({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const alreadyCreatedChatrooms = []
+  const [nearestLocation, setNearestLocation] = useState("");
+
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -49,10 +52,11 @@ export default function ChatAutour({ navigation }) {
   setTimeout(() => {
     getChatRoomsByUserLocation();
     getLocationOfUser();
+    getWritableChatRoom();
   }, 2000);
 
-  async function getLocationOfUser(){
-    let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
+  async function getLocationOfUser() {
+    let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
     setLat(location.coords.latitude);
     setLng(location.coords.longitude);
   }
@@ -69,13 +73,14 @@ export default function ChatAutour({ navigation }) {
     })();
     getChatRoomsByUserLocation();
     getLocationOfUser();
+    getWritableChatRoom();
   }, []);
 
 
   async function getChatRoomsByUserLocation() {
     // changer le latitude/longitude 
     let places = []
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat + "%2C" + lng + "&radius=" + m + "&type=point_of_interest&key="+ KEY +""
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat + "%2C" + lng + "&radius=" + m + "&type=point_of_interest&key=" + KEY + ""
     fetch(url)
       .then(res => {
         return res.json();
@@ -93,7 +98,7 @@ export default function ChatAutour({ navigation }) {
           place['coordinate'] = coordinate;
           place['placeName'] = googlePlace.name;
           place['vicinity'] = googlePlace.vicinity;
-          if (!alreadyCreatedChatrooms.includes(place['vicinity'])){
+          if (!alreadyCreatedChatrooms.includes(place['vicinity'])) {
             createChatRoom(place);
             alreadyCreatedChatrooms.push(place['vicinity']);
             places.push(place);
@@ -105,6 +110,29 @@ export default function ChatAutour({ navigation }) {
         console.log(error);
       });
   };
+
+  // le nom changera mais veut dire que le chatroom ayant une distance plus petite que le rayon de reherche
+  function getWritableChatRoom() {
+    const allDistances = []
+    if (chatRooms.length != 0) {
+      const userLocation = { lat: lat, lng: lng };
+      for (let i = 0; i < chatRooms.length; i++) {
+        const placeLocation = {
+          lat: chatRooms[i].coordinate.latitude, lng:
+            chatRooms[i].coordinate.longitude
+        }
+        allDistances.push(calculateDistanceBetweenLocations(userLocation, placeLocation))
+      }
+      minDistance = Math.min(...allDistances);
+      nearestDistanceIndex = allDistances.indexOf(minDistance);
+      if (chatRooms[nearestDistanceIndex] && minDistance <= m) {
+        setNearestLocation(chatRooms[nearestDistanceIndex].placeName)
+      };
+    }
+    else{
+      console.log('google api na pas encore calculer tous les lieux');
+    }
+  }
 
 
 
@@ -175,7 +203,6 @@ export default function ChatAutour({ navigation }) {
         </Pressable>
 
         <ScrollView
-        // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
         >
           {chatRooms ? (
             chatRooms.map((room, index) => (
@@ -186,11 +213,17 @@ export default function ChatAutour({ navigation }) {
 
                 <Pressable
                   onPressIn={() => {
-                    console.log(room);
-                    navigation.navigate('ChatRoom', { chatRoomName: room.placeName,chatRoomType:room.placeTypes[0], chatRoomTypeAdress:room.vicinity});
+                    navigation.navigate('ChatRoom', { 
+                      chatRoomName: room.placeName, 
+                      chatRoomType: room.placeTypes[0], 
+                      chatRoomTypeAdress: room.vicinity,
+                      nearestLocation: room.placeName === nearestLocation // true ou false
+                    });
                   }}>
                   <View style={autourStyles.collapsedBox}>
                     <Text>{room.placeTypes[0]}</Text>
+                    {room.placeName == nearestLocation ? <Text>Vous pouvez ecrire et lire dans ce chatRoom</Text> : 
+                  <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
                   </View>
                 </Pressable>
               </View>
