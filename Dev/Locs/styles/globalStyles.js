@@ -2,12 +2,26 @@ import { StyleSheet } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const globalStyles = StyleSheet.create({
+
+
+    // PALETTE 
+    //    Blue:          #5578DA
+    //    Raisin Black:  #272932
+    //    Tomato:        #FE4A49
+    //    Mustard:       #FED766
+    //    Platinum:      #E6E6EA
+
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#bccaf5',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
       // fontFamily: 'Galdeano-Regular'
+    },
+
+    logo:{
+      width: 250,
+      height: 150
     },
   
     title:{
@@ -30,7 +44,7 @@ const globalStyles = StyleSheet.create({
     },
   
     inputbox: {
-      backgroundColor: '#3C746F',
+      backgroundColor: '#2b55ca',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
@@ -41,7 +55,7 @@ const globalStyles = StyleSheet.create({
     },
 
     button:{
-      backgroundColor: "#000",
+      backgroundColor: "#5578DA",
       width:100,
       height: 30,
       flex:-1,

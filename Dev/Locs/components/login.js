@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Pressable, Text, TextInput, View,Alert } from 'react-native'
+import { Pressable, Text, TextInput, View, Alert, Image } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import loginStyles from '../styles/loginStyles';
@@ -55,7 +55,11 @@ export default function Login({ navigation }) {
   return (
     <View style={globalStyles.container}>
       <View>
-        <Text style={loginStyles.title}>Locs</Text>
+        {/* <Text style={loginStyles.title}>Locs</Text> */}
+        <Image 
+          style={globalStyles.logo}
+          source={require('../assets/splash.png')}
+          />
       </View>
       <TextInput
         style={globalStyles.inputbox}

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
+import { createChatRoom } from './newChatroom';
 import { Pressable, Text, TextInput, View, Modal, Image, Alert, FlatList, TouchableOpacity } from 'react-native';
-import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
-const { URL } = require('./constNames.js');
-import { createChatRoom } from './newChatroom';
+import jwtDecode from 'jwt-decode';
+
 const { possibleAvatars } = require('./constNames');
-
-
+const { URL } = require('./constNames.js');
 
 export default function Chatroom({ navigation, route }) {
   const [chat, setChat] = useState('');
@@ -20,13 +19,11 @@ export default function Chatroom({ navigation, route }) {
   const chatRoomAdress = route.params.chatRoomTypeAdress;
   const nearestLocation = route.params.nearestLocation; // true or false;
 
-
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
 
     // il peut send des chats seulements s'il est dans le lieu
     if (token) {
-
       if (nearestLocation) {
         const decoded = jwtDecode(token);
         const username = decoded.username;
@@ -55,14 +52,15 @@ export default function Chatroom({ navigation, route }) {
         setChat('');
       }
       else{
-        Alert.alert('bro u need to be in this place to chat to others');
+        Alert.alert('Rend-toi au Loc pour Chatter');
       }
     }
     else {
-      Alert.alert('Sending Message Failed', 'the user need to be connected to send to the chatroom');
+      Alert.alert('Sending Message Failed', 'Login to chat');
       navigation.navigate('Login');
     }
   }
+  
   async function goToChatPrivate() {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -72,12 +70,12 @@ export default function Chatroom({ navigation, route }) {
         const chatRoomName = [username, currentlySelectedUser].sort().join('_');
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
-        if (messageResponse === "The chatroom doesnt exist") {
+        if (messageResponse === "The chatroom doesn't exist") {
           const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 }, isPublic: false };
           await createChatRoom(chatRoom);
         }
         navigation.navigate('ChatRoom', {
-          chatRoomName: chatRoomName, chatRoomType: "private chat between " + username + " and " + currentlySelectedUser,
+          chatRoomName: chatRoomName, chatRoomType: "Private chat between " + username + " and " + currentlySelectedUser,
           chatRoomTypeAdress: "",nearestLocation:true
         });
       }

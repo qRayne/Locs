@@ -18,7 +18,7 @@ const autourStyles = StyleSheet.create({
         height: 75,
         borderColor: "black",
         borderWidth: 2,
-        backgroundColor: "lightgrey",
+        backgroundColor: "#cdd7f4",
         padding: 10
     },
 

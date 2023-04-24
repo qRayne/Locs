@@ -10,14 +10,14 @@ import { createChatRoom } from './newChatroom';
 
 
 export default function Location({ navigation }) {
+  const [autocomplete, setAutocomplete] = useState("");
   const [location, setLocation] = useState(null);
+  const [adress, setAdress] = useState('');
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
   const [icon, setIcon] = useState('');
-  const [adress, setAdress] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
-  const [autocomplete, setAutocomplete] = useState("");
   const [km, setKm] = useState(0);
 
   // details doit etre mis dans chatAutour
