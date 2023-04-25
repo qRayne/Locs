@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useState, useCallback, useEffect } from 'react';
-import { Pressable, Text, View, Modal, RefreshControl } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator } from 'react-native';
 import { calculateDistanceBetweenLocations } from './distanceCalculation';
 import { ScrollView } from 'react-native';
 import { createChatRoom } from './newChatroom';
@@ -8,7 +8,6 @@ import { Font, AppLoading } from 'expo'
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import Slider from '@react-native-community/slider';
-
 const { KEY } = require('./constNames.js')
 
 export default function ChatAutour({ navigation }) {
@@ -20,6 +19,7 @@ export default function ChatAutour({ navigation }) {
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [m, setM] = useState(25);
+  const [loading, setLoading] = useState(true);
   const alreadyCreatedChatrooms = []
 
   const onRefresh = useCallback(() => {
@@ -29,6 +29,7 @@ export default function ChatAutour({ navigation }) {
     }, 2000);
   }, []);
 
+  // seul la localisation du user peut être recuperer avant la fin du use effect
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -40,10 +41,26 @@ export default function ChatAutour({ navigation }) {
         setStatus(status)
       }
     })();
-    getChatRoomsByUserLocation();
     getLocationOfUser();
-    getWritableChatRoom();
   }, []);
+
+  // on attend 5 seconds et on call le chatrooms
+  delaySearchChatroom(getChatRoomsByUserLocation, 3000,false);
+  delaySearchChatroom(getWritableChatRoom, 3000,true);
+
+  // ici on utilise une function qui va nous servir de setimeout
+  function delaySearchChatroom(fn, delayTime,finshedCalculating) {
+    setTimeout(() => {
+      fn();
+      if (finshedCalculating){
+        setLoading(false);
+      }
+    }, delayTime);
+  }
+
+  async function createChatRoomOnClick(place) {
+    await createChatRoom(place);
+  }
 
   async function getLocationOfUser() {
     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
@@ -73,11 +90,12 @@ export default function ChatAutour({ navigation }) {
           place['coordinate'] = coordinate;
           place['placeName'] = googlePlace.name;
           place['vicinity'] = googlePlace.vicinity;
+          // si deux lieux n'ont la même adresse alors on les ajoute en tant que chatroom
           if (!alreadyCreatedChatrooms.includes(place['vicinity'])) {
-            createChatRoom(place);
             alreadyCreatedChatrooms.push(place['vicinity']);
             places.push(place);
           }
+
         }
         setChatRooms(places); // récupère tous les places autour d'un certain radius
       })
@@ -86,7 +104,7 @@ export default function ChatAutour({ navigation }) {
       });
   };
 
-   // le nom changera mais veut dire que le chatroom ayant une distance plus petite que le rayon de reherche
+  // le nom changera mais veut dire que le chatroom ayant une distance plus petite que le rayon de reherche
   function getWritableChatRoom() {
     const allDistances = []
     if (chatRooms.length != 0) {
@@ -104,18 +122,19 @@ export default function ChatAutour({ navigation }) {
         setNearestLocation(chatRooms[nearestDistanceIndex].placeName)
       };
     }
-    else{
+    else {
       // console.log('google api na pas encore calculer tous les lieux');
     }
   }
 
-  setTimeout(() => {
+  // on apelle cette fonction chaque fois que l'utilisateur change de radius
+  // recalcul de des chatrooms par le user, de sa localisation et de recuperer le chatroom auquel il peut ecrire
+  function recalculateUserChatrooms() {
     getChatRoomsByUserLocation();
     getLocationOfUser();
     getWritableChatRoom();
-  }, 2000);
+  }
 
- 
   return (
     <View style={globalStyles.container}>
       <View>
@@ -158,12 +177,21 @@ export default function ChatAutour({ navigation }) {
               <Text>{m + " M"}</Text>
               <Pressable
                 style={globalStyles.button}
-                onPressIn={() => setModalVisible(!modalVisible)}>
+                onPressIn={() => {
+                  setModalVisible(!modalVisible)
+                  recalculateUserChatrooms();}} >
                 <Text style={globalStyles.text}>ok</Text>
               </Pressable>
             </View>
           </View>
         </Modal>
+
+        {/* si on est en mode loading c'est qu'on a pas fini de calculer */}
+        <View>
+          {loading ? (
+            <ActivityIndicator size={'large'} color={"#FFFFFF"}></ActivityIndicator>
+          ) : null}
+        </View>
 
         {/* Bouton qui change la DISTANCE */}
         <View style={autourStyles.row}>
@@ -180,11 +208,11 @@ export default function ChatAutour({ navigation }) {
               console.log("move to location screen");
               navigation.navigate('Location');
             }
-          }>
+            }>
             <Text style={globalStyles.text}>Location</Text>
           </Pressable>
         </View>
-        
+
         {/* Liste de Loc */}
         <ScrollView>
           {chatRooms ? (
@@ -198,9 +226,10 @@ export default function ChatAutour({ navigation }) {
                 {/* infoBox */}
                 <Pressable
                   onPressIn={() => {
-                    navigation.navigate('ChatRoom', { 
-                      chatRoomName: room.placeName, 
-                      chatRoomType: room.placeTypes[0], 
+                    createChatRoomOnClick(room);
+                    navigation.navigate('ChatRoom', {
+                      chatRoomName: room.placeName,
+                      chatRoomType: room.placeTypes[0],
                       chatRoomTypeAdress: room.vicinity,
                       nearestLocation: room.placeName === nearestLocation // true ou false
                     });
@@ -208,7 +237,7 @@ export default function ChatAutour({ navigation }) {
 
                   <View style={autourStyles.collapsedBox}>
                     <Text>{room.placeTypes[0]}</Text>
-                    {room.placeName == nearestLocation ? <Text>Chattable</Text> : 
+                    {room.placeName == nearestLocation ? <Text>Chattable</Text> :
                       <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
                   </View>
                 </Pressable>
