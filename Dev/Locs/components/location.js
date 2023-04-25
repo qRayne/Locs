@@ -7,6 +7,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 const { KEY } = require('./constNames.js')
 import { createChatRoom } from './newChatroom';
+import { calculateDistanceBetweenLocations } from './distanceCalculation';
 
 
 export default function Location({ navigation }) {
@@ -15,6 +16,8 @@ export default function Location({ navigation }) {
   const [adress, setAdress] = useState('');
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
+  const [userlng,setUserLng] = useState('');
+  const [userlat,setUserLat] = useState('');
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
@@ -28,27 +31,50 @@ export default function Location({ navigation }) {
   // 
   const ref = useRef();
 
+  // useEffect(() => {
+  //   ref.current?.getCurrentLocation();
+  // }, []);
+
+
+  // async function getCurrentLocation() {
+  //   const { status } = await Loc.requestForegroundPermissionsAsync();
+  //   if (status !== 'granted') {
+  //     console.log('Permission to access location was denied');
+  //     return;
+  //   }
+
+  //   const location = await Loc.getCurrentPositionAsync({});
+  //   // console.log(location.coords.latitude, location.coords.longitude);
+  // }
+
   useEffect(() => {
-    ref.current?.getCurrentLocation();
+    (async () => {
+      let { status } = await Loc.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      } else {
+        console.log('Access granted!!')
+      }
+    })();
+    getLocationOfUser();
   }, []);
 
-
-  async function getCurrentLocation() {
-    const { status } = await Loc.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.log('Permission to access location was denied');
-      return;
-    }
-
-    const location = await Loc.getCurrentPositionAsync({});
-    // console.log(location.coords.latitude, location.coords.longitude);
+  async function getLocationOfUser() {
+    let location = await Loc.getCurrentPositionAsync({ accuracy: Loc.Accuracy.Highest, maximumAge: 10000 });
+    setUserLat(location.coords.latitude);
+    setUserLng(location.coords.longitude);
   }
 
   async function createChatRoomOnClick(chatRoom) {
     await createChatRoom(chatRoom)
   }
 
-  setTimeout(getCurrentLocation, 3000);
+  function userInLocation(){
+    const userLocation = {lat:userlat,lng:userlng};
+    const placeLocation = {lat:lat,lng:lng}
+    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
+    return distance <= 0.10; // soit moins de 10m
+  }
 
   return (
     <View style={globalStyles.container}>
@@ -127,14 +153,9 @@ export default function Location({ navigation }) {
           onPress={() => {
             console.log(location);
             if (type.includes("point_of_interest")) {
-              console.log(lat);
-              console.log(lng);
               const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
-              console.log(chatRoom);
               createChatRoomOnClick(chatRoom);
-              // navigation.navigate('ChatRoom', { chatRoom: chatRoom, icon: icon });
-              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress});
-
+              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress,nearestLocation : userInLocation()});
             }
             else {
               Alert.alert("This location is off limits");
@@ -145,6 +166,7 @@ export default function Location({ navigation }) {
 
       <Text>{location}</Text>
       <Text>{lat}, {lng}</Text>
+
 
       <Pressable
         onPressIn={() => {

@@ -3,17 +3,17 @@ const mongoose = require('mongoose')
 
 // on créer un schema avec toutes nos champs et leurs types
 const ChatRoomSchema = new mongoose.Schema({
-    place:{
-        name:{ type: String, unique: true},
-        location:{
-            latitude:Number,
-            longitude:Number
+    place: {
+        name: {type:String,required:true},
+        location: {
+            latitude: { type: Number, unique: true },
+            longitude: { type: Number, unique: true }
         }
     },
-    users:[{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    chats:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }],
-    isPublic:Boolean
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    chats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }],
+    isPublic: Boolean
 })
 
 // on créer le schema
-mongoose.model("ChatRoom",ChatRoomSchema)
+mongoose.model("ChatRoom", ChatRoomSchema)

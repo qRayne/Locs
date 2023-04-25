@@ -18,6 +18,7 @@ export default function Chatroom({ navigation, route }) {
   const chatRoomType = route.params.chatRoomType;
   const chatRoomAdress = route.params.chatRoomTypeAdress;
   const nearestLocation = route.params.nearestLocation; // true or false;
+  const previousPage = route.params.previousPage;
 
   async function sendChat() {
     const token = await AsyncStorage.getItem('token');
@@ -53,6 +54,7 @@ export default function Chatroom({ navigation, route }) {
       }
       else{
         Alert.alert('Rend-toi au Loc pour Chatter');
+        navigation.navigate(previousPage);
       }
     }
     else {
