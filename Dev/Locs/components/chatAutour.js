@@ -46,9 +46,9 @@ export default function ChatAutour({ navigation }) {
     getLocationOfUser();
   }, []);
 
-  // on attend 5 seconds et on call le chatrooms
-  delaySearchChatroom(getChatRoomsByUserLocation, 3000, false);
-  delaySearchChatroom(getWritableChatRoom, 3000, true);
+  // on attend 3 seconds et on call le chatrooms
+  delaySearchChatroom(getChatRoomsByUserLocation, 2000, false);
+  delaySearchChatroom(getWritableChatRoom, 2000, true);
 
   // ici on utilise une function qui va nous servir de setimeout
   function delaySearchChatroom(fn, delayTime, finshedCalculating) {
@@ -60,8 +60,20 @@ export default function ChatAutour({ navigation }) {
     }, delayTime);
   }
 
-  async function createChatRoomOnClick(place) {
-    await createChatRoom(place);
+  function createChatRoomOnClick(place) {
+    createChatRoom(place) // plus logique d'utiliser le then dans ce cas de figure
+      .then(() => {
+        navigation.navigate('ChatRoom', {
+          chatRoomName: place.placeName,
+          chatRoomType: place.placeTypes[0],
+          chatRoomTypeAdress: place.vicinity,
+          nearestLocation: place.placeName === nearestLocation,
+          previousPage: 'ChatAutour'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   async function getLocationOfUser() {
@@ -214,29 +226,22 @@ export default function ChatAutour({ navigation }) {
         {/* Liste de Loc */}
         <ScrollView>
           {chatRooms ? (
-            chatRooms.map((room, index) => (
+            chatRooms.map((place, index) => (
               // TITRE DU LOC
               <View key={index}>
                 <Text style={globalStyles.undertext}>
-                  {room.placeName}
+                  {place.placeName}
                 </Text>
 
                 {/* infoBox */}
                 <Pressable
                   onPressIn={() => {
-                    createChatRoomOnClick(room);
-                    navigation.navigate('ChatRoom', {
-                      chatRoomName: room.placeName,
-                      chatRoomType: room.placeTypes[0],
-                      chatRoomTypeAdress: room.vicinity,
-                      nearestLocation: room.placeName === nearestLocation,
-                      previousPage: 'ChatAutour'// true ou false
-                    });
+                    createChatRoomOnClick(place);
                   }}>
 
                   <View style={autourStyles.collapsedBox}>
-                    <Text>{room.placeTypes[0]}</Text>
-                    {room.placeName == nearestLocation ? <Text>Chattable</Text> :
+                    <Text>{place.placeTypes[0]}</Text>
+                    {place.placeName == nearestLocation ? <Text>Chattable</Text> :
                       <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
                   </View>
                 </Pressable>
