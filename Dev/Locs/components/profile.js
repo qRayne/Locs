@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Pressable, Text, View, Modal, Image } from 'react-native';
-import globalStyles from '../styles/globalStyles';
+import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import globalStyles from '../styles/globalStyles';
+
 const { URL } = require('./constNames.js')
-
-
-
 
 export default function Profile({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);

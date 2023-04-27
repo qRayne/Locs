@@ -1,24 +1,25 @@
-import { useState, useRef, useEffect } from 'react';
-import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
-import globalStyles from '../styles/globalStyles';
-import locationStyles from '../styles/locationStyles';
-import * as Loc from 'expo-location';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-const { KEY } = require('./constNames.js')
-import { createChatRoom } from './newChatroom';
+import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
 import { calculateDistanceBetweenLocations } from './distanceCalculation';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useState, useRef, useEffect } from 'react';
+import { createChatRoom } from './newChatroom';
+import * as Loc from 'expo-location';
+
+import locationStyles from '../styles/locationStyles';
+import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
 
+const { KEY } = require('./constNames.js')
 
 export default function Location({ navigation }) {
   const [autocomplete, setAutocomplete] = useState("");
   const [location, setLocation] = useState(null);
+  const [userlng,setUserLng] = useState('');
+  const [userlat,setUserLat] = useState('');
   const [adress, setAdress] = useState('');
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
-  const [userlng,setUserLng] = useState('');
-  const [userlat,setUserLat] = useState('');
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");

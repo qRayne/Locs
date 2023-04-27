@@ -26,7 +26,7 @@ export default function Login({ navigation }) {
         // la connection marche et on recupere le token du fetch
         // le token prouve que l'usager s'est connecter à notre application
         await AsyncStorage.setItem('token', responseData.token);
-        navigation.navigate('ChatAutour');
+        navigation.navigate("Home", {screen: 'ChatAutour'});
       } else {
         Alert.alert('Authentication failed', 'Please check your credentials and try again.');
       }

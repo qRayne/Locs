@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import ChatAutour from './components/chatAutour';
@@ -13,7 +14,8 @@ import Avatar from './components/avatar';
 import Login from './components/login';
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
   return (
@@ -54,6 +56,7 @@ export default function App() {
   function Home(){
     return(
       <Tab.Navigator
+        tabBarPosition="bottom"
         screenOptions={{
           headerShown: false
         }}>
@@ -62,8 +65,8 @@ export default function App() {
             component={Profile}
             options={{
               tabBarLabel: 'Profile',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="face-man-profile" color={color} size={size} />
+              tabBarIcon: () => (
+                <MaterialCommunityIcons name="face-man-profile" color={"black"} size={25} />
               ),
             }}
           />
@@ -72,8 +75,8 @@ export default function App() {
             component={ChatAutour}
             options={{
               tabBarLabel: 'Locs',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="home" color={color} size={size} />
+              tabBarIcon: () => (
+                <MaterialCommunityIcons name="home" color={"black"} size={25} />
               ),
             }}
           />
@@ -82,8 +85,8 @@ export default function App() {
             component={Location}
             options={{
               tabBarLabel: 'Location',
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="google-maps" color={color} size={size} />
+              tabBarIcon: () => (
+                <MaterialCommunityIcons name="google-maps" color={"black"} size={25} />
               ),
             }}
           />
