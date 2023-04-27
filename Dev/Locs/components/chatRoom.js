@@ -72,7 +72,7 @@ export default function Chatroom({ navigation, route }) {
         const chatRoomName = [username, currentlySelectedUser].sort().join('_');
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
-        if (messageResponse === "The chatroom doesn't exist") {
+        if (messageResponse === "The chatroom doesnt exist") {
           const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 }, isPublic: false };
           await createChatRoom(chatRoom);
         }

@@ -1,4 +1,4 @@
-const URL = "http://10.57.38.19:3000";
+const URL = "http://10.57.38.20:3000";
 const KEY = "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0";
 const POSSIBLEAVATARS = {
     "nerd": require('../assets/img/avatar/rayane.png'),
