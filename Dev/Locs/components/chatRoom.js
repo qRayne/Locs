@@ -78,7 +78,7 @@ export default function Chatroom({ navigation, route }) {
         }
         navigation.navigate('ChatRoom', {
           chatRoomName: chatRoomName, chatRoomType: "Private chat between " + username + " and " + currentlySelectedUser,
-          chatRoomTypeAdress: "",nearestLocation:true
+          chatRoomTypeAdress: "",nearestLocation:true,previousPage :'ChatRoom'
         });
       }
     }

@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator } from 'react-native';
-import { calculateDistanceBetweenLocations } from './distanceCalculation';
+import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } from './distanceCalculation';
 import { ScrollView } from 'react-native';
 import { createChatRoom } from './newChatroom';
 import { Font, AppLoading } from 'expo'
@@ -45,14 +45,14 @@ export default function ChatAutour({ navigation }) {
   }, []);
 
   // on attend 5 seconds et on call le chatrooms
-  delaySearchChatroom(getChatRoomsByUserLocation, 3000,false);
-  delaySearchChatroom(getWritableChatRoom, 3000,true);
+  delaySearchChatroom(getChatRoomsByUserLocation, 3000, false);
+  delaySearchChatroom(getWritableChatRoom, 3000, true);
 
   // ici on utilise une function qui va nous servir de setimeout
-  function delaySearchChatroom(fn, delayTime,finshedCalculating) {
+  function delaySearchChatroom(fn, delayTime, finshedCalculating) {
     setTimeout(() => {
       fn();
-      if (finshedCalculating){
+      if (finshedCalculating) {
         setLoading(false);
       }
     }, delayTime);
@@ -107,8 +107,8 @@ export default function ChatAutour({ navigation }) {
   // le nom changera mais veut dire que le chatroom ayant une distance plus petite que le rayon de reherche
   function getWritableChatRoom() {
     const allDistances = []
+    const userLocation = { lat: lat, lng: lng };
     if (chatRooms.length != 0) {
-      const userLocation = { lat: lat, lng: lng };
       for (let i = 0; i < chatRooms.length; i++) {
         const placeLocation = {
           lat: chatRooms[i].coordinate.latitude, lng:
@@ -119,7 +119,13 @@ export default function ChatAutour({ navigation }) {
       minDistance = Math.min(...allDistances);
       nearestDistanceIndex = allDistances.indexOf(minDistance);
       if (chatRooms[nearestDistanceIndex] && minDistance <= m) {
-        setNearestLocation(chatRooms[nearestDistanceIndex].placeName)
+        const placeLocation = {
+          lat: chatRooms[nearestDistanceIndex].coordinate.latitude, lng:
+            chatRooms[nearestDistanceIndex].coordinate.longitude
+        }
+        if (calculateBoundsBetweenLocations(userLocation, placeLocation, minDistance)) {
+          setNearestLocation(chatRooms[nearestDistanceIndex].placeName)
+        }
       };
     }
     else {
@@ -170,7 +176,8 @@ export default function ChatAutour({ navigation }) {
                 style={globalStyles.button}
                 onPressIn={() => {
                   setModalVisible(!modalVisible)
-                  recalculateUserChatrooms();}} >
+                  recalculateUserChatrooms();
+                }} >
                 <Text style={globalStyles.text}>ok</Text>
               </Pressable>
             </View>
@@ -220,7 +227,8 @@ export default function ChatAutour({ navigation }) {
                       chatRoomName: room.placeName,
                       chatRoomType: room.placeTypes[0],
                       chatRoomTypeAdress: room.vicinity,
-                      nearestLocation: room.placeName === nearestLocation // true ou false
+                      nearestLocation: room.placeName === nearestLocation,
+                      previousPage: 'ChatAutour'// true ou false
                     });
                   }}>
 

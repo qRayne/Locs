@@ -156,7 +156,9 @@ export default function Location({ navigation }) {
             if (type.includes("point_of_interest")) {
               const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
               createChatRoomOnClick(chatRoom);
-              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress,nearestLocation : userInLocation()});
+              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress,nearestLocation : userInLocation(),
+                previousPage: 'Location'// true ou false
+              });
             }
             else {
               Alert.alert("This location is off limits");
