@@ -8,6 +8,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 const { KEY } = require('./constNames.js')
 import { createChatRoom } from './newChatroom';
 import { calculateDistanceBetweenLocations } from './distanceCalculation';
+import ChatAutour from './chatAutour';
 
 
 export default function Location({ navigation }) {
@@ -171,7 +172,7 @@ export default function Location({ navigation }) {
       <Pressable
         onPressIn={() => {
           console.log("move to chatAutour screen");
-          navigation.navigate('ChatAutour')
+          navigation.navigate('Home', {screen: "ChatAutour"} )
         }}>
         <Text style={globalStyles.register}> Leave? </Text>
       </Pressable>

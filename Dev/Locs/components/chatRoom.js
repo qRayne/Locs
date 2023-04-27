@@ -115,7 +115,7 @@ export default function Chatroom({ navigation, route }) {
   }
 
   return (
-    <View style={globalStyles.container}>
+    <View style={chatStyles.container}>
       <View style={chatStyles.infoBox}>
         {/* TODO: use context to pass along the name of the location */}
         {/* <Image source={{ uri : icon}}></Image> */}
@@ -132,11 +132,20 @@ export default function Chatroom({ navigation, route }) {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => setCurrentlySelectedUser(item.sender)}>
+              {/* Column = y, Row = x (both are solo)*/}
               <View style={globalStyles.row}>
-                <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
-                <Text>
-                  username: {item.sender} message: {item.message} {item.timestamp}
-                </Text>
+                <View style={globalStyles.column}> 
+                  <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
+                </View>
+                
+                <View style={globalStyles.column}>
+                  <View style={globalStyles.row}>
+                    <Text style={globalStyles.bold}> {item.sender}</Text> 
+                    <Text style={globalStyles.faded}>{item.timestamp}</Text>
+                  </View>
+                  {/* like a row */}
+                  <Text style={globalStyles.espace}>{item.message}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           )}
@@ -152,11 +161,11 @@ export default function Chatroom({ navigation, route }) {
         </View>
       </View>
 
-      <View>
+      <View style={globalStyles.row}>
         {isPublicChatroom ? (
           <View style={globalStyles.row}>
             <Pressable onPressIn={() => { goToChatPrivate(); }}>
-              <Text>Start private chat</Text>
+              <Text style={chatStyles.centerText}> Start private chat </Text>
             </Pressable>
           </View>
         ) : null}
@@ -164,7 +173,7 @@ export default function Chatroom({ navigation, route }) {
           onPressIn={() => {
             logout();
           }}>
-          <Text style={globalStyles.register}> Logout? </Text>
+          <Text style={chatStyles.centerText}> Logout? </Text>
         </Pressable>
       </View>
     </View>

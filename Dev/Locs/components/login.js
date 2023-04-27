@@ -86,7 +86,7 @@ export default function Login({ navigation }) {
         style={globalStyles.button}
         onPressIn={() => {
           console.log("move to chatAutour screen");
-          navigation.navigate('ChatAutour');
+          navigation.navigate('Home', {screen: "ChatAutour"});
         }}>
         <Text style={globalStyles.text}>ChatAutour</Text>
       </Pressable>

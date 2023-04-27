@@ -39,8 +39,26 @@ const globalStyles = StyleSheet.create({
       fontSize: 25
     },
 
+    bold:{
+      fontWeight: "bold",
+      fontSize: 18,
+      marginRight: 10
+    },
+
+    espace:{
+      // marginLeft: 25
+    },
+
+    faded:{
+      opacity: 50 
+    },
+
     row:{
       flexDirection: "row"
+    },
+
+    column:{
+      flexDirection: "column"
     },
   
     inputbox: {

@@ -2,6 +2,13 @@ import { StyleSheet } from "react-native";
 
 const chatStyles = StyleSheet.create({
 
+    container:{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#355fd4"
+    },
+
     logo:{
         width: 50,
         height: 50
@@ -25,23 +32,30 @@ const chatStyles = StyleSheet.create({
     },
 
     chatbox:{
-        flex: 1,
+        flex: 6,
         width: 375,
-        borderColor: "black",
+        // borderColor: "black",
         borderWidth: 2,
-        backgroundColor: "lightgrey",
+        borderRadius: 5,
+        backgroundColor: "#2548a7",
         justifyContent: "flex-end",
         padding: 10
     },
 
     chatInput:{
-        backgroundColor: '#3C746F',
+        backgroundColor: '#2b55ca',
         alignSelf: 'center',
         borderRadius: 10,
         width: "100%",
         margin: 7,
         padding: 5,
         color: 'white'
+    },
+
+    centerText:{
+        margin: 5,
+        alignSelf: "center",
+        textAlign: "center"
     }
 });
 

@@ -15,11 +15,11 @@ export default function ChatAutour({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const [m, setM] = useState(25);
-  const [loading, setLoading] = useState(true);
   const alreadyCreatedChatrooms = []
 
   const onRefresh = useCallback(() => {
@@ -140,15 +140,6 @@ export default function ChatAutour({ navigation }) {
       <View>
         <View style={autourStyles.row}>
           <Text style={globalStyles.subtitle}>Autour de vous</Text>
-
-          {/* ce bouton doit avoir l'image de profile */}
-          <Pressable
-            style={autourStyles.profile}
-            onPressIn={() => {
-              console.log("move to profile screen");
-              navigation.navigate('Profile');
-            }}
-          />
         </View>
 
         {/* Boite qui permet de changer la distance */}
@@ -197,8 +188,7 @@ export default function ChatAutour({ navigation }) {
         <View style={autourStyles.row}>
           <Pressable
             style={globalStyles.button}
-            onPressIn={() => setModalVisible(true)}
-          >
+            onPressIn={() => setModalVisible(true)}>
             <Text style={globalStyles.text}>{m} M</Text>
           </Pressable>
 
@@ -207,8 +197,7 @@ export default function ChatAutour({ navigation }) {
             onPressIn={() => {
               console.log("move to location screen");
               navigation.navigate('Location');
-            }
-            }>
+            }}>
             <Text style={globalStyles.text}>Location</Text>
           </Pressable>
         </View>

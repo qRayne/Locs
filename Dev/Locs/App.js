@@ -1,6 +1,8 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import ChatAutour from './components/chatAutour';
 import Register from './components/register';
 import Location from './components/location';
@@ -11,6 +13,7 @@ import Avatar from './components/avatar';
 import Login from './components/login';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
@@ -32,28 +35,62 @@ export default function App() {
           component={Avatar}
         />
         <Stack.Screen
-          name="Profiler"
-          component={Profiler}
-        />
-        <Stack.Screen
-          name="Location"
-          component={Location}
-        />
-        <Stack.Screen
-          name="ChatAutour"
-          component={ChatAutour}
+          name="Home"
+          component={Home}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="ChatRoom"
           component={Chatroom}
         />
         <Stack.Screen
-          name="Profile"
-          component={Profile}
+          name="Profiler"
+          component={Profiler}
         />
       </Stack.Navigator>
     </NavigationContainer>
   )
+
+  function Home(){
+    return(
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false
+        }}>
+          <Tab.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              tabBarLabel: 'Profile',
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons name="face-man-profile" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="ChatAutour"
+            component={ChatAutour}
+            options={{
+              tabBarLabel: 'Locs',
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons name="home" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Location"
+            component={Location}
+            options={{
+              tabBarLabel: 'Location',
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons name="google-maps" color={color} size={size} />
+              ),
+            }}
+          />
+          
+        </Tab.Navigator>
+    )
+  }
 
   
 }
