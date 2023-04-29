@@ -11,6 +11,9 @@ import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
 
 const { KEY } = require('./constNames.js')
+const darkMapStyle= require('../styles/darkMapStyles.json')
+const lightMapStyle = require('../styles/lightMapStyles.json')
+
 
 export default function Location({ navigation }) {
   const [location, setLocation] = useState("");
@@ -22,6 +25,7 @@ export default function Location({ navigation }) {
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
+
 
   const ref = useRef();
 
@@ -80,6 +84,7 @@ export default function Location({ navigation }) {
       <MapView
         provider={PROVIDER_GOOGLE}
         style={locationStyles.map}
+        customMapStyle={darkMapStyle}
         region={{
           latitude: lat,
           longitude: lng,
