@@ -13,8 +13,7 @@ import ChatAutour from './chatAutour';
 const { KEY } = require('./constNames.js')
 
 export default function Location({ navigation }) {
-  const [autocomplete, setAutocomplete] = useState("");
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState("");
   const [userlng,setUserLng] = useState('');
   const [userlat,setUserLat] = useState('');
   const [adress, setAdress] = useState('');
@@ -23,14 +22,7 @@ export default function Location({ navigation }) {
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
-  const [km, setKm] = useState(0);
 
-  // details doit etre mis dans chatAutour
-  const [details, setDetails] = useState(null);
-  const [poi, setPoi] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-
-  // 
   const ref = useRef();
 
   // useEffect(() => {
@@ -82,53 +74,9 @@ export default function Location({ navigation }) {
     <View style={globalStyles.container}>
       <View>
         <Text style={globalStyles.subtitle}>Location</Text>
-      </View>
+      </View>   
 
-      <View style={globalStyles.centeredProp}>
-        <Pressable
-          style={globalStyles.inputbox}
-          onPressIn={() => setModalVisible(true)}>
-          <Text style={globalStyles.text}>{autocomplete}</Text>
-        </Pressable>
-      </View>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible)
-        }}>
-
-        {/* SEARCH POUR UN ENDROIT */}
-        <View style={locationStyles.centeredView}>
-          <View style={{ width: 300, height: 150 }}>
-            <GooglePlacesAutocomplete
-              fetchDetails={true}
-              placeholder="Search"
-              ref={ref}
-
-              onPress={(data, details = null) => {
-                // console.log(data, details)
-                setDetails(details)
-                setType(details.types);
-                setLocation(details.name)
-                setAdress(details.vicinity);
-                setLng(details.geometry.location.lng)
-                setLat(details.geometry.location.lat)
-                setIcon(details.icon)
-              }}
-              query={{
-                key: KEY,
-                language: "en",
-              }}
-            />
-            {/* </View> */}
-          </View>
-        </View>
-      </Modal>
-
-      {/* VIEW DE GOOGLE MAPS */}
+       {/* Affiche Google Maps avec notre location  */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={locationStyles.map}
@@ -140,24 +88,25 @@ export default function Location({ navigation }) {
         }}
         showsUserLocation={true}
         followsUserLocation={true}
+        coordinate
         onPoiClick={(e) => {
           // console.log(e)
-          console.log(e.nativeEvent.name)
-          setPoi(JSON.stringify(e.nativeEvent.placeId))
-          setAutocomplete(JSON.stringify(e.nativeEvent.name))
-          console.log("poi: " + poi)
+          setLat(e.nativeEvent.coordinate.latitude)
+          setLng(e.nativeEvent.coordinate.longitude)
+          setLocation(e.nativeEvent.name)
         }}>
 
+        {/* Ouvre les Chatrooms éloigné */}
         <Marker
           coordinate={{ latitude: lat, longitude: lng }}
-          title={location} //fix later 
-          description={"location.toString"} //fix later
+          title={location.replace(/[\n]/gm, ' ')}
+          description={type}
           onPress={() => {
             console.log(location);
             if (type.includes("point_of_interest")) {
               const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
               createChatRoomOnClick(chatRoom);
-              navigation.navigate('ChatRoom', { chatRoomName: location,chatRoomType:type[0], chatRoomTypeAdress:adress,nearestLocation : userInLocation(),
+              navigation.navigate('ChatRoom', { chatRoomName: location, chatRoomType:type[0], chatRoomTypeAdress:adress, nearestLocation : userInLocation(),
                 previousPage: 'Location'// true ou false
               });
             }
@@ -168,17 +117,26 @@ export default function Location({ navigation }) {
         />
       </MapView>
 
-      <Text>{location}</Text>
-      <Text>{lat}, {lng}</Text>
-
-
-      <Pressable
-        onPressIn={() => {
-          console.log("move to chatAutour screen");
-          navigation.navigate('Home', {screen: "ChatAutour"} )
-        }}>
-        <Text style={globalStyles.register}> Leave? </Text>
-      </Pressable>
+      {/* SEARCH POUR UN ENDROIT */}
+      <View style={locationStyles.absolute}>
+        <GooglePlacesAutocomplete
+          fetchDetails={true}
+          placeholder="Search"
+          ref={ref}
+          onPress={(data, details = null) => {
+            setType(details.types);
+            setLocation(details.name)
+            setAdress(details.vicinity);
+            setLng(details.geometry.location.lng)
+            setLat(details.geometry.location.lat)
+            setIcon(details.icon)
+          }}
+          query={{
+            key: KEY,
+            language: "en",
+          }}
+        />
+      </View>
     </View>
   );
 }

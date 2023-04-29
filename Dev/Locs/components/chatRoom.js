@@ -116,35 +116,32 @@ export default function Chatroom({ navigation, route }) {
 
   return (
     <View style={chatStyles.container}>
-      <View style={chatStyles.infoBox}>
+      <View>
         {/* TODO: use context to pass along the name of the location */}
         {/* <Image source={{ uri : icon}}></Image> */}
         <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
         {/* <Text> {chatRoom.adress}</Text> */}
-        <Text> {chatRoomType}</Text>
+        <Text> {chatRoomType.replace(/_/gm, " ")}</Text>
         <Text> {chatRoomAdress}</Text>
       </View>
 
-      {/* barre de texte */}
       <View style={chatStyles.chatbox}>
         <FlatList
           data={chatMessages}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => setCurrentlySelectedUser(item.sender)}>
-              {/* Column = y, Row = x (both are solo)*/}
               <View style={globalStyles.row}>
-                <View style={globalStyles.column}> 
-                  <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
-                </View>
-                
                 <View style={globalStyles.column}>
                   <View style={globalStyles.row}>
+                    <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
                     <Text style={globalStyles.bold}> {item.sender}</Text> 
-                    <Text style={globalStyles.faded}>{item.timestamp}</Text>
+                    <Text style={globalStyles.faded}>{item.timestamp.toString()}</Text>
                   </View>
                   {/* like a row */}
-                  <Text style={globalStyles.espace}>{item.message}</Text>
+                  <View style={globalStyles.row}>
+                    <Text style={globalStyles.espace}>{item.message}</Text>
+                  </View>
                 </View>
               </View>
             </TouchableOpacity>

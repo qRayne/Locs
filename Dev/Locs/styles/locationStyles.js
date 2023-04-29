@@ -42,6 +42,12 @@ const locationStyles = StyleSheet.create({
       // marginTop: 22
     },
 
+    absolute:{
+      position: 'absolute',
+      left: 0,
+      top: 100,
+    }
+
 
   });
 

@@ -14,16 +14,8 @@ const chatStyles = StyleSheet.create({
         height: 50
     },
 
-    infoBox:{
-
-    },
-
     collapsedChat:{
         flex: 6
-    },
-
-    openedChat:{
-
     },
 
     avatar:{
@@ -34,7 +26,6 @@ const chatStyles = StyleSheet.create({
     chatbox:{
         flex: 6,
         width: 375,
-        // borderColor: "black",
         borderWidth: 2,
         borderRadius: 5,
         backgroundColor: "#2548a7",

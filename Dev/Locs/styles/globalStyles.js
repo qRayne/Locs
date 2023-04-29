@@ -46,19 +46,22 @@ const globalStyles = StyleSheet.create({
     },
 
     espace:{
-      // marginLeft: 25
+      marginLeft: 25
     },
 
     faded:{
-      opacity: 50 
+      opacity:  0.5,
     },
 
     row:{
-      flexDirection: "row"
+      flexDirection: "row",
+      alignItems: "center"
     },
 
     column:{
-      flexDirection: "column"
+      flexDirection: "column",
+      // justifyContent: "center",
+      // alignItems: "center"
     },
   
     inputbox: {
