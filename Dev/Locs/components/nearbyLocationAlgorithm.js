@@ -8,6 +8,7 @@ import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } fr
 // la liste de chatrooms ont chacun une latitude et longitude
 
 export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, radiusOfSearch) {
+
     if (listeChatrooms.length === 0) {
         return;
     }
@@ -15,9 +16,6 @@ export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, ra
     const allDistances = listeChatrooms.map(({ coordinate }) =>
         calculateDistanceBetweenLocations(userLocation, coordinate)
     );
-
-    console.log(allDistances);
-
     const minDistance = Math.min(...allDistances);
     const minDistanceIndex = allDistances.indexOf(minDistance);
     const nearestChatRoom = listeChatrooms[minDistanceIndex];
@@ -35,4 +33,12 @@ export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, ra
         return;
     }
 
+}
+
+// une autre function plus simple pour une seule calculation
+// utile pour notre location tab
+export function checkLocationInGeo(userLocation,placeLocation){
+    // s'il les deux position sont proches
+    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
+    return calculateBoundsBetweenLocations(userLocation,placeLocation,distance);
 }

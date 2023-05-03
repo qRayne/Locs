@@ -9,6 +9,7 @@ import * as Loc from 'expo-location';
 import locationStyles from '../styles/locationStyles';
 import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
+import { checkLocationInGeo } from './nearbyLocationAlgorithm'
 
 const { KEY } = require('./constNames.js')
 const darkMapStyle= require('../styles/darkMapStyles.json')
@@ -47,15 +48,26 @@ export default function Location({ navigation }) {
     setUserLng(location.coords.longitude);
   }
 
-  async function createChatRoomOnClick(chatRoom) {
-    await createChatRoom(chatRoom)
+  function createChatRoomOnClick(chatRoom) {
+    createChatRoom(chatRoom)
+      .then(()=>{
+        navigation.navigate('ChatRoom', { 
+          chatRoomName: chatRoom.location, 
+          chatRoomType:chatRoom.type[0], 
+          chatRoomTypeAdress:chatRoom.adress, 
+          nearestLocation : userInLocation(),
+          previousPage: 'Location'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function userInLocation(){
-    const userLocation = {lat:userlat,lng:userlng};
-    const placeLocation = {lat:lat,lng:lng}
-    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
-    return distance <= 0.10; // soit moins de 10m
+    const userLocation = {latitude:userlat,longitude:userlng};
+    const placeLocation = {latitude:lat,longitude:lng}
+    return checkLocationInGeo(userLocation,placeLocation);
   }
 
   return (
@@ -79,7 +91,6 @@ export default function Location({ navigation }) {
         followsUserLocation={true}
         coordinate
         onPoiClick={(e) => {
-          // console.log(e)
           setLat(e.nativeEvent.coordinate.latitude)
           setLng(e.nativeEvent.coordinate.longitude)
           setLocation(e.nativeEvent.name)
@@ -89,19 +100,20 @@ export default function Location({ navigation }) {
         <Marker
           coordinate={{ latitude: lat, longitude: lng }}
           title={location.replace(/[\n]/gm, ' ')}
-          description={type}
+          onSelect={()=>{
+            console.log("yes");
+          }}
           onPress={() => {
-            console.log(location);
-            if (type.includes("point_of_interest")) {
-              const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
-              createChatRoomOnClick(chatRoom);
-              navigation.navigate('ChatRoom', { chatRoomName: location, chatRoomType:type[0], chatRoomTypeAdress:adress, nearestLocation : userInLocation(),
-                previousPage: 'Location'// true ou false
-              });
-            }
-            else {
-              Alert.alert("This location is off limits");
-            }
+            const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }            
+            // createChatRoomOnClick(chatRoom);
+            // // if (type.includes("point_of_interest")) {
+            // //   const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
+            // //   createChatRoomOnClick(chatRoom);
+            // // }
+            // // else {
+            // //   Alert.alert("This location is off limits");
+            // // }
+            Alert.alert("U Clicked on a marker");
           }}
         />
       </MapView>
