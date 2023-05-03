@@ -29,22 +29,6 @@ export default function Location({ navigation }) {
 
   const ref = useRef();
 
-  // useEffect(() => {
-  //   ref.current?.getCurrentLocation();
-  // }, []);
-
-
-  // async function getCurrentLocation() {
-  //   const { status } = await Loc.requestForegroundPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     console.log('Permission to access location was denied');
-  //     return;
-  //   }
-
-  //   const location = await Loc.getCurrentPositionAsync({});
-  //   // console.log(location.coords.latitude, location.coords.longitude);
-  // }
-
   useEffect(() => {
     (async () => {
       let { status } = await Loc.requestForegroundPermissionsAsync();

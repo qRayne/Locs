@@ -1,11 +1,11 @@
-import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } from './distanceCalculation';
 import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator } from 'react-native';
 import React, { useState, useCallback, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { createChatRoom } from './newChatroom';
 import * as Location from 'expo-location';
 import { ScrollView } from 'react-native';
-import { Font, AppLoading } from 'expo'
+import { Font, AppLoading } from 'expo';
+import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
@@ -21,44 +21,23 @@ export default function ChatAutour({ navigation }) {
   const [status, setStatus] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
-  const [m, setM] = useState(25);
+  const [radiusOfSearch, setRadiusOfSearch] = useState(25);
+  const userLocation = { latitude: lat, longitude: lng };
   const alreadyCreatedChatrooms = []
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
-
+  // les fonctions appeler au depart
   // seul la localisation du user peut être recuperer avant la fin du use effect
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setStatus('Permission to access location was denied');
         return;
       } else {
         console.log('Access granted!!')
-        setStatus(status)
       }
+      calculateUserChatrooms();
     })();
-    getLocationOfUser();
-  }, []);
-
-  // on attend 3 seconds et on call le chatrooms
-  delaySearchChatroom(getChatRoomsByUserLocation, 2000, false);
-  delaySearchChatroom(getWritableChatRoom, 2000, true);
-
-  // ici on utilise une function qui va nous servir de setimeout
-  function delaySearchChatroom(fn, delayTime, finshedCalculating) {
-    setTimeout(() => {
-      fn();
-      if (finshedCalculating) {
-        setLoading(false);
-      }
-    }, delayTime);
-  }
+  },[]);
 
   function createChatRoomOnClick(place) {
     createChatRoom(place) // plus logique d'utiliser le then dans ce cas de figure
@@ -82,77 +61,40 @@ export default function ChatAutour({ navigation }) {
     setLng(location.coords.longitude);
   }
 
-  async function getChatRoomsByUserLocation() {
-    // changer le latitude/longitude 
-    let places = []
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat + "%2C" + lng + "&radius=" + m + "&type=point_of_interest&key=" + KEY + ""
+  // update the function to take in radiusOfSearch and userLocation as arguments
+  async function getChatRoomsByUserLocation(userLocation, radiusOfSearch) {
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + userLocation.latitude + "%2C" + userLocation.longitude + "&radius=" + radiusOfSearch + "&type=point_of_interest&key=" + KEY + ""
     // const det = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" + ID + "&key=" + KEY --> retourne des details comme dans location --> pour editorial_summary.overview
-    fetch(url)
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        for (let googlePlace of res.results) {
-          let place = {};
-          let myLat = googlePlace.geometry.location.lat;
-          let myLong = googlePlace.geometry.location.lng;
-          let coordinate = {
-            latitude: myLat,
-            longitude: myLong,
-          };
-          place['placeTypes'] = googlePlace.types;
-          place['coordinate'] = coordinate;
-          place['placeName'] = googlePlace.name;
-          place['vicinity'] = googlePlace.vicinity;
-          // si deux lieux n'ont la même adresse alors on les ajoute en tant que chatroom
-          if (!alreadyCreatedChatrooms.includes(place['vicinity'])) {
-            alreadyCreatedChatrooms.push(place['vicinity']);
-            places.push(place);
-          }
-
-        }
-        setChatRooms(places); // récupère tous les places autour d'un certain radius
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
-
-  // le nom changera mais veut dire que le chatroom ayant une distance plus petite que le rayon de reherche
-  function getWritableChatRoom() {
-    const allDistances = []
-    const userLocation = { lat: lat, lng: lng };
-    if (chatRooms.length != 0) {
-      for (let i = 0; i < chatRooms.length; i++) {
-        const placeLocation = {
-          lat: chatRooms[i].coordinate.latitude, lng:
-            chatRooms[i].coordinate.longitude
-        }
-        allDistances.push(calculateDistanceBetweenLocations(userLocation, placeLocation))
-      }
-      minDistance = Math.min(...allDistances);
-      nearestDistanceIndex = allDistances.indexOf(minDistance);
-      if (chatRooms[nearestDistanceIndex] && minDistance <= m) {
-        const placeLocation = {
-          lat: chatRooms[nearestDistanceIndex].coordinate.latitude, lng:
-            chatRooms[nearestDistanceIndex].coordinate.longitude
-        }
-        if (calculateBoundsBetweenLocations(userLocation, placeLocation, minDistance)) {
-          setNearestLocation(chatRooms[nearestDistanceIndex].placeName)
-        }
+    const res = await fetch(url);
+    const data = await res.json();
+    const places = data.results.map(googlePlace => {
+      const myLat = googlePlace.geometry.location.lat;
+      const myLong = googlePlace.geometry.location.lng;
+      const coordinate = {
+        latitude: myLat,
+        longitude: myLong,
       };
-    }
-    else {
-      // console.log('google api na pas encore calculer tous les lieux');
-    }
-  }
+      const place = {
+        placeTypes: googlePlace.types,
+        coordinate,
+        placeName: googlePlace.name,
+        vicinity: googlePlace.vicinity,
+      };
+      if (!alreadyCreatedChatrooms.includes(place['vicinity'])) {
+        alreadyCreatedChatrooms.push(place['vicinity']);
+        return place;
+      }
+      return null;
+    }).filter(place => place !== null);
+    setChatRooms(places);
+  };
 
   // on apelle cette fonction chaque fois que l'utilisateur change de radius
   // recalcul de des chatrooms par le user, de sa localisation et de recuperer le chatroom auquel il peut ecrire
-  function recalculateUserChatrooms() {
-    getChatRoomsByUserLocation();
+  async function calculateUserChatrooms() {
+    getChatRoomsByUserLocation(userLocation, radiusOfSearch);
     getLocationOfUser();
-    getWritableChatRoom();
+    setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
   }
 
   return (
@@ -182,15 +124,15 @@ export default function ChatAutour({ navigation }) {
                 minimumTrackTintColor="#000"
                 maximumTrackTintColor="#000"
                 thumbTintColor='#000'
-                value={m}
-                onSlidingComplete={setM}
+                value={radiusOfSearch}
+                onSlidingComplete={setRadiusOfSearch}
               />
-              <Text>{m + " M"}</Text>
+              <Text>{radiusOfSearch + " M"}</Text>
               <Pressable
                 style={globalStyles.button}
                 onPressIn={() => {
                   setModalVisible(!modalVisible)
-                  recalculateUserChatrooms();
+                  calculateUserChatrooms();
                 }} >
                 <Text style={globalStyles.text}>ok</Text>
               </Pressable>
@@ -210,7 +152,7 @@ export default function ChatAutour({ navigation }) {
           <Pressable
             style={globalStyles.button}
             onPressIn={() => setModalVisible(true)}>
-            <Text style={globalStyles.text}>{m} M</Text>
+            <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
           </Pressable>
 
           <Pressable
