@@ -34,11 +34,3 @@ export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, ra
     }
 
 }
-
-// une autre function plus simple pour une seule calculation
-// utile pour notre location tab
-export function checkLocationInGeo(userLocation,placeLocation){
-    // s'il les deux position sont proches
-    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
-    return calculateBoundsBetweenLocations(userLocation,placeLocation,distance);
-}

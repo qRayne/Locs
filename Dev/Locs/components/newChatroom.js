@@ -1,6 +1,7 @@
 const { URL } = require('./constNames.js');
 
 export async function createChatRoom(chatRoom) {
+
     const response = await fetch(`${URL}/create-chatRoom`, {
       method: 'POST',
       headers: {
@@ -18,5 +19,6 @@ export async function createChatRoom(chatRoom) {
       })
     })
     const data = await response.json();
+    console.log(data);
     return data;
 }

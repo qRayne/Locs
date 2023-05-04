@@ -1,6 +1,6 @@
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
-import { calculateDistanceBetweenLocations } from './distanceCalculation';
+import { calculateDistanceBetweenLocations,calculateBoundsBetweenLocations } from './distanceCalculation';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState, useRef, useEffect } from 'react';
 import { createChatRoom } from './newChatroom';
@@ -9,7 +9,6 @@ import * as Loc from 'expo-location';
 import locationStyles from '../styles/locationStyles';
 import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
-import { checkLocationInGeo } from './nearbyLocationAlgorithm'
 
 const { KEY } = require('./constNames.js')
 const darkMapStyle= require('../styles/darkMapStyles.json')
@@ -67,7 +66,8 @@ export default function Location({ navigation }) {
   function userInLocation(){
     const userLocation = {latitude:userlat,longitude:userlng};
     const placeLocation = {latitude:lat,longitude:lng}
-    return checkLocationInGeo(userLocation,placeLocation);
+    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
+    return calculateBoundsBetweenLocations(userLocation,placeLocation,distance);
   }
 
   return (

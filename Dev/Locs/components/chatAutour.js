@@ -14,7 +14,7 @@ const { KEY } = require('./constNames.js')
 
 export default function ChatAutour({ navigation }) {
   const [nearestLocation, setNearestLocation] = useState("");
-  const [modalChangeDistance, setModalChangeDistance] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,6 @@ export default function ChatAutour({ navigation }) {
 
   // update the function to take in radiusOfSearch and userLocation as arguments
   async function getChatRoomsByUserLocation(userLocation, radiusOfSearch) {
-    console.log("yes");
     const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + userLocation.latitude + "%2C" + userLocation.longitude + "&radius=" + radiusOfSearch + "&type=point_of_interest&key=" + KEY + ""
     // const det = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" + ID + "&key=" + KEY --> retourne des details comme dans location --> pour editorial_summary.overview
     const res = await fetch(url);
@@ -81,7 +80,6 @@ export default function ChatAutour({ navigation }) {
         placeName: googlePlace.name,
         vicinity: googlePlace.vicinity,
       };
-      console.log(place);
       if (!alreadyCreatedChatrooms.includes(place['vicinity'])) {
         alreadyCreatedChatrooms.push(place['vicinity']);
         return place;
@@ -99,110 +97,103 @@ export default function ChatAutour({ navigation }) {
     setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
   }
 
+
   return (
     <View style={globalStyles.container}>
-      {loading ? (
-        <ActivityIndicator size={'large'} color={"#FFFFFF"}></ActivityIndicator>
-      ) : (
-        <View>
-          <View style={autourStyles.row}>
-            <Text style={globalStyles.subtitle}>Autour de vous</Text>
-          </View>
+      <View>
+        <View style={autourStyles.row}>
+          <Text style={globalStyles.subtitle}>Autour de vous</Text>
+        </View>
 
-          {/* Boite qui permet de changer la distance */}
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalChangeDistance}
-            onRequestClose={() => {
-              setModalChangeDistance(!modalChangeDistance)
-            }}>
+        {/* Boite qui permet de changer la distance */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible)
+          }}>
 
-            <View style={globalStyles.centeredView}>
-              <View style={globalStyles.modalView}>
-                <Text>How far?</Text>
-                <Slider
-                  style={{ width: 200, height: 40, backgroundColor: "#FFF" }}
-                  step={1}
-                  minimumValue={25}
-                  maximumValue={500}
-                  minimumTrackTintColor="#000"
-                  maximumTrackTintColor="#000"
-                  thumbTintColor='#000'
-                  value={radiusOfSearch}
-                  onSlidingComplete={setRadiusOfSearch}
-                />
-                <Text>{radiusOfSearch + " M"}</Text>
-                <Pressable
-                  style={globalStyles.button}
-                  onPressIn={() => {
-                    setModalChangeDistance(!modalChangeDistance)
-                    calculateUserChatrooms();
-                  }} >
-                  <Text style={globalStyles.text}>ok</Text>
-                </Pressable>
-              </View>
+          <View style={globalStyles.centeredView}>
+            <View style={globalStyles.modalView}>
+              <Text>How far?</Text>
+              <Slider
+                style={{ width: 200, height: 40, backgroundColor: "#FFF" }}
+                step={1}
+                minimumValue={25}
+                maximumValue={100}
+                minimumTrackTintColor="#000"
+                maximumTrackTintColor="#000"
+                thumbTintColor='#000'
+                value={radiusOfSearch}
+                onSlidingComplete={setRadiusOfSearch}
+              />
+              <Text>{radiusOfSearch + " M"}</Text>
+              <Pressable
+                style={globalStyles.button}
+                onPressIn={() => {
+                  setModalVisible(!modalVisible)
+                  calculateUserChatrooms();
+                }} >
+                <Text style={globalStyles.text}>ok</Text>
+              </Pressable>
             </View>
-          </Modal>
-
-          {/* Bouton qui change la DISTANCE */}
-          <View style={autourStyles.row}>
-            <Pressable
-              style={globalStyles.button}
-              onPressIn={() => setModalChangeDistance(true)}>
-              <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
-            </Pressable>
-
-            <Pressable
-              style={globalStyles.button}
-              onPressIn={() => {
-                console.log("move to location screen");
-                navigation.navigate('Location');
-              }}>
-              <Text style={globalStyles.text}>Location</Text>
-            </Pressable>
           </View>
+        </Modal>
 
-          {/* Liste de Loc */}
-          <View>
-            <ScrollView>
-              {chatRooms ? (
-                chatRooms.map((place, index) => (
-                  // TITRE DU LOC
-                  <View key={index}>
-                    <Text style={globalStyles.undertext}>
-                      {place.placeName}
-                    </Text>
-
-                    {/* infoBox */}
-                    <Pressable
-                      onPressIn={() => {
-                        createChatRoomOnClick(place);
-                      }}>
-
-                      <View style={autourStyles.collapsedBox}>
-                        <Text>{place.placeTypes[0]}</Text>
-                        {place.placeName == nearestLocation ? <Text>Chattable</Text> :
-                          <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
-                      </View>
-                    </Pressable>
-                  </View>
-                ))
-              ) : null}
-            </ScrollView>
-
-          </View>
-
+        {/* Bouton qui change la DISTANCE */}
+        <View style={autourStyles.row}>
           <Pressable
-            onPressIn={() => {
-              console.log("move to register screen");
-              navigation.navigate('Login');
-            }}>
-            <Text style={globalStyles.register}> Logout? </Text>
+            style={globalStyles.button}
+            onPressIn={() => setModalVisible(true)}>
+            <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
           </Pressable>
 
+          <Pressable
+            style={globalStyles.button}
+            onPressIn={() => {
+              console.log("move to location screen");
+              navigation.navigate('Location');
+            }}>
+            <Text style={globalStyles.text}>Location</Text>
+          </Pressable>
         </View>
-      )}
+
+        {/* Liste de Loc */}
+        <ScrollView>
+          {chatRooms ? (
+            chatRooms.map((place, index) => (
+              // TITRE DU LOC
+              <View key={index}>
+                <Text style={globalStyles.undertext}>
+                  {place.placeName}
+                </Text>
+
+                {/* infoBox */}
+                <Pressable
+                  onPressIn={() => {
+                    createChatRoomOnClick(place);
+                  }}>
+
+                  <View style={autourStyles.collapsedBox}>
+                    <Text>{place.placeTypes[0]}</Text>
+                    {place.placeName == nearestLocation ? <Text>Chattable</Text> :
+                      <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
+                  </View>
+                </Pressable>
+              </View>
+            ))
+          ) : null}
+        </ScrollView>
+      </View>
+
+      <Pressable
+        onPressIn={() => {
+          console.log("move to register screen");
+          navigation.navigate('Login');
+        }}>
+        <Text style={globalStyles.register}> Logout? </Text>
+      </Pressable>
     </View>
   );
 }
