@@ -45,6 +45,7 @@ const locationStyles = StyleSheet.create({
     absolute:{
       position: 'absolute',
       left: 0,
+      right: 0,
       top: 100,
     }
 

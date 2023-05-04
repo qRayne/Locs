@@ -1,6 +1,6 @@
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
-import { calculateDistanceBetweenLocations,calculateBoundsBetweenLocations } from './distanceCalculation';
+import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } from './distanceCalculation';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState, useRef, useEffect } from 'react';
 import { createChatRoom } from './newChatroom';
@@ -11,21 +11,21 @@ import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
 
 const { KEY } = require('./constNames.js')
-const darkMapStyle= require('../styles/darkMapStyles.json')
+const darkMapStyle = require('../styles/darkMapStyles.json')
 const lightMapStyle = require('../styles/lightMapStyles.json')
 
 
 export default function Location({ navigation }) {
   const [location, setLocation] = useState("");
-  const [userlng,setUserLng] = useState('');
-  const [userlat,setUserLat] = useState('');
+  const [userlng, setUserLng] = useState('');
+  const [userlat, setUserLat] = useState('');
   const [adress, setAdress] = useState('');
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
-
+  const [placeId, setPlaceId] = useState("");
 
   const ref = useRef();
 
@@ -47,14 +47,15 @@ export default function Location({ navigation }) {
     setUserLng(location.coords.longitude);
   }
 
+
   function createChatRoomOnClick(chatRoom) {
     createChatRoom(chatRoom)
-      .then(()=>{
-        navigation.navigate('ChatRoom', { 
-          chatRoomName: chatRoom.location, 
-          chatRoomType:chatRoom.type[0], 
-          chatRoomTypeAdress:chatRoom.adress, 
-          nearestLocation : userInLocation(),
+      .then(() => {
+        navigation.navigate('ChatRoom', {
+          chatRoomName: chatRoom.location,
+          chatRoomType: chatRoom.type[0],
+          chatRoomTypeAdress: chatRoom.adress,
+          nearestLocation: userInLocation(),
           previousPage: 'Location'
         });
       })
@@ -63,20 +64,20 @@ export default function Location({ navigation }) {
       });
   }
 
-  function userInLocation(){
-    const userLocation = {latitude:userlat,longitude:userlng};
-    const placeLocation = {latitude:lat,longitude:lng}
-    const distance = calculateDistanceBetweenLocations(userLocation,placeLocation);
-    return calculateBoundsBetweenLocations(userLocation,placeLocation,distance);
+  function userInLocation() {
+    const userLocation = { latitude: userlat, longitude: userlng };
+    const placeLocation = { latitude: lat, longitude: lng }
+    const distance = calculateDistanceBetweenLocations(userLocation, placeLocation);
+    return calculateBoundsBetweenLocations(userLocation, placeLocation, distance);
   }
 
   return (
     <View style={globalStyles.container}>
       <View>
         <Text style={globalStyles.subtitle}>Location</Text>
-      </View>   
+      </View>
 
-       {/* Affiche Google Maps avec notre location  */}
+      {/* Affiche Google Maps avec notre location  */}
       <MapView
         provider={PROVIDER_GOOGLE}
         style={locationStyles.map}
@@ -94,26 +95,22 @@ export default function Location({ navigation }) {
           setLat(e.nativeEvent.coordinate.latitude)
           setLng(e.nativeEvent.coordinate.longitude)
           setLocation(e.nativeEvent.name)
+          setPlaceId(e.nativeEvent.placeId);
         }}>
 
         {/* Ouvre les Chatrooms éloigné */}
         <Marker
           coordinate={{ latitude: lat, longitude: lng }}
           title={location.replace(/[\n]/gm, ' ')}
-          onSelect={()=>{
-            console.log("yes");
-          }}
           onPress={() => {
-            const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }            
-            // createChatRoomOnClick(chatRoom);
-            // // if (type.includes("point_of_interest")) {
-            // //   const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
-            // //   createChatRoomOnClick(chatRoom);
-            // // }
-            // // else {
-            // //   Alert.alert("This location is off limits");
-            // // }
-            Alert.alert("U Clicked on a marker");
+            console.log(type);
+            if (type.includes("point_of_interest")) {
+              const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
+              createChatRoomOnClick(chatRoom);
+            }
+            else {
+              Alert.alert("This location is off limits");
+            }
           }}
         />
       </MapView>
