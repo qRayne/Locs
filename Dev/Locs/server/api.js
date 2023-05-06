@@ -234,3 +234,13 @@ server.get("/profil-info", async (req, res) => {
     const returnProfileObject = await Profile.findOne({ username: username });
     res.send(returnProfileObject);
 })
+
+
+// pour acceder a tout les private conversation d'un user:
+server.get("/user-private-messages",async(req,res)=>{
+    const username = req.query.username;
+    const chatroomsReturnedObjects = await ChatRoom.find({
+        'place.name': new RegExp(username,"i") // tous les chatrooms qui ont le nom du username
+    })
+    res.send(chatroomsReturnedObjects);
+})

@@ -14,6 +14,7 @@ export default function Profile({ navigation }) {
     const [username, setUsername] = useState('');
     const [facialPhoto, setFacialPhoto] = useState('');
     const [delocdList, setdelocdList] = useState('');
+    const [privateMessageList,setPrivateMessageList] = useState('');
 
     // on attend que la page charge avant de se get les infos
     useEffect(() => {
@@ -26,7 +27,9 @@ export default function Profile({ navigation }) {
                 try {
                     // on ce get les principales infos de l'utilisateurs
                     const profildata = await fetch(`${URL}/profil-info/?username=` + encodeURIComponent(username));
+                    const profilPrivateMessages = await fetch(`${URL}/user-private-messages/?username=` + encodeURIComponent(username));
                     const jsonProfil = await profildata.json();
+                    const jsonPrivateMessages = await profilPrivateMessages.json();
                     // on recupère l'image en base64 et on la transforme en image
                     const base64Image = jsonProfil.facialPhoto.data;
                     const bufferImage = Buffer.from(base64Image, 'base64');
@@ -34,6 +37,7 @@ export default function Profile({ navigation }) {
                     setUsername(username);
                     setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
                     setdelocdList(jsonProfil.DeLocdList);
+                    setPrivateMessageList(jsonPrivateMessages);
                 } catch (error) {
                     console.error(error);
                 }
@@ -43,6 +47,7 @@ export default function Profile({ navigation }) {
         getInfos();
     }, []);
 
+    console.log(privateMessageList);
     return (
 
         <View style={globalStyles.container}>
@@ -66,6 +71,9 @@ export default function Profile({ navigation }) {
             >
                 <Text style={globalStyles.text}>DeLoc'd List</Text>
             </Pressable>
+
+            {/* A Changer pour que sa soit comme dans instagram  */}
+
 
             <Modal
                 animationType="fade"

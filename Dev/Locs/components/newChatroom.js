@@ -1,6 +1,6 @@
 const { URL } = require('./constNames.js');
 
-export async function createChatRoom(chatRoom) {
+export async function createChatRoom(chatRoom,isPublic = true) {
 
   const response = await fetch(`${URL}/create-chatRoom`, {
     method: 'POST',
@@ -15,7 +15,7 @@ export async function createChatRoom(chatRoom) {
           longitude: chatRoom.coordinate.longitude // à changer selon la localisation du lieu
         }
       },
-      isPublic: true
+      isPublic: isPublic
     })
   })
   const data = await response.json();
