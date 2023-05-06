@@ -25,7 +25,6 @@ export default function Location({ navigation }) {
   const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
-  const [placeId, setPlaceId] = useState("");
 
   const ref = useRef();
 
@@ -48,13 +47,18 @@ export default function Location({ navigation }) {
   }
 
 
-  function createChatRoomOnClick(chatRoom) {
+  function createChatRoomOnClick() {
+    const chatRoom = {
+      placeName: location,
+      coordinate: { latitude: lat, longitude: lng }
+    };
+    
     createChatRoom(chatRoom)
       .then(() => {
         navigation.navigate('ChatRoom', {
-          chatRoomName: chatRoom.location,
-          chatRoomType: chatRoom.type[0],
-          chatRoomTypeAdress: chatRoom.adress,
+          chatRoomName: chatRoom.placeName,
+          chatRoomType: type[0],
+          chatRoomTypeAdress: adress,
           nearestLocation: userInLocation(),
           previousPage: 'Location'
         });
@@ -62,6 +66,7 @@ export default function Location({ navigation }) {
       .catch((error) => {
         console.error(error);
       });
+
   }
 
   function userInLocation() {
@@ -95,7 +100,6 @@ export default function Location({ navigation }) {
           setLat(e.nativeEvent.coordinate.latitude)
           setLng(e.nativeEvent.coordinate.longitude)
           setLocation(e.nativeEvent.name)
-          setPlaceId(e.nativeEvent.placeId);
         }}>
 
         {/* Ouvre les Chatrooms éloigné */}
@@ -103,10 +107,8 @@ export default function Location({ navigation }) {
           coordinate={{ latitude: lat, longitude: lng }}
           title={location.replace(/[\n]/gm, ' ')}
           onPress={() => {
-            console.log(type);
             if (type.includes("point_of_interest")) {
-              const chatRoom = { placeName: location, adress: adress, coordinate: { latitude: lat, longitude: lng }, isPublic: true }
-              createChatRoomOnClick(chatRoom);
+              createChatRoomOnClick();
             }
             else {
               Alert.alert("This location is off limits");
