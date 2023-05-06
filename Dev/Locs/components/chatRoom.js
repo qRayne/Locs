@@ -116,14 +116,9 @@ export default function Chatroom({ navigation, route }) {
 
   return (
     <View style={chatStyles.container}>
-      <View>
-        {/* TODO: use context to pass along the name of the location */}
-        {/* <Image source={{ uri : icon}}></Image> */}
-        <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
-        {/* <Text> {chatRoom.adress}</Text> */}
-        <Text> {chatRoomType.replace(/_/gm, " ")}</Text>
-        <Text> {chatRoomAdress}</Text>
-      </View>
+      <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
+      <Text style={globalStyles.font}> {chatRoomType.replace(/_/gm, " ")}</Text>
+      <Text style={globalStyles.font}> {chatRoomAdress}</Text>
 
       <View style={chatStyles.chatbox}>
         <FlatList

@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
 
 import globalStyles from '../styles/globalStyles';
+import profileStyles from '../styles/profileStyles';
 
 const { URL } = require('./constNames.js')
 
@@ -48,32 +49,50 @@ export default function Profile({ navigation }) {
     }, []);
 
     console.log(privateMessageList);
-    return (
 
+    return (
         <View style={globalStyles.container}>
-            <View>
-                {facialPhoto ? (
-                    <Image
-                        source={{
-                            uri: `data:image/jpg;base64,${facialPhoto}`
-                        }}
-                        style={{ width: 200, height: 200 }}
-                    />
-                ) : null}
-                <Text style={globalStyles.subtitle}>{fullName}</Text>
-                <Text style={globalStyles.undertext}>{username}</Text>
+            <View style={profileStyles.toprow}>
+                {/* <Pressable
+                    onPressIn={
+                        navigation.navigate()
+                    }
+                >
+
+                </Pressable> */}
             </View>
 
+            <View>
+                <View  style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    {facialPhoto ? (
+                        <Image
+                            source={{uri: `data:image/jpg;base64, ${facialPhoto}`}}
+                            // style={{ width: 200, height: 200 }}
+                            style={profileStyles.circle}
+                        />
+                    ) : null}
+                </View>
+                <Text style={globalStyles.subtitle}>{fullName}</Text>
+                <Text style={globalStyles.undertext}>{username}</Text>
+                
+                {/* ajoute les infos ici */}
 
-            <Pressable
-                style={globalStyles.button}
-                onPressIn={() => setModalVisible(true)}
-            >
-                <Text style={globalStyles.text}>DeLoc'd List</Text>
-            </Pressable>
+                {/* <Text style={globalStyles.undertext}>{pronoms}</Text>
+                <Text style={globalStyles.undertext}>{lien}</Text>
+                <Text style={globalStyles.undertext}>{occupation}</Text>
+                <Text style={globalStyles.undertext}>{interets}</Text> */}
+            </View>
+
+            <View style={profileStyles.toprow}>
+                <Pressable
+                    style={globalStyles.button}
+                    onPressIn={() => setModalVisible(true)}
+                >
+                    <Text style={globalStyles.text}>DeLoc'd List</Text>
+                </Pressable>
+            </View>
 
             {/* A Changer pour que sa soit comme dans instagram  */}
-
 
             <Modal
                 animationType="fade"
@@ -85,6 +104,7 @@ export default function Profile({ navigation }) {
 
                 <View style={globalStyles.centeredView}>
                     <View style={globalStyles.modalView}>
+                        {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
                         <Text>George</Text>
                         <Text>David</Text>
                         <Text>Antoine</Text>
@@ -98,16 +118,6 @@ export default function Profile({ navigation }) {
                     </View>
                 </View>
             </Modal>
-
-
-
-            {/* <Pressable
-                onPressIn={() => {
-                console.log("move to chatAutour screen");
-                navigation.navigate('ChatAutour')
-                }}>
-                <Text style={globalStyles.register}> Leave? </Text>
-            </Pressable> */}
         </View>
     );
 }

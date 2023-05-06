@@ -16,7 +16,7 @@ const globalStyles = StyleSheet.create({
       backgroundColor: '#bccaf5',
       alignItems: 'center',
       justifyContent: 'center',
-      // fontFamily: 'Galdeano-Regular'
+      fontFamily: 'Galdeano_400Regular'
     },
 
     logo:{
@@ -32,25 +32,31 @@ const globalStyles = StyleSheet.create({
 
     subtitle:{
       marginTop: 40,
-      fontSize: 35
+      fontSize: 35,
+      fontFamily: 'Galdeano_400Regular'
     },
 
     undertext:{
-      fontSize: 25
+      fontSize: 25,
+      fontFamily: 'Galdeano_400Regular',
     },
 
     bold:{
       fontWeight: "bold",
-      fontSize: 18,
-      marginRight: 10
+      fontSize: 20,
+      marginRight: 10,
+      fontFamily: 'Galdeano_400Regular',
     },
 
     espace:{
-      marginLeft: 25
+      marginLeft: 25,
+      fontFamily: 'Galdeano_400Regular',
+      fontSize: 18
     },
 
     faded:{
       opacity:  0.5,
+      fontFamily: 'Galdeano_400Regular',
     },
 
     row:{
@@ -65,6 +71,7 @@ const globalStyles = StyleSheet.create({
     },
   
     inputbox: {
+      fontFamily: 'Galdeano_400Regular',
       backgroundColor: '#2b55ca',
       alignItems: 'center',
       justifyContent: 'center',
@@ -76,6 +83,7 @@ const globalStyles = StyleSheet.create({
     },
 
     button:{
+      fontFamily: 'Galdeano_400Regular',
       backgroundColor: "#5578DA",
       width:100,
       height: 30,
@@ -87,11 +95,17 @@ const globalStyles = StyleSheet.create({
     },
 
     text:{
-      color: 'white'
+      color: 'white',
+      fontFamily: 'Galdeano_400Regular',
+    },
+
+    font:{
+      fontFamily: 'Galdeano_400Regular',
     },
 
     register:{
-      marginTop: 15
+      marginTop: 15,
+      fontFamily: 'Galdeano_400Regular',
     },
 
     centeredView: {

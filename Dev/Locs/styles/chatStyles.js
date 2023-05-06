@@ -34,6 +34,7 @@ const chatStyles = StyleSheet.create({
     },
 
     chatInput:{
+        fontFamily: 'Galdeano_400Regular',
         backgroundColor: '#2b55ca',
         alignSelf: 'center',
         borderRadius: 10,

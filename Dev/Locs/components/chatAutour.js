@@ -1,11 +1,10 @@
 import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator } from 'react-native';
+import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useCallback, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { createChatRoom } from './newChatroom';
 import * as Location from 'expo-location';
 import { ScrollView } from 'react-native';
-import { Font, AppLoading } from 'expo';
-import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
@@ -14,14 +13,11 @@ const { KEY } = require('./constNames.js')
 
 export default function ChatAutour({ navigation }) {
   const [nearestLocation, setNearestLocation] = useState("");
+  const [radiusOfSearch, setRadiusOfSearch] = useState(25);
   const [modalVisible, setModalVisible] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
-  const [radiusOfSearch, setRadiusOfSearch] = useState(25);
   const userLocation = { latitude: lat, longitude: lng };
   const alreadyCreatedChatrooms = []
 
@@ -97,13 +93,10 @@ export default function ChatAutour({ navigation }) {
     setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
   }
 
-
   return (
     <View style={globalStyles.container}>
-      <View>
-        <View style={autourStyles.row}>
-          <Text style={globalStyles.subtitle}>Autour de vous</Text>
-        </View>
+      {/* <View> */}
+        <Text style={globalStyles.subtitle}>Autour de vous</Text>
 
         {/* Boite qui permet de changer la distance */}
         <Modal
@@ -116,7 +109,7 @@ export default function ChatAutour({ navigation }) {
 
           <View style={globalStyles.centeredView}>
             <View style={globalStyles.modalView}>
-              <Text>How far?</Text>
+              <Text style={globalStyles.font}>Search Radius</Text>
               <Slider
                 style={{ width: 200, height: 40, backgroundColor: "#FFF" }}
                 step={1}
@@ -128,7 +121,7 @@ export default function ChatAutour({ navigation }) {
                 value={radiusOfSearch}
                 onSlidingComplete={setRadiusOfSearch}
               />
-              <Text>{radiusOfSearch + " M"}</Text>
+              <Text style={globalStyles.font}>{radiusOfSearch + " M"}</Text>
               <Pressable
                 style={globalStyles.button}
                 onPressIn={() => {
@@ -142,22 +135,11 @@ export default function ChatAutour({ navigation }) {
         </Modal>
 
         {/* Bouton qui change la DISTANCE */}
-        <View style={autourStyles.row}>
           <Pressable
             style={globalStyles.button}
             onPressIn={() => setModalVisible(true)}>
             <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
           </Pressable>
-
-          <Pressable
-            style={globalStyles.button}
-            onPressIn={() => {
-              console.log("move to location screen");
-              navigation.navigate('Location');
-            }}>
-            <Text style={globalStyles.text}>Location</Text>
-          </Pressable>
-        </View>
 
         {/* Liste de Loc */}
         <ScrollView>
@@ -176,16 +158,16 @@ export default function ChatAutour({ navigation }) {
                   }}>
 
                   <View style={autourStyles.collapsedBox}>
-                    <Text>{place.placeTypes[0]}</Text>
+                    <Text style={globalStyles.font}>{place.placeTypes[0]}</Text>
                     {place.placeName == nearestLocation ? <Text>Chattable</Text> :
-                      <Text>Vous pouvez seulement lire dans ce chatRoom</Text>}
+                      <Text style={globalStyles.font}>Vous pouvez seulement lire dans ce chatRoom</Text>}
                   </View>
                 </Pressable>
               </View>
             ))
           ) : null}
         </ScrollView>
-      </View>
+      {/* </View> */}
 
       <Pressable
         onPressIn={() => {
@@ -194,6 +176,7 @@ export default function ChatAutour({ navigation }) {
         }}>
         <Text style={globalStyles.register}> Logout? </Text>
       </Pressable>
+
     </View>
   );
 }

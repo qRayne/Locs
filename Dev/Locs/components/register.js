@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Pressable, Text, TextInput, View } from 'react-native';
+import {Pressable, Text, TextInput, View, Image } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const {URL}  = require('./constNames.js')
@@ -41,7 +41,10 @@ export default function Register({ navigation }) {
   return (
     <View style={globalStyles.container}>
       <View>
-        <Text style={globalStyles.title}>Locs</Text>
+        <Image 
+          style={globalStyles.logo}
+          source={require('../assets/splash.png')}
+          />
       </View>
       <TextInput
         style={globalStyles.inputbox}

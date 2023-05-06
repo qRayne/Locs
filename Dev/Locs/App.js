@@ -1,7 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useFonts, Galdeano_400Regular } from '@expo-google-fonts/galdeano';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import ChatAutour from './components/chatAutour';
@@ -10,14 +9,22 @@ import Location from './components/location';
 import Chatroom from './components/chatRoom';
 import Profiler from './components/profiler';
 import Profile from './components/profile';
+import Deloc from './components/deloc';
 import Avatar from './components/avatar';
 import Login from './components/login';
 
 const Stack = createNativeStackNavigator();
-// const Tab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Galdeano_400Regular,
+  })
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -49,6 +56,10 @@ export default function App() {
           name="Profiler"
           component={Profiler}
         />
+        <Stack.Screen
+          name="Deloc"
+          component={Deloc}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -58,7 +69,8 @@ export default function App() {
       <Tab.Navigator
         tabBarPosition="bottom"
         screenOptions={{
-          headerShown: false
+          headerShown: false,
+          tabBarShowLabel: false
         }}>
           <Tab.Screen
             name="Profile"

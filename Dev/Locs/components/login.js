@@ -50,12 +50,9 @@ export default function Login({ navigation }) {
     removeToken();
   }, []);
 
-
-
   return (
     <View style={globalStyles.container}>
       <View>
-        {/* <Text style={loginStyles.title}>Locs</Text> */}
         <Image 
           style={globalStyles.logo}
           source={require('../assets/splash.png')}

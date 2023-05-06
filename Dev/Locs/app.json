@@ -27,7 +27,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.example.Locs",
       "config":{
-        "googleMapsApiKey": "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+        "googleMapsApiKey": "AIzaSyDFjVC-uP7O4brKM44aMOLMwNmRSL-tBT4"
       }
     },
     "android": {
@@ -36,7 +36,7 @@
         "backgroundColor": "#fa4d"
       },
       "config":{
-        "googleMapsApiKey": "AIzaSyA8dZ3x98ldtcMSpBs5qhUj91Gqr1b1Cm0"
+        "googleMapsApiKey": "AIzaSyDFjVC-uP7O4brKM44aMOLMwNmRSL-tBT4"
       }
     },
     "web": {
