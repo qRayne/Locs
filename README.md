@@ -40,10 +40,10 @@ nodemon api
 Voilà! l'application et fonctionnelle
 Il faudra maintenant seulement scanner le code QR et ce dernier roulera sur Android et iOS!
 
-![Run QR Code](./C61/Sprint3/docs/npxexpostart.png "npx expo start")
-![Install Expo on iOS](./C61/Sprint3/docs/installexpogo.png "install Expo GO on iOS")
-![Install Expo on Android](./C61/Sprint3/docs/installexpogoa.png "install Expo GO on Android")
-![Running Locs](./C61/Sprint3/docs/runexpogo.png "Run Locs on Smartphones")
+<img src="./C61/Sprint3/docs/npxexpostart.png">
+<img src="./C61/Sprint3/docs/installexpogo.png" height="720">
+<img src="./C61/Sprint3/docs/installexpogoa.png" height="720">
+<img src="./C61/Sprint3/docs/runexpogo.png" height="720">
 
 ## Utilisation
 
