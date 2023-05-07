@@ -158,8 +158,18 @@ server.get('/chatRoom-messages', async (req, res) => {
 // pour tout ce qui post/get pour le user
 // pour register un user 
 server.post('/create-User', async (req, res) => {
-    const userObject = new User(req.body);
-    userObject.profile = null; // il est pour le moment null
+    const { email, password } = req.body;
+
+    if (!/.+\@.+\..+/.test(email)) {
+        return res.status(400).send({ message: 'Invalid email' });
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/.test(password)) {
+        return res.status(400).send({ message: 'Invalid password' });
+    }
+
+    const userObject = new User({ email, password });
+    userObject.profile = null;
 
     const hashedPassword = await bcrypt.hash(userObject.password, 10);
     userObject.password = hashedPassword;
@@ -237,10 +247,10 @@ server.get("/profil-info", async (req, res) => {
 
 
 // pour acceder a tout les private conversation d'un user:
-server.get("/user-private-messages",async(req,res)=>{
+server.get("/user-private-messages", async (req, res) => {
     const username = req.query.username;
     const chatroomsReturnedObjects = await ChatRoom.find({
-        'place.name': new RegExp(username,"i") // tous les chatrooms qui ont le nom du username
+        'place.name': new RegExp(username, "i") // tous les chatrooms qui ont le nom du username
     })
     res.send(chatroomsReturnedObjects);
 })

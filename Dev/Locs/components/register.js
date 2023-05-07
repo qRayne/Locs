@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import {Pressable, Text, TextInput, View, Image } from 'react-native';
+import { Pressable, Text, TextInput, View, Image, Alert } from 'react-native';
 import globalStyles from '../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const {URL}  = require('./constNames.js')
+const { URL } = require('./constNames.js')
 
 export default function Register({ navigation }) {
   const [pwd, setPwd] = useState("");
@@ -11,40 +11,48 @@ export default function Register({ navigation }) {
   const [remail, setRemail] = useState("");
 
   async function register() {
-    try {
-      const response = await fetch(`${URL}/create-User`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: pwd
-        })
-      });
-      const responseData = await response.json();
-      if (response.ok) {
-        // si le user s'est register alors on garde en memoire son id
-        // utile -> car il doit créer un profile qui est un sous schema de user
-        // en ayant le user_id -> on créer le profile sur le bon user
-        await AsyncStorage.setItem('user_id',responseData);
-        console.log("succesfully registered")
-        navigation.navigate('Avatar')
-      } else {
-        console.log(responseData.message);
+    if (email == remail && pwd == rpwd) {
+      try {
+        const response = await fetch(`${URL}/create-User`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: email,
+            password: pwd
+          })
+        });
+        const responseData = await response.json();
+        switch (response.status) {
+          case 200:
+            await AsyncStorage.setItem('user_id', responseData);
+            console.log("Successfully registered");
+            navigation.navigate('Avatar');
+            break;
+          case 400:
+            Alert.alert(responseData.message);
+            break;
+          default:
+            console.log(responseData.message);
+            break;
+        }
+      } catch (error) {
+        console.log(error.message);
       }
-    } catch (error) {
-      console.log(error.message);
+    }
+    else{
+      Alert.alert("the email and the password needs to be the same");
     }
   }
 
   return (
     <View style={globalStyles.container}>
       <View>
-        <Image 
+        <Image
           style={globalStyles.logo}
           source={require('../assets/splash.png')}
-          />
+        />
       </View>
       <TextInput
         style={globalStyles.inputbox}
@@ -74,7 +82,7 @@ export default function Register({ navigation }) {
       />
       <Pressable
         style={globalStyles.button}
-        onPressIn={() =>{
+        onPressIn={() => {
           register();
         }}>
         <Text style={globalStyles.text}>Next</Text>

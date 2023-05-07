@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 
 // on créer un schema avec toutes nos champs et leurs types
 const UserSchema = new mongoose.Schema({
-    email: { type: String, unique: true, match: /.+\@.+\..+/, required: true },
-    password: { type: String, match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/, required: true },
+    email: { type: String, unique: true,required: true },
+    password: { type: String, required: true },
     profile: { type: mongoose.Schema.Types.ObjectId, ref: 'Profile' },
 });
 
