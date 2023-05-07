@@ -254,3 +254,27 @@ server.get("/user-private-messages", async (req, res) => {
     })
     res.send(chatroomsReturnedObjects);
 })
+
+// pour le deloc
+// on les delocs les deux
+server.get("/delocs-betweenUsers", async (req, res) => {
+    const currentUsername = req.query.currentUsername;
+    const selectedUsername = req.query.selectedUsername;
+
+    const returnedCurrentUsernameObject = await Profile.findOne({ username: currentUsername });
+    const returnedSelectedUsernameObject = await Profile.findOne({ username: selectedUsername });
+
+    if (!returnedCurrentUsernameObject.DeLocdList.includes(selectedUsername) &&
+        !returnedSelectedUsernameObject.DeLocdList.includes(currentUsername)) {
+        returnedCurrentUsernameObject.DeLocdList.push(selectedUsername);
+        returnedSelectedUsernameObject.DeLocdList.push(currentUsername);
+
+        // on sauvegarde les changements
+        await returnedCurrentUsernameObject.save();
+        await returnedSelectedUsernameObject.save();
+
+        res.send("deloc successful");
+    } else {
+        res.status(400).send("User already in the list of deloc");
+    }
+})

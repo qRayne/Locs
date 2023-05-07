@@ -52,7 +52,7 @@ export default function Chatroom({ navigation, route }) {
         // Clear the chat input
         setChat('');
       }
-      else{
+      else {
         Alert.alert('Rend-toi au Loc pour Chatter');
         navigation.navigate(previousPage);
       }
@@ -62,7 +62,7 @@ export default function Chatroom({ navigation, route }) {
       navigation.navigate('Login');
     }
   }
-  
+
   async function goToChatPrivate() {
     const token = await AsyncStorage.getItem('token');
     if (token) {
@@ -73,13 +73,61 @@ export default function Chatroom({ navigation, route }) {
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
         if (messageResponse === "The chatroom doesnt exist") {
-          const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 }};
-          await createChatRoom(chatRoom,false);
+          const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 } };
+          await createChatRoom(chatRoom, false);
         }
         navigation.navigate('ChatRoom', {
-          chatRoomName: chatRoomName, chatRoomType: "Private chat between " + username + " and " + currentlySelectedUser,
-          chatRoomTypeAdress: "",nearestLocation:true,previousPage :'ChatRoom'
+          chatRoomName: chatRoomName, chatRoomType: "Private chat between you and " + currentlySelectedUser,
+          chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'ChatRoom'
         });
+      }
+    }
+  }
+
+  async function delocUsers() {
+    const token = await AsyncStorage.getItem('token');
+
+    // vue que alert est une fonction async
+    // il faut lui "promettre" une valeur de retour
+    const wannaDeloc = await new Promise((resolve) => {
+      Alert.alert('Deloc', 'Are you sure to deloc with ' + currentlySelectedUser + "?\nall your private informations will be shared with him", [
+        {
+          text: 'NO',
+          style: 'cancel',
+          onPress: () => resolve(false),
+        },
+        {
+          text: 'YES',
+          onPress: () => resolve(true),
+        },
+      ]);
+    });
+
+    if (wannaDeloc) {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          const username = decoded.username;
+
+          const response = await fetch(`${URL}/delocs-betweenUsers?currentUsername=` + encodeURIComponent(username) +
+            `&selectedUsername=` + encodeURIComponent(currentlySelectedUser));
+
+          switch (response.status) {
+            case 200:
+              Alert.alert('Congratulation, u delocd ' + currentlySelectedUser)
+              break;
+            case 400:
+              Alert.alert('U already delocd ' + currentlySelectedUser)
+              break;
+          }
+          navigation.navigate('Profile');
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      else {
+        Alert.alert('Sending Message Failed', 'Login to deloc someone');
+        navigation.navigate('Login');
       }
     }
   }
@@ -130,7 +178,7 @@ export default function Chatroom({ navigation, route }) {
                 <View style={globalStyles.column}>
                   <View style={globalStyles.row}>
                     <Image source={possibleAvatars[item.avatar]} style={chatStyles.avatar} />
-                    <Text style={globalStyles.bold}> {item.sender}</Text> 
+                    <Text style={globalStyles.bold}> {item.sender}</Text>
                     <Text style={globalStyles.faded}>{item.timestamp.toString()}</Text>
                   </View>
                   {/* like a row */}
@@ -160,7 +208,10 @@ export default function Chatroom({ navigation, route }) {
               <Text style={chatStyles.centerText}> Start private chat </Text>
             </Pressable>
           </View>
-        ) : null}
+        ) : <Pressable onPressIn={() => { delocUsers(); }}>
+          <Text>
+            Wanna Deloc with {currentlySelectedUser} ? </Text>
+        </Pressable>}
         <Pressable
           onPressIn={() => {
             logout();

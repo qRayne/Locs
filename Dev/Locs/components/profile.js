@@ -48,8 +48,6 @@ export default function Profile({ navigation }) {
         getInfos();
     }, []);
 
-    console.log(privateMessageList);
-
     return (
         <View style={globalStyles.container}>
             <View style={profileStyles.toprow}>
@@ -105,11 +103,9 @@ export default function Profile({ navigation }) {
                 <View style={globalStyles.centeredView}>
                     <View style={globalStyles.modalView}>
                         {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
-                        <Text>George</Text>
-                        <Text>David</Text>
-                        <Text>Antoine</Text>
-                        <Text>Thomas</Text>
-
+                        {delocdList.map((username,index) =>(
+                            <Text key={index}>{username}</Text>
+                        ))}
                         <Pressable
                             style={globalStyles.button}
                             onPressIn={() => setModalVisible(!modalVisible)}>
