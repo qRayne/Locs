@@ -15,7 +15,7 @@ export default function Profile({ navigation }) {
     const [username, setUsername] = useState('');
     const [facialPhoto, setFacialPhoto] = useState('');
     const [delocdList, setdelocdList] = useState('');
-    const [privateMessageList,setPrivateMessageList] = useState('');
+    const [privateMessageList, setPrivateMessageList] = useState('');
 
     // on attend que la page charge avant de se get les infos
     useEffect(() => {
@@ -61,10 +61,10 @@ export default function Profile({ navigation }) {
             </View>
 
             <View>
-                <View  style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                     {facialPhoto ? (
                         <Image
-                            source={{uri: `data:image/jpg;base64, ${facialPhoto}`}}
+                            source={{ uri: `data:image/jpg;base64, ${facialPhoto}` }}
                             // style={{ width: 200, height: 200 }}
                             style={profileStyles.circle}
                         />
@@ -72,7 +72,7 @@ export default function Profile({ navigation }) {
                 </View>
                 <Text style={globalStyles.subtitle}>{fullName}</Text>
                 <Text style={globalStyles.undertext}>{username}</Text>
-                
+
                 {/* ajoute les infos ici */}
 
                 {/* <Text style={globalStyles.undertext}>{pronoms}</Text>
@@ -103,9 +103,11 @@ export default function Profile({ navigation }) {
                 <View style={globalStyles.centeredView}>
                     <View style={globalStyles.modalView}>
                         {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
-                        {delocdList.map((username,index) =>(
-                            <Text key={index}>{username}</Text>
-                        ))}
+                        {delocdList.length > 0? (
+                            delocdList.map((username, index) => (
+                                <Text key={index}>{username}</Text>
+                            ))
+                        ) : <Text>The delocdList is empty for now</Text>}
                         <Pressable
                             style={globalStyles.button}
                             onPressIn={() => setModalVisible(!modalVisible)}>
