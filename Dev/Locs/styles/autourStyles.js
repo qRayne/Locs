@@ -53,6 +53,11 @@ const autourStyles = StyleSheet.create({
         borderRadius: 100/2,
         borderWidth:2,
         backgroundColor: "light-grey",
+    },
+
+    loading:{
+        flex: 1,
+        justifyContent: 'center' 
     }
 
   });

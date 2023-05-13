@@ -16,6 +16,7 @@ export default function ChatAutour({ navigation }) {
   const [radiusOfSearch, setRadiusOfSearch] = useState(25);
   const [modalVisible, setModalVisible] = useState(true);
   const [chatRooms, setChatRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
   const userLocation = { latitude: lat, longitude: lng };
@@ -82,91 +83,95 @@ export default function ChatAutour({ navigation }) {
       }
       return null;
     }).filter(place => place !== null);
-    setChatRooms(places);
+    return places;
   };
 
   // on apelle cette fonction chaque fois que l'utilisateur change de radius
   // recalcul de des chatrooms par le user, de sa localisation et de recuperer le chatroom auquel il peut ecrire
   async function calculateUserChatrooms() {
     getLocationOfUser();
-    getChatRoomsByUserLocation(userLocation, radiusOfSearch);
-    setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
+    const places = await getChatRoomsByUserLocation(userLocation, radiusOfSearch);
+    setChatRooms(places);
+    setNearestLocation(getWritableChatRoomWithinRadius(places, userLocation, radiusOfSearch));
+    setLoading(false);
   }
 
   return (
     <View style={globalStyles.container}>
       {/* <View> */}
-        <Text style={globalStyles.subtitle}>Autour de vous</Text>
+      <Text style={globalStyles.subtitle}>Autour de vous</Text>
 
-        {/* Boite qui permet de changer la distance */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible)
-          }}>
+      {/* Boite qui permet de changer la distance */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible)
+        }}>
 
-          <View style={globalStyles.centeredView}>
-            <View style={globalStyles.modalView}>
-              <Text style={globalStyles.font}>Search Radius</Text>
-              <Slider
-                style={{ width: 200, height: 40, backgroundColor: "#FFF" }}
-                step={1}
-                minimumValue={25}
-                maximumValue={100}
-                minimumTrackTintColor="#000"
-                maximumTrackTintColor="#000"
-                thumbTintColor='#000'
-                value={radiusOfSearch}
-                onSlidingComplete={setRadiusOfSearch}
-              />
-              <Text style={globalStyles.font}>{radiusOfSearch + " M"}</Text>
+        <View style={globalStyles.centeredView}>
+          <View style={globalStyles.modalView}>
+            <Text style={globalStyles.font}>Search Radius</Text>
+            <Slider
+              style={{ width: 200, height: 40, backgroundColor: "#FFF" }}
+              step={1}
+              minimumValue={25}
+              maximumValue={100}
+              minimumTrackTintColor="#000"
+              maximumTrackTintColor="#000"
+              thumbTintColor='#000'
+              value={radiusOfSearch}
+              onSlidingComplete={setRadiusOfSearch}
+            />
+            <Text style={globalStyles.font}>{radiusOfSearch + " M"}</Text>
+            <Pressable
+              style={globalStyles.button}
+              onPressIn={() => {
+                setModalVisible(!modalVisible)
+                setLoading(true);
+                calculateUserChatrooms();
+              }} >
+              <Text style={globalStyles.text}>ok</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Bouton qui change la DISTANCE */}
+      <Pressable
+        style={globalStyles.button}
+        onPressIn={() => setModalVisible(true)}>
+        <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
+      </Pressable>
+
+      {/* Liste de Loc */}
+      <ScrollView>
+        {chatRooms && !loading ? (
+          chatRooms.map((place, index) => (
+            // TITRE DU LOC
+            <View key={index}>
+              <Text style={globalStyles.undertext}>
+                {place.placeName}
+              </Text>
+
+              {/* infoBox */}
               <Pressable
-                style={globalStyles.button}
                 onPressIn={() => {
-                  setModalVisible(!modalVisible)
-                  calculateUserChatrooms();
-                }} >
-                <Text style={globalStyles.text}>ok</Text>
+                  createChatRoomOnClick(place);
+                }}>
+
+                <View style={autourStyles.collapsedBox}>
+                  <Text style={globalStyles.font}>{place.placeTypes[0]}</Text>
+                  {place.placeName == nearestLocation ? <Text>Chattable</Text> :
+                    <Text style={globalStyles.font}>Vous pouvez seulement lire dans ce chatRoom</Text>}
+                </View>
               </Pressable>
             </View>
-          </View>
-        </Modal>
-
-        {/* Bouton qui change la DISTANCE */}
-          <Pressable
-            style={globalStyles.button}
-            onPressIn={() => setModalVisible(true)}>
-            <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
-          </Pressable>
-
-        {/* Liste de Loc */}
-        <ScrollView>
-          {chatRooms ? (
-            chatRooms.map((place, index) => (
-              // TITRE DU LOC
-              <View key={index}>
-                <Text style={globalStyles.undertext}>
-                  {place.placeName}
-                </Text>
-
-                {/* infoBox */}
-                <Pressable
-                  onPressIn={() => {
-                    createChatRoomOnClick(place);
-                  }}>
-
-                  <View style={autourStyles.collapsedBox}>
-                    <Text style={globalStyles.font}>{place.placeTypes[0]}</Text>
-                    {place.placeName == nearestLocation ? <Text>Chattable</Text> :
-                      <Text style={globalStyles.font}>Vous pouvez seulement lire dans ce chatRoom</Text>}
-                  </View>
-                </Pressable>
-              </View>
-            ))
-          ) : null}
-        </ScrollView>
+          ))
+          // Le loading screen doit être centered
+        ) : <ActivityIndicator style={autourStyles.loading} size={'large'} color={"#FFFFFF"}></ActivityIndicator>}
+      </ScrollView>
       {/* </View> */}
 
       <Pressable
