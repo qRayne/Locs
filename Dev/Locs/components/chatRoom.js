@@ -208,10 +208,17 @@ export default function Chatroom({ navigation, route }) {
               <Text style={chatStyles.centerText}> Start private chat </Text>
             </Pressable>
           </View>
-        ) : <Pressable onPressIn={() => { delocUsers(); }}>
-          <Text>
-            Wanna Deloc with {currentlySelectedUser} ? </Text>
-        </Pressable>}
+        ) : (
+          <>
+            {currentlySelectedUser ? (
+              <Pressable onPressIn={() => { delocUsers(); }}>
+                <Text> Wanna Deloc with {currentlySelectedUser}? </Text>
+              </Pressable>
+            ) : (
+              null
+            )}
+          </>
+        )}
         <Pressable
           onPressIn={() => {
             logout();

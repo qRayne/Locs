@@ -1,10 +1,9 @@
-import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator,ScrollView } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useCallback, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import { createChatRoom } from './newChatroom';
 import * as Location from 'expo-location';
-import { ScrollView } from 'react-native';
 
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';

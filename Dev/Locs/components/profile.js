@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pressable, Text, View, Modal, Image } from 'react-native';
+import { Pressable, Text, View, Modal, Image, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
@@ -48,8 +48,33 @@ export default function Profile({ navigation }) {
         getInfos();
     }, []);
 
+    function redirectToPrivateRoom(chatroom) {
+        // vu que le nom du chatroom est egalement les deux noms d'utilisateurs on doit voir tout ce qu'on a en private messages
+        // soi nous meme et les autres
+        navigation.navigate('ChatRoom', {
+            chatRoomName: chatroom.place.name, chatRoomType: "Private chat between you and " + chatroom.place.name.split("_").filter(n => n !== username),
+            chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'Profile'
+        });
+    }
+
+
     return (
         <View style={globalStyles.container}>
+            {/* Liste de chatrooms prive  */}
+            <Text>Tout ses chatrooms privee (ils sont cliquable) : </Text>
+            {privateMessageList && privateMessageList.length > 0 ? (
+                <>
+                    {privateMessageList.map((chatroom, index) => (
+                        <TouchableOpacity key={index} onPress={() => redirectToPrivateRoom(chatroom)}>
+                            <Text style={globalStyles.undertext}>
+                                {chatroom.place.name}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </>
+            ) : (
+                <Text>No private message rooms found</Text>
+            )}
             <View style={profileStyles.toprow}>
                 {/* <Pressable
                     onPressIn={
@@ -103,7 +128,7 @@ export default function Profile({ navigation }) {
                 <View style={globalStyles.centeredView}>
                     <View style={globalStyles.modalView}>
                         {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
-                        {delocdList.length > 0? (
+                        {delocdList.length > 0 ? (
                             delocdList.map((username, index) => (
                                 <Text key={index}>{username}</Text>
                             ))
