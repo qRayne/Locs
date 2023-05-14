@@ -164,8 +164,9 @@ server.post('/create-User', async (req, res) => {
         return res.status(400).send({ message: 'Invalid email' });
     }
 
+    // à fix pour mieux printer le message
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/.test(password)) {
-        return res.status(400).send({ message: 'Invalid password' });
+        return res.status(400).send({ message: 'Invalid password : length minimal of 8, 1 upper and lower letter, a symbol and numbers' });
     }
 
     const userObject = new User({ email, password });
