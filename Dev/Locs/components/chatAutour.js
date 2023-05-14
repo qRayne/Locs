@@ -59,8 +59,7 @@ export default function ChatAutour({ navigation }) {
 
   // update the function to take in radiusOfSearch and userLocation as arguments
   async function getChatRoomsByUserLocation(userLocation, radiusOfSearch) {
-    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + userLocation.latitude + "%2C" + userLocation.longitude + "&radius=" + radiusOfSearch + "&type=point_of_interest&key=" + KEY + ""
-    // const det = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" + ID + "&key=" + KEY --> retourne des details comme dans location --> pour editorial_summary.overview
+    const url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + userLocation.latitude + "%2C" + userLocation.longitude + "&radius=" + radiusOfSearch + "&type=point_of_interest&key=" + KEY
     const res = await fetch(url);
     const data = await res.json();
     const places = data.results.map(googlePlace => {

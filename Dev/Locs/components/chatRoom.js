@@ -17,6 +17,7 @@ export default function Chatroom({ navigation, route }) {
   const chatRoomName = route.params.chatRoomName;
   const chatRoomType = route.params.chatRoomType;
   const chatRoomAdress = route.params.chatRoomTypeAdress;
+  const chatRoomDesc = route.params.chatRoomDesc;
   const nearestLocation = route.params.nearestLocation; // true or false;
   const previousPage = route.params.previousPage;
 
@@ -72,7 +73,7 @@ export default function Chatroom({ navigation, route }) {
         const chatRoomName = [username, currentlySelectedUser].sort().join('_');
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
-        if (messageResponse === "The chatroom doesnt exist") {
+        if (messageResponse === "The chatroom does not exist") {
           const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 } };
           await createChatRoom(chatRoom, false);
         }
@@ -90,7 +91,7 @@ export default function Chatroom({ navigation, route }) {
     // vue que alert est une fonction async
     // il faut lui "promettre" une valeur de retour
     const wannaDeloc = await new Promise((resolve) => {
-      Alert.alert('Deloc', 'Are you sure to deloc with ' + currentlySelectedUser + "?\nall your private informations will be shared with him", [
+      Alert.alert('Deloc', 'Are you sure you want to DeLoc ' + currentlySelectedUser + "?\n all your private information will be shared with them", [
         {
           text: 'NO',
           style: 'cancel',
@@ -114,10 +115,10 @@ export default function Chatroom({ navigation, route }) {
 
           switch (response.status) {
             case 200:
-              Alert.alert('Congratulation, u delocd ' + currentlySelectedUser)
+              Alert.alert('DeLoc successful ' + currentlySelectedUser)
               break;
             case 400:
-              Alert.alert('U already delocd ' + currentlySelectedUser)
+              Alert.alert("You have already DeLoc'd:" + currentlySelectedUser)
               break;
           }
           navigation.navigate('Profile');
@@ -126,7 +127,7 @@ export default function Chatroom({ navigation, route }) {
         }
       }
       else {
-        Alert.alert('Sending Message Failed', 'Login to deloc someone');
+        Alert.alert('Sending Message Failed', 'Login to DeLoc');
         navigation.navigate('Login');
       }
     }
@@ -165,7 +166,10 @@ export default function Chatroom({ navigation, route }) {
   return (
     <View style={chatStyles.container}>
       <Text style={globalStyles.subtitle}>{chatRoomName}</Text>
-      <Text style={globalStyles.font}> {chatRoomType.replace(/_/gm, " ")}</Text>
+      {chatRoomDesc
+        ? <Text style={globalStyles.font}> {chatRoomDesc}</Text>
+        : <Text style={globalStyles.font}> {chatRoomType.replace(/_/gm, " ")}</Text>
+      }
       <Text style={globalStyles.font}> {chatRoomAdress}</Text>
 
       <View style={chatStyles.chatbox}>
@@ -202,16 +206,18 @@ export default function Chatroom({ navigation, route }) {
       </View>
 
       <View style={globalStyles.row}>
-        {isPublicChatroom ? (
+        {isPublicChatroom 
+        ? (
           <View style={globalStyles.row}>
             <Pressable onPressIn={() => { goToChatPrivate(); }}>
               <Text style={chatStyles.centerText}> Start private chat </Text>
             </Pressable>
-          </View>
-        ) : <Pressable onPressIn={() => { delocUsers(); }}>
-          <Text>
-            Wanna Deloc with {currentlySelectedUser} ? </Text>
-        </Pressable>}
+          </View>) 
+        : <Pressable onPressIn={() => { delocUsers(); }}>
+            <Text> Wanna Deloc with {currentlySelectedUser} ? </Text>
+          </Pressable>
+        }
+        
         <Pressable
           onPressIn={() => {
             logout();

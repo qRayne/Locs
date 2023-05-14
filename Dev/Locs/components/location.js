@@ -1,5 +1,5 @@
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Alert, Modal, Pressable, Text, TextInput, View } from 'react-native';
+import { Alert, Modal, Pressable, Text, TextInput, View, LogBox } from 'react-native';
 import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } from './distanceCalculation';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useState, useRef, useEffect } from 'react';
@@ -16,13 +16,14 @@ const lightMapStyle = require('../styles/lightMapStyles.json')
 
 
 export default function Location({ navigation }) {
+
+  LogBox.ignoreLogs(["TypeError: Cannot read property"])
   const [location, setLocation] = useState("");
   const [userlng, setUserLng] = useState('');
   const [userlat, setUserLat] = useState('');
   const [adress, setAdress] = useState('');
   const [lng, setLng] = useState(-73.5664);
   const [lat, setLat] = useState(45.5147);
-  const [icon, setIcon] = useState('');
   const [type, setType] = useState('');
   const [desc, setDesc] = useState("");
 
@@ -44,8 +45,20 @@ export default function Location({ navigation }) {
     let location = await Loc.getCurrentPositionAsync({ accuracy: Loc.Accuracy.Highest, maximumAge: 10000 });
     setUserLat(location.coords.latitude);
     setUserLng(location.coords.longitude);
-  }
+  };
 
+  async function placeId2details(placeid){
+    const url = "https://maps.googleapis.com/maps/api/place/details/json?place_id="+ placeid +"&key=" + KEY
+    const res = await fetch(url);
+    const data = await res.json();
+    setDesc("")
+    setType(data.result.types)
+    setLocation(data.result.name)
+    setAdress(data.result.vicinity);
+    setLng(data.result.geometry.location.lng)
+    setLat(data.result.geometry.location.lat)
+    setDesc(data.result.editorial_summary.overview)
+  }
 
   function createChatRoomOnClick() {
     const chatRoom = {
@@ -58,6 +71,7 @@ export default function Location({ navigation }) {
         navigation.navigate('ChatRoom', {
           chatRoomName: chatRoom.placeName,
           chatRoomType: type[0],
+          chatRoomDesc: desc,
           chatRoomTypeAdress: adress,
           nearestLocation: userInLocation(),
           previousPage: 'Location'
@@ -97,9 +111,7 @@ export default function Location({ navigation }) {
         followsUserLocation={true}
         coordinate
         onPoiClick={(e) => {
-          setLat(e.nativeEvent.coordinate.latitude)
-          setLng(e.nativeEvent.coordinate.longitude)
-          setLocation(e.nativeEvent.name)
+          placeId2details(e.nativeEvent.placeId)
         }}>
 
         {/* Ouvre les Chatrooms éloigné */}
@@ -111,7 +123,7 @@ export default function Location({ navigation }) {
               createChatRoomOnClick();
             }
             else {
-              Alert.alert("This location is off limits");
+              Alert.alert("Loc off limits");
             }
           }}
         />
@@ -124,11 +136,13 @@ export default function Location({ navigation }) {
           placeholder="Search"
           ref={ref}
           onPress={(data, details = null) => {
+            setDesc("");
             setType(details.types);
             setLocation(details.name)
             setAdress(details.vicinity);
             setLng(details.geometry.location.lng)
             setLat(details.geometry.location.lat)
+            setDesc(details.editorial_summary.overview)
             setIcon(details.icon)
           }}
           query={{
