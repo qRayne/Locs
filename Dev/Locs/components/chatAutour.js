@@ -145,8 +145,8 @@ export default function ChatAutour({ navigation }) {
 
       {/* Liste de Loc */}
       <ScrollView>
-        {chatRooms && !loading ? (
-          chatRooms.map((place, index) => (
+        {chatRooms && !loading 
+        ? (chatRooms.map((place, index) => (
             // TITRE DU LOC
             <View key={index}>
               <Text style={globalStyles.undertext}>
@@ -160,15 +160,17 @@ export default function ChatAutour({ navigation }) {
                 }}>
 
                 <View style={autourStyles.collapsedBox}>
-                  <Text style={globalStyles.font}>{place.placeTypes[0]}</Text>
-                  {place.placeName == nearestLocation ? <Text>Chattable</Text> :
-                    <Text style={globalStyles.font}>Vous pouvez seulement lire dans ce chatRoom</Text>}
+                  <Text style={globalStyles.font}> {place.placeTypes[0].replace(/_/gm, " ")} </Text>
+                  {place.placeName == nearestLocation 
+                    ? <Text style={globalStyles.font}> Chattable </Text> 
+                    : <Text style={globalStyles.font}> Vous pouvez seulement lire dans ce chatRoom </Text>}
                 </View>
               </Pressable>
             </View>
           ))
           // Le loading screen doit être centered
-        ) : <ActivityIndicator style={autourStyles.loading} size={'large'} color={"#FFFFFF"}></ActivityIndicator>}
+        ) 
+        : <ActivityIndicator style={autourStyles.loading} size={'large'} color={"#FFFFFF"}></ActivityIndicator>}
       </ScrollView>
       {/* </View> */}
 

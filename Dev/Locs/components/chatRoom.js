@@ -217,7 +217,7 @@ export default function Chatroom({ navigation, route }) {
           <>
             {currentlySelectedUser ? (
               <Pressable onPressIn={() => { delocUsers(); }}>
-                <Text> Wanna Deloc with {currentlySelectedUser}? </Text>
+                <Text> Deloc {currentlySelectedUser}? </Text>
               </Pressable>
             ) : (
               null
