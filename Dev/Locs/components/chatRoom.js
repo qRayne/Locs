@@ -78,7 +78,7 @@ export default function Chatroom({ navigation, route }) {
           await createChatRoom(chatRoom, false);
         }
         navigation.navigate('ChatRoom', {
-          chatRoomName: chatRoomName, chatRoomType: "Private chat between you and " + currentlySelectedUser,
+          chatRoomName: chatRoomName, chatRoomType: "Private chat",
           chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'ChatRoom'
         });
       }

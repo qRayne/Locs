@@ -22,6 +22,7 @@ export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, ra
 
     if (nearestChatRoom && allDistances[minDistanceIndex] <= radiusOfSearch) {
         const { coordinate, placeName } = nearestChatRoom;
+
         if (calculateBoundsBetweenLocations(userLocation, coordinate, minDistance)) {
             return placeName;
         }

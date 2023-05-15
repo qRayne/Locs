@@ -52,7 +52,7 @@ export default function Profile({ navigation }) {
         // vu que le nom du chatroom est egalement les deux noms d'utilisateurs on doit voir tout ce qu'on a en private messages
         // soi nous meme et les autres
         navigation.navigate('ChatRoom', {
-            chatRoomName: chatroom.place.name, chatRoomType: chatroom.place.name.split("_").filter(n => n !== username),
+            chatRoomName: chatroom.place.name, chatRoomType: "Private chat",
             chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'Profile'
         });
     }
@@ -85,13 +85,13 @@ export default function Profile({ navigation }) {
 
             <View>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    {facialPhoto 
+                    {/* {facialPhoto 
                     ? (<Image
                             source={{ uri: `data:image/jpg;base64, ${facialPhoto}` }}
                             // style={{ width: 200, height: 200 }}
                             style={profileStyles.circle}
                         />) 
-                    : null}
+                    : null} */}
                 </View>
                 <Text style={globalStyles.subtitle}>{fullName}</Text>
                 <Text style={globalStyles.undertext}>{username}</Text>

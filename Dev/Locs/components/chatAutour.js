@@ -1,4 +1,4 @@
-import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator,ScrollView } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useCallback, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
@@ -32,7 +32,6 @@ export default function ChatAutour({ navigation }) {
         console.log('Access granted!!')
       }
     })();
-    getLocationOfUser();
   }, []);
 
   function createChatRoomOnClick(place) {
@@ -55,6 +54,8 @@ export default function ChatAutour({ navigation }) {
     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
     setLat(location.coords.latitude);
     setLng(location.coords.longitude);
+
+    console.log(location);
   }
 
   // update the function to take in radiusOfSearch and userLocation as arguments
@@ -145,8 +146,8 @@ export default function ChatAutour({ navigation }) {
 
       {/* Liste de Loc */}
       <ScrollView>
-        {chatRooms && !loading 
-        ? (chatRooms.map((place, index) => (
+        {chatRooms && !loading
+          ? (chatRooms.map((place, index) => (
             // TITRE DU LOC
             <View key={index}>
               <Text style={globalStyles.undertext}>
@@ -161,16 +162,16 @@ export default function ChatAutour({ navigation }) {
 
                 <View style={autourStyles.collapsedBox}>
                   <Text style={globalStyles.font}> {place.placeTypes[0].replace(/_/gm, " ")} </Text>
-                  {place.placeName == nearestLocation 
-                    ? <Text style={globalStyles.font}> Chattable </Text> 
+                  {place.placeName == nearestLocation
+                    ? <Text style={globalStyles.font}> Chattable </Text>
                     : <Text style={globalStyles.font}> Vous pouvez seulement lire dans ce chatRoom </Text>}
                 </View>
               </Pressable>
             </View>
           ))
-          // Le loading screen doit être centered
-        ) 
-        : <ActivityIndicator style={autourStyles.loading} size={'large'} color={"#FFFFFF"}></ActivityIndicator>}
+            // Le loading screen doit être centered
+          )
+          : <ActivityIndicator style={autourStyles.loading} size={'large'} color={"#FFFFFF"}></ActivityIndicator>}
       </ScrollView>
       {/* </View> */}
 

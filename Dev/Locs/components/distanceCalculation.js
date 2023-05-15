@@ -23,8 +23,8 @@ export function calculateDistanceBetweenLocations(firstLocation, secondLocation)
 // pour verifier si l'usager est dans le perimetre du lieu
 // va dessiner un carre autour du lieu et va verifier que l'usager est dans ce carre
 export function calculateBoundsBetweenLocations(userLocation, placeLocation, distance) {
-    const MIN_DISTANCE_CHECK = 0.5; // c'est le maximum de distance que deux localisation peut être pour être consider comme proche
-
+    const MIN_DISTANCE_CHECK = 25; // c'est le maximum de distance que deux localisation peut être pour être consider comme proche
+    
     if (distance <= MIN_DISTANCE_CHECK) {
         return true; // c'est que les deux localisation sont dans même lieu,car la distance est très petite (surtout en metre)
     }
