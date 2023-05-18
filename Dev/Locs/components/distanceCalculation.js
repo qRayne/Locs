@@ -3,7 +3,7 @@
 // et de la latitude, longitude de l'endroit
 // le calcul ne retournera une distance qui est cera comparer à au rayon du cercle
 // si cette distance est plus petite ou egal au rayon du cercle alors l'utilisateur est à l'interieur du lieu
-
+// implementation de la formule de Haversine
 export function calculateDistanceBetweenLocations(firstLocation, secondLocation) {
     const earthRadius = 6371000; // m
 
@@ -23,19 +23,24 @@ export function calculateDistanceBetweenLocations(firstLocation, secondLocation)
 // pour verifier si l'usager est dans le perimetre du lieu
 // va dessiner un carre autour du lieu et va verifier que l'usager est dans ce carre
 export function calculateBoundsBetweenLocations(userLocation, placeLocation, distance) {
-    const MIN_DISTANCE_CHECK = 25; // c'est le maximum de distance que deux localisation peut être pour être consider comme proche
-    
-    if (distance <= MIN_DISTANCE_CHECK) {
-        return true; // c'est que les deux localisation sont dans même lieu,car la distance est très petite (surtout en metre)
-    }
-    else {
-        const radiusInDegrees = distance / 111320; // degres de latitude
-        const estLat = placeLocation.latitude;
-        const estLng = placeLocation.longitude;
+    const MAX_DISTANCE_CHECK = 25;
 
-        const latInBounds = userLocation.latitude >= estLat - radiusInDegrees && userLocation.latitude <= estLat + radiusInDegrees;
-        const lngInBounds = userLocation.longitude >= estLng - radiusInDegrees && userLocation.longitude <= estLng + radiusInDegrees;
-
-        return latInBounds && lngInBounds;
+    if (distance <= MAX_DISTANCE_CHECK) {
+        return true;
     }
+
+    const radiusInDegrees = distance / 111320;
+
+    const estLat = placeLocation.latitude;
+    const estLng = placeLocation.longitude;
+
+    const latDiff = Math.abs(userLocation.latitude - estLat);
+    const lngDiff = Math.abs(userLocation.longitude - estLng);
+
+    const latInBounds = latDiff <= radiusInDegrees;
+    const lngInBounds = lngDiff <= radiusInDegrees;
+
+    // certe on reverifie que la distance est plus petite que notre max distance
+    // on permet ainsi de retourner que le lieu est à 100% dans notre localisation
+    return latInBounds && lngInBounds && distance <= MAX_DISTANCE_CHECK;
 }

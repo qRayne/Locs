@@ -47,7 +47,8 @@ export default function Chatroom({ navigation, route }) {
             console.log(data);
           })
           .catch((error) => {
-            console.error(error);
+            Alert.alert('Server error');
+            navigation.navigate(previousPage);
           });
 
         // Clear the chat input

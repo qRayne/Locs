@@ -23,6 +23,7 @@ export default function ChatAutour({ navigation }) {
   const [lng, setLng] = useState("");
   const userLocation = { latitude: lat, longitude: lng };
   const alreadyCreatedChatrooms = []
+  const MAX_TIME_THRESHOLD = 5000; // le temps max que le chat autour doit attendre avoit de se rapeller
 
   // les fonctions appeler au depart
   // seul la localisation du user peut être recuperer avant la fin du use effect
@@ -35,6 +36,7 @@ export default function ChatAutour({ navigation }) {
         console.log('Access granted!!')
       }
     })();
+    getLocationOfUser();
   }, []);
 
   function createChatRoomOnClick(place) {
@@ -91,12 +93,50 @@ export default function ChatAutour({ navigation }) {
   // on apelle cette fonction chaque fois que l'utilisateur change de radius
   // recalcul de des chatrooms par le user, de sa localisation et de recuperer le chatroom auquel il peut ecrire
   async function calculateUserChatrooms() {
+    let startTime = performance.now();
+
     getLocationOfUser();
     const places = await getChatRoomsByUserLocation(userLocation, radiusOfSearch);
     setChatRooms(places);
     setNearestLocation(getWritableChatRoomWithinRadius(places, userLocation, radiusOfSearch));
-    setLoading(false);
+    // filterChatrooms();
+
+    let elapsedTime = performance.now() - startTime;
+
+    console.log(elapsedTime);
+
+    // si notre data n'est pas null ou que ca a pris max 5 seconds 
+    // c'est qu'on a du data
+    // sinon recall la function 
+    if ((chatRooms.length !== 0 && nearestLocation !== "") || elapsedTime < MAX_TIME_THRESHOLD) {
+      setLoading(false);
+    } else {
+      console.log("il a pris trop de temps");
+      calculateUserChatrooms();
+    }
   }
+
+  // function permettant de filter la liste de chatrooms pour toujours afficher le chatroom le plus proche
+  // aucun paramètre car on accède déjà aux chatrooms et à la localisation 
+  function filterChatrooms() {
+    // on fait une copie temporaire de chatrooms
+    const chatRoomsCopy = [...chatRooms];
+
+  
+    // on trouve l'index
+    const nearestIndex = chatRoomsCopy.findIndex(place => place.placeName === nearestLocation);
+  
+    // on verifie que l'index est valide et on place le nearest location au debut
+    if (nearestIndex !== -1) {
+      const nearestPlace = chatRoomsCopy.splice(nearestIndex, 1)[0];
+  
+      chatRoomsCopy.unshift(nearestPlace);
+    }
+    
+    // on update notre liste de chatrooms qui sont filtrées
+    setChatRooms(chatRoomsCopy);
+  }
+  
 
   return (
     <View style={globalStyles.container}>
@@ -149,7 +189,7 @@ export default function ChatAutour({ navigation }) {
 
       {/* Liste de Loc */}
       <ScrollView>
-        {chatRooms && !loading
+        {chatRooms.length > 0 && !loading
           ? (chatRooms.map((place, index) => (
             // TITRE DU LOC
             <View key={index}>
