@@ -23,6 +23,11 @@ const globalStyles = StyleSheet.create({
       width: 250,
       height: 150
     },
+
+    bot:{
+      paddingBottom: 20,
+      backgroundColor: "#fff"
+    },
   
     title:{
       fontSize: 50,
@@ -69,6 +74,13 @@ const globalStyles = StyleSheet.create({
       // justifyContent: "center",
       // alignItems: "center"
     },
+
+    absolute:{
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 100,
+    },
   
     inputbox: {
       fontFamily: 'Galdeano_400Regular',
@@ -96,6 +108,12 @@ const globalStyles = StyleSheet.create({
 
     text:{
       color: 'white',
+      fontFamily: 'Galdeano_400Regular',
+    },
+
+    text2:{
+      // color: 'white',
+      fontSize: 20,
       fontFamily: 'Galdeano_400Regular',
     },
 
@@ -142,6 +160,11 @@ const globalStyles = StyleSheet.create({
       borderRadius: 100/2,
       borderWidth:2,
       backgroundColor: "light-grey"
+    },
+
+    icon:{
+      width: 50,
+      height: 50
     }
 
   });

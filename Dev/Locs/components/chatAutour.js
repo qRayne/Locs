@@ -1,12 +1,15 @@
-import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useCallback, useEffect } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { createChatRoom } from './newChatroom';
 import * as Location from 'expo-location';
 
 import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
+import profileStyles from '../styles/profileStyles';
+
 
 const { KEY } = require('./constNames.js')
 
@@ -155,18 +158,16 @@ export default function ChatAutour({ navigation }) {
               </Text>
 
               {/* infoBox */}
-              <Pressable
-                onPressIn={() => {
-                  createChatRoomOnClick(place);
-                }}>
-
+              <TouchableOpacity
+                onPress={() => {createChatRoomOnClick(place);}
+              }>
                 <View style={autourStyles.collapsedBox}>
-                  <Text style={globalStyles.font}> {place.placeTypes[0].replace(/_/gm, " ")} </Text>
+                  <Text style={autourStyles.subtitle}> {place.placeTypes[0].replace(/_/gm, " ")} </Text>
                   {place.placeName == nearestLocation
                     ? <Text style={globalStyles.font}> Chattable </Text>
-                    : <Text style={globalStyles.font}> Vous pouvez seulement lire dans ce chatRoom </Text>}
+                    : <Text style={globalStyles.font}> Seulement lisible </Text>}
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           ))
             // Le loading screen doit être centered
@@ -175,12 +176,14 @@ export default function ChatAutour({ navigation }) {
       </ScrollView>
       {/* </View> */}
 
-      <Pressable
+      <Pressable 
+        style ={profileStyles.toprow}
         onPressIn={() => {
           console.log("move to register screen");
           navigation.navigate('Login');
         }}>
-        <Text style={globalStyles.register}> Logout? </Text>
+        {/* <Text style={globalStyles.register}> Logout? </Text> */}
+        <MaterialCommunityIcons name="logout-variant" size={35} color="black" />      
       </Pressable>
 
     </View>

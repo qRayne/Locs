@@ -16,10 +16,19 @@ const autourStyles = StyleSheet.create({
     collapsedBox:{
         width: 375,
         height: 75,
-        borderColor: "black",
-        borderWidth: 2,
-        backgroundColor: "#cdd7f4",
-        padding: 10
+        // borderColor: "black",
+        // borderWidth: 2,
+        backgroundColor: "#8fa8f0",
+        padding: 10,
+        borderRadius: 25,
+        fontSize: 25,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+
+    subtitle:{
+        fontSize: 18,
+        fontFamily: 'Galdeano_400Regular',
     },
 
     km:{

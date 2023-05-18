@@ -130,7 +130,7 @@ export default function Location({ navigation }) {
       </MapView>
 
       {/* SEARCH POUR UN ENDROIT */}
-      <View style={locationStyles.absolute}>
+      <View style={globalStyles.absolute}>
         <GooglePlacesAutocomplete
           fetchDetails={true}
           placeholder="Search"

@@ -16,12 +16,23 @@ const profileStyles = StyleSheet.create({
 
     toprow:{
       // backgroundColor: "black"
+      position: 'absolute',
+      right: 25,
+      top: 42,
     },
 
     circle:{
       width: 150,
       height:150,
       borderRadius: 150/2,
+    },
+
+    box:{
+      borderRadius: 20,
+      backgroundColor:'#e8edfc',
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: "red"
     }
   });
 

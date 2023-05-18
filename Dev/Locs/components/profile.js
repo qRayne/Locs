@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pressable, Text, View, Modal, Image, TouchableOpacity } from 'react-native';
+import { Pressable, Text, View, Modal, Image, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 import globalStyles from '../styles/globalStyles';
 import profileStyles from '../styles/profileStyles';
@@ -11,8 +12,14 @@ const { URL } = require('./constNames.js')
 
 export default function Profile({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
+
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
+    const [pronoms, setPronoms] = useState('');
+    const [lien, setLien] = useState('');
+    const [occupation, setOccupation] = useState('');
+    const [interets, setInterets] = useState('');
+
     const [facialPhoto, setFacialPhoto] = useState('');
     const [delocdList, setdelocdList] = useState('');
     const [privateMessageList, setPrivateMessageList] = useState('');
@@ -34,9 +41,16 @@ export default function Profile({ navigation }) {
                     // on recupère l'image en base64 et on la transforme en image
                     const base64Image = jsonProfil.facialPhoto.data;
                     const bufferImage = Buffer.from(base64Image, 'base64');
+
                     setFacialPhoto(bufferImage);
-                    setUsername(username);
                     setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
+                    setUsername(username);
+                    setPronoms(jsonProfil.pronouns);
+                    setLien(jsonProfil.socialMediaLien);
+
+                    setInterets(jsonProfil.interests);
+                    setOccupation(jsonProfil.occupation);
+
                     setdelocdList(jsonProfil.DeLocdList);
                     setPrivateMessageList(jsonPrivateMessages);
                 } catch (error) {
@@ -48,39 +62,14 @@ export default function Profile({ navigation }) {
         getInfos();
     }, []);
 
-    function redirectToPrivateRoom(chatroom) {
-        // vu que le nom du chatroom est egalement les deux noms d'utilisateurs on doit voir tout ce qu'on a en private messages
-        // soi nous meme et les autres
-        navigation.navigate('ChatRoom', {
-            chatRoomName: chatroom.place.name, chatRoomType: "Private chat",
-            chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'Profile'
-        });
-    }
-
-
     return (
         <View style={globalStyles.container}>
-            {/* Liste de chatrooms prive  */}
-            <Text>Tout ses chatrooms privee (ils sont cliquable) : </Text>
-            {privateMessageList && privateMessageList.length > 0
-                ? (<>
-                    {privateMessageList.map((chatroom, index) => (
-                        <TouchableOpacity key={index} onPress={() => redirectToPrivateRoom(chatroom)}>
-                            <Text style={globalStyles.undertext}>
-                                {chatroom.place.name}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
-                </>)
-                : (<Text> No private message rooms found </Text>)}
             <View style={profileStyles.toprow}>
-                {/* <Pressable
-                    onPressIn={
-                        navigation.navigate()
-                    }
-                >
-
-                </Pressable> */}
+                <Pressable
+                    onPressIn={() =>{ navigation.navigate('Deloc', { pm: privateMessageList });
+                }}>
+                    <Image style={globalStyles.icon} source={require("../assets/img/logo/Locs.png")} />
+                </Pressable>
             </View>
 
             <View>
@@ -93,18 +82,19 @@ export default function Profile({ navigation }) {
                         />)
                         : null}
                 </View>
-                <Text style={globalStyles.subtitle}>{fullName}</Text>
-                <Text style={globalStyles.undertext}>{username}</Text>
 
-                {/* ajoute les infos ici */}
-
-                {/* <Text style={globalStyles.undertext}>{pronoms}</Text>
-                <Text style={globalStyles.undertext}>{lien}</Text>
-                <Text style={globalStyles.undertext}>{occupation}</Text>
-                <Text style={globalStyles.undertext}>{interets}</Text> */}
+                <View style={profileStyles.box}>
+                    <Text style={globalStyles.undertext}>{fullName}</Text>
+                    <Text style={globalStyles.undertext}>{username}</Text>
+                    <Text style={globalStyles.text2}>{pronoms}</Text>
+                    <Text style={globalStyles.text2}>{lien}</Text>
+                    <Text style={globalStyles.text2}>{occupation}</Text>
+                    <Text style={globalStyles.text2}>{interets}</Text>
+                </View>
+                
             </View>
 
-            <View style={profileStyles.toprow}>
+            <View>
                 <Pressable
                     style={globalStyles.button}
                     onPressIn={() => setModalVisible(true)}>

@@ -12,6 +12,7 @@ import Profile from './components/profile';
 import Deloc from './components/deloc';
 import Avatar from './components/avatar';
 import Login from './components/login';
+import globalStyles from './styles/globalStyles';
 
 const Stack = createNativeStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -67,6 +68,7 @@ export default function App() {
   function Home(){
     return(
       <Tab.Navigator
+        style={globalStyles.bot}
         tabBarPosition="bottom"
         screenOptions={{
           headerShown: false,

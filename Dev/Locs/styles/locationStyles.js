@@ -41,15 +41,6 @@ const locationStyles = StyleSheet.create({
       alignItems: 'center',
       // marginTop: 22
     },
-
-    absolute:{
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      top: 100,
-    }
-
-
   });
 
   export default locationStyles;
