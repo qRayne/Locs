@@ -36,6 +36,6 @@ export function calculateBoundsBetweenLocations(userLocation, placeLocation, dis
         const latInBounds = userLocation.latitude >= estLat - radiusInDegrees && userLocation.latitude <= estLat + radiusInDegrees;
         const lngInBounds = userLocation.longitude >= estLng - radiusInDegrees && userLocation.longitude <= estLng + radiusInDegrees;
 
-        return latInBounds && lngInBounds && distance <= MIN_DISTANCE_CHECK;
+        return latInBounds && lngInBounds;
     }
 }

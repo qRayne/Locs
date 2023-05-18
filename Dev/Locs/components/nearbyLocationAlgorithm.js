@@ -26,12 +26,6 @@ export function getWritableChatRoomWithinRadius(listeChatrooms, userLocation, ra
         if (calculateBoundsBetweenLocations(userLocation, coordinate, minDistance)) {
             return placeName;
         }
-        else{
-            return;
-        }
     }
-    else {
-        return;
-    }
-
+    return;
 }

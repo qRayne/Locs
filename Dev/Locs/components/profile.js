@@ -62,17 +62,17 @@ export default function Profile({ navigation }) {
         <View style={globalStyles.container}>
             {/* Liste de chatrooms prive  */}
             <Text>Tout ses chatrooms privee (ils sont cliquable) : </Text>
-            {privateMessageList && privateMessageList.length > 0 
-            ? (<>
-                {privateMessageList.map((chatroom, index) => (
-                    <TouchableOpacity key={index} onPress={() => redirectToPrivateRoom(chatroom)}>
-                        <Text style={globalStyles.undertext}>
-                            {chatroom.place.name}
-                        </Text>
-                    </TouchableOpacity>
+            {privateMessageList && privateMessageList.length > 0
+                ? (<>
+                    {privateMessageList.map((chatroom, index) => (
+                        <TouchableOpacity key={index} onPress={() => redirectToPrivateRoom(chatroom)}>
+                            <Text style={globalStyles.undertext}>
+                                {chatroom.place.name}
+                            </Text>
+                        </TouchableOpacity>
                     ))}
-                </>) 
-            : (<Text> No private message rooms found </Text>)}
+                </>)
+                : (<Text> No private message rooms found </Text>)}
             <View style={profileStyles.toprow}>
                 {/* <Pressable
                     onPressIn={
@@ -85,13 +85,13 @@ export default function Profile({ navigation }) {
 
             <View>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    {/* {facialPhoto 
-                    ? (<Image
+                    {facialPhoto
+                        ? (<Image
                             source={{ uri: `data:image/jpg;base64, ${facialPhoto}` }}
                             // style={{ width: 200, height: 200 }}
                             style={profileStyles.circle}
-                        />) 
-                    : null} */}
+                        />)
+                        : null}
                 </View>
                 <Text style={globalStyles.subtitle}>{fullName}</Text>
                 <Text style={globalStyles.undertext}>{username}</Text>
@@ -125,12 +125,12 @@ export default function Profile({ navigation }) {
                 <View style={globalStyles.centeredView}>
                     <View style={globalStyles.modalView}>
                         {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
-                        {delocdList.length > 0 
-                        ? (delocdList.map((username, index) => (
+                        {delocdList.length > 0
+                            ? (delocdList.map((username, index) => (
                                 <Text key={index}>{username}</Text>
                             ))
-                        ) 
-                        : <Text> Go DeLoc some people! </Text>}
+                            )
+                            : <Text> Go DeLoc some people! </Text>}
                         <Pressable
                             style={globalStyles.button}
                             onPressIn={() => setModalVisible(!modalVisible)}>

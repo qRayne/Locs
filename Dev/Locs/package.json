@@ -37,7 +37,7 @@
     "local-ip-address": "^1.0.0",
     "ngrok": "^4.3.3",
     "react": "18.2.0",
-    "react-native": "0.71.7",
+    "react-native": "0.71.8",
     "react-native-date-picker": "^4.2.9",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-expo-image-cache": "^4.1.0",
