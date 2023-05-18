@@ -3,7 +3,7 @@
 // et de la latitude, longitude de l'endroit
 // le calcul ne retournera une distance qui est cera comparer à au rayon du cercle
 // si cette distance est plus petite ou egal au rayon du cercle alors l'utilisateur est à l'interieur du lieu
-
+// implementation de la formule de Haversine
 export function calculateDistanceBetweenLocations(firstLocation, secondLocation) {
     const earthRadius = 6371000; // m
 
