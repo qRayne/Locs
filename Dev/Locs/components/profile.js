@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pressable, Text, View, Modal, Image, TouchableOpacity, Alert } from 'react-native';
+import { Pressable, Text, View, Modal, Image, TouchableOpacity, Alert, Linking, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
@@ -12,6 +12,7 @@ const { URL } = require('./constNames.js')
 
 export default function Profile({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
+    const [editVisible, setEditVisible] = useState(false);
 
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
@@ -64,11 +65,18 @@ export default function Profile({ navigation }) {
 
     return (
         <View style={globalStyles.container}>
-            <View style={profileStyles.toprow}>
+            <View style={profileStyles.topright}>
                 <Pressable
                     onPressIn={() =>{ navigation.navigate('Deloc', { pm: privateMessageList });
                 }}>
                     <Image style={globalStyles.icon} source={require("../assets/img/logo/Locs.png")} />
+                </Pressable>
+            </View>
+
+            <View style={profileStyles.topleft}>
+                <Pressable
+                    onPressIn={() => setEditVisible(true)}>
+                    <MaterialCommunityIcons name="pencil-outline" color={"black"} size={50} />
                 </Pressable>
             </View>
 
@@ -83,15 +91,47 @@ export default function Profile({ navigation }) {
                         : null}
                 </View>
 
-                <View style={profileStyles.box}>
-                    <Text style={globalStyles.undertext}>{fullName}</Text>
-                    <Text style={globalStyles.undertext}>{username}</Text>
-                    <Text style={globalStyles.text2}>{pronoms}</Text>
-                    <Text style={globalStyles.text2}>{lien}</Text>
-                    <Text style={globalStyles.text2}>{occupation}</Text>
-                    <Text style={globalStyles.text2}>{interets}</Text>
+                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={globalStyles.undertext}>
+                        {"@" + username}
+                    </Text>
                 </View>
-                
+
+                <View style={globalStyles.centeredProp}>
+                    <Text style={globalStyles.text3}>{" " + pronoms}</Text>
+                </View>
+
+                <View style={profileStyles.box}>
+                    <Text style={globalStyles.text2}>
+                        <MaterialCommunityIcons name="account-outline" color={"lightgrey"} size={20} />
+                        {" " + fullName}
+                    </Text>
+
+                    {lien 
+                        ? <Text style={globalStyles.text2} onPress={() => Linking.openURL(lien) }>
+                            <MaterialCommunityIcons name="earth" color={"lightgrey"} size={20} />
+                            {" " + lien} 
+                        </Text>
+                        : <MaterialCommunityIcons name="earth" color={"lightgrey"} size={20} />
+                        
+                    }
+
+                    {occupation
+                        ? <Text style={globalStyles.text2}>
+                            <MaterialCommunityIcons name="briefcase-outline" color={"lightgrey"} size={20} />
+                            {" " + occupation}
+                        </Text>
+                        : <MaterialCommunityIcons name="briefcase-outline" color={"lightgrey"} size={20} />
+                    }
+                    
+                    {interets
+                        ? <Text style={globalStyles.text2}>
+                            <MaterialCommunityIcons name="palette-outline" color={"lightgrey"} size={20} />
+                            {" " + interets}
+                        </Text>
+                        : <MaterialCommunityIcons name="palette-outline" color={"lightgrey"} size={20} />
+                    }
+                </View>
             </View>
 
             <View>
@@ -104,6 +144,7 @@ export default function Profile({ navigation }) {
 
             {/* A Changer pour que sa soit comme dans instagram  */}
 
+            {/* LISTE DE DELOC */}
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -130,6 +171,60 @@ export default function Profile({ navigation }) {
                 </View>
             </Modal>
 
+            {/* EDIT INFO */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={editVisible}
+                onRequestClose={() => {
+                    setEditVisible(!editVisible)
+                }}>
+
+                <View style={globalStyles.centeredView}>
+                    <View style={globalStyles.modalView}>
+                        <TextInput
+                            style={globalStyles.inputbox}
+                            placeholder="Username"
+                            placeholderTextColor={"#95AAE4"}
+                            value={username}
+                            // onChangeText={setUsername}
+                        />
+                        <TextInput
+                            style={globalStyles.inputbox}
+                            placeholder="Pronoms"
+                            placeholderTextColor={"#95AAE4"}
+                            value={pronoms}
+                            // onChangeText={setPronoms}
+                        />
+                        <TextInput
+                            style={globalStyles.inputbox}
+                            placeholder="Interests"
+                            placeholderTextColor={"#95AAE4"}
+                            value={interets}
+                            // onChangeText={setInterests}
+                        />
+                        <TextInput
+                            style={globalStyles.inputbox}
+                            placeholder="Liens"
+                            placeholderTextColor={"#95AAE4"}
+                            value={lien}
+                            // onChangeText={setLien}
+                        />
+                        <TextInput
+                            style={globalStyles.inputbox}
+                            placeholder="Occupation"
+                            placeholderTextColor={"#95AAE4"}
+                            value={occupation}
+                            // onChangeText={setOccupation}
+                        />
+                        <Pressable
+                            style={globalStyles.button}
+                            onPressIn={() => setEditVisible(!editVisible)}>
+                            <Text style={globalStyles.text}>ok</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }

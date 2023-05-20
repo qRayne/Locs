@@ -61,13 +61,15 @@ export default function Login({ navigation }) {
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Username ou email"
+        placeholderTextColor={"#95AAE4"}
+        autoComplete="email"
         value={email}
-        autoComplete="username"
         onChangeText={setEmail}
       />
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Mot de passe"
+        placeholderTextColor={"#95AAE4"}
         autoComplete="password"
         secureTextEntry={true}
         value={pwd}

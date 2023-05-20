@@ -14,10 +14,17 @@ const profileStyles = StyleSheet.create({
       marginBottom: 15,
     },
 
-    toprow:{
+    topright:{
       // backgroundColor: "black"
       position: 'absolute',
       right: 25,
+      top: 42,
+    },
+    
+    topleft:{
+      // backgroundColor: "black"
+      position: 'absolute',
+      left: 25,
       top: 42,
     },
 
@@ -29,10 +36,9 @@ const profileStyles = StyleSheet.create({
 
     box:{
       borderRadius: 20,
-      backgroundColor:'#e8edfc',
-      alignItems: "center",
-      justifyContent: "center",
-      shadowColor: "red"
+      backgroundColor:'#8fa8f0',
+      shadowColor: "red", 
+      padding: 20
     }
   });
 

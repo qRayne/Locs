@@ -132,20 +132,6 @@ export default function Profiler({ navigation }) {
                 value={pronoms}
                 onChangeText={setPronoms}
             />
-            {/* <Pressable
-                style={globalStyles.inputbox}
-                title="Date de Naissance"
-                onPress={showDatePicker}
-            >
-                <Text>{ddn}</Text>
-            </Pressable>
-            <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-                onChangeText={setDdn}
-            /> */}
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Interests"

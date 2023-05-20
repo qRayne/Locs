@@ -32,7 +32,7 @@ const globalStyles = StyleSheet.create({
     title:{
       fontSize: 50,
       marginBottom: 15,
-      textAlign: 'center'
+      textAlign: 'center',
     },
 
     subtitle:{
@@ -114,6 +114,13 @@ const globalStyles = StyleSheet.create({
     text2:{
       // color: 'white',
       fontSize: 20,
+      fontFamily: 'Galdeano_400Regular',
+    },
+    
+    text3:{
+      // color: 'white',
+      fontSize: 25,
+      color: 'rgba(0, 0, 0, 0.5)',
       fontFamily: 'Galdeano_400Regular',
     },
 

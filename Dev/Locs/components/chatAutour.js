@@ -10,7 +10,6 @@ import globalStyles from '../styles/globalStyles';
 import autourStyles from '../styles/autourStyles';
 import profileStyles from '../styles/profileStyles';
 
-
 const { KEY } = require('./constNames.js')
 
 export default function ChatAutour({ navigation }) {
@@ -181,11 +180,13 @@ export default function ChatAutour({ navigation }) {
       </Modal>
 
       {/* Bouton qui change la DISTANCE */}
-      <Pressable
-        style={globalStyles.button}
-        onPressIn={() => setModalVisible(true)}>
-        <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
-      </Pressable>
+      <View style={{paddingBottom: 15}}>
+        <Pressable
+          style={globalStyles.button}
+          onPressIn={() => setModalVisible(true)}>
+          <Text style={globalStyles.text}>{radiusOfSearch} M</Text>
+        </Pressable>
+      </View>
 
       {/* Liste de Loc */}
       <ScrollView>
@@ -217,7 +218,7 @@ export default function ChatAutour({ navigation }) {
       {/* </View> */}
 
       <Pressable 
-        style ={profileStyles.toprow}
+        style ={profileStyles.topright}
         onPressIn={() => {
           console.log("move to register screen");
           navigation.navigate('Login');
