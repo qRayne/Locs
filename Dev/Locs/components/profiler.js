@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Pressable, Text, TextInput, View, Image } from 'react-native';
+import { Pressable, Text, TextInput, View, Image,Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import globalStyles from '../styles/globalStyles';
@@ -19,7 +19,7 @@ export default function Profiler({ navigation }) {
     const [lien, setLien] = useState("");
     const [occupation, setOccupation] = useState("");
     const [image, setImage] = useState(null);
-    const [base64Image,setBase64Image] = useState(null);
+    const [base64Image, setBase64Image] = useState(null);
 
     //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
@@ -43,7 +43,7 @@ export default function Profiler({ navigation }) {
             allowsEditing: true,
             aspect: [4, 3],
             quality: 0.5, // permet de compresser l'image pour eviter des temps de chargements trop long
-            base64: true 
+            base64: true
         });
 
         if (!result.canceled) {
@@ -76,12 +76,18 @@ export default function Profiler({ navigation }) {
                 })
             });
             const responseData = await response.json();
-            if (response.ok) {
-                console.log(responseData);
-                console.log("move to Login");
-                navigation.navigate('Login');
-            } else {
-                console.log(responseData.message);
+
+            switch (response.status) {
+                case 200:
+                    navigation.navigate('Login');
+                    break;
+                case 401:
+                case 500:
+                    Alert.alert(responseData.message);
+                    break;
+                default:
+                    console.log(responseData.message);
+                    break;
             }
         } catch (error) {
             console.log(error);

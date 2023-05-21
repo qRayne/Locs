@@ -1,4 +1,4 @@
-import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useCallback, useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -22,20 +22,19 @@ export default function ChatAutour({ navigation }) {
   const [lng, setLng] = useState("");
   const userLocation = { latitude: lat, longitude: lng };
   const alreadyCreatedChatrooms = []
-  const MAX_TIME_THRESHOLD = 5000; // le temps max que le chat autour doit attendre avoit de se rapeller
 
   // les fonctions appeler au depart
   // seul la localisation du user peut être recuperer avant la fin du use effect
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+
       if (status !== 'granted') {
-        return;
+        Alert.alert("You need to authorize the geolocalisation to use this app")
       } else {
-        console.log('Access granted!!')
+        getLocationOfUser();
       }
     })();
-    getLocationOfUser();
   }, []);
 
   function createChatRoomOnClick(place) {
@@ -58,8 +57,6 @@ export default function ChatAutour({ navigation }) {
     let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
     setLat(location.coords.latitude);
     setLng(location.coords.longitude);
-
-    console.log(location);
   }
 
   // update the function to take in radiusOfSearch and userLocation as arguments
@@ -92,27 +89,21 @@ export default function ChatAutour({ navigation }) {
   // on apelle cette fonction chaque fois que l'utilisateur change de radius
   // recalcul de des chatrooms par le user, de sa localisation et de recuperer le chatroom auquel il peut ecrire
   async function calculateUserChatrooms() {
-    let startTime = performance.now();
-
     getLocationOfUser();
     const places = await getChatRoomsByUserLocation(userLocation, radiusOfSearch);
     setChatRooms(places);
-    setNearestLocation(getWritableChatRoomWithinRadius(places, userLocation, radiusOfSearch));
-    // filterChatrooms();
+    setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
 
-    let elapsedTime = performance.now() - startTime;
-
-    console.log(elapsedTime);
-
-    // si notre data n'est pas null ou que ca a pris max 5 seconds 
-    // c'est qu'on a du data
-    // sinon recall la function 
-    if ((chatRooms.length !== 0 && nearestLocation !== "") || elapsedTime < MAX_TIME_THRESHOLD) {
+    
+    if (nearestLocation !== ""){
+      setChatRooms(filterChatrooms());
       setLoading(false);
-    } else {
-      console.log("il a pris trop de temps");
-      calculateUserChatrooms();
     }
+    else{
+      setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch)); // je recall la function qui pose problème
+    }
+
+    console.log(nearestLocation);
   }
 
   // function permettant de filter la liste de chatrooms pour toujours afficher le chatroom le plus proche
@@ -121,21 +112,21 @@ export default function ChatAutour({ navigation }) {
     // on fait une copie temporaire de chatrooms
     const chatRoomsCopy = [...chatRooms];
 
-  
+
     // on trouve l'index
     const nearestIndex = chatRoomsCopy.findIndex(place => place.placeName === nearestLocation);
-  
+
     // on verifie que l'index est valide et on place le nearest location au debut
     if (nearestIndex !== -1) {
       const nearestPlace = chatRoomsCopy.splice(nearestIndex, 1)[0];
-  
+
       chatRoomsCopy.unshift(nearestPlace);
     }
-    
+
     // on update notre liste de chatrooms qui sont filtrées
-    setChatRooms(chatRoomsCopy);
+    return chatRoomsCopy;
   }
-  
+
 
   return (
     <View style={globalStyles.container}>
@@ -180,7 +171,7 @@ export default function ChatAutour({ navigation }) {
       </Modal>
 
       {/* Bouton qui change la DISTANCE */}
-      <View style={{paddingBottom: 15}}>
+      <View style={{ paddingBottom: 15 }}>
         <Pressable
           style={globalStyles.button}
           onPressIn={() => setModalVisible(true)}>
@@ -200,8 +191,8 @@ export default function ChatAutour({ navigation }) {
 
               {/* infoBox */}
               <TouchableOpacity
-                onPress={() => {createChatRoomOnClick(place);}
-              }>
+                onPress={() => { createChatRoomOnClick(place); }
+                }>
                 <View style={autourStyles.collapsedBox}>
                   <Text style={autourStyles.subtitle}> {place.placeTypes[0].replace(/_/gm, " ")} </Text>
                   {place.placeName == nearestLocation
@@ -217,14 +208,14 @@ export default function ChatAutour({ navigation }) {
       </ScrollView>
       {/* </View> */}
 
-      <Pressable 
-        style ={profileStyles.topright}
+      <Pressable
+        style={profileStyles.topright}
         onPressIn={() => {
           console.log("move to register screen");
           navigation.navigate('Login');
         }}>
         {/* <Text style={globalStyles.register}> Logout? </Text> */}
-        <MaterialCommunityIcons name="logout-variant" size={35} color="black" />      
+        <MaterialCommunityIcons name="logout-variant" size={35} color="black" />
       </Pressable>
 
     </View>

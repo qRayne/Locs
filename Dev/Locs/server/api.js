@@ -201,10 +201,10 @@ server.post('/create-Profile-User/:user_id', async (req, res) => {
         user.profile = profilObject._id;
         await user.save();
 
-        res.json({ message: 'Profile initialised' });
+        res.status(200).json({ message: 'Profile initialised' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Username already exists' });
     }
 
 })
