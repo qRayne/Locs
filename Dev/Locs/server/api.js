@@ -246,6 +246,25 @@ server.get("/profil-info", async (req, res) => {
     res.send(returnProfileObject);
 })
 
+// pour modifier les infos d'un usager
+server.post("/update-profil-info", async (req, res) => {
+    const username = req.query.username;
+    const updateData = req.body;
+    
+    const returnProfileObject = await Profile.findOneAndUpdate(
+        { username: username }, // Query: Find a profile with the given username
+        { $set: updateData },    // Update: Update the profile with the provided data
+        { new: true }            // Options: Return the updated profile object
+    );
+
+    if (returnProfileObject) {
+        res.status(200).json(returnProfileObject);
+    } else {
+        res.status(404).json({ message: "Profile not found" });
+    }
+
+});
+
 
 // pour acceder a tout les private conversation d'un user:
 server.get("/user-private-messages", async (req, res) => {

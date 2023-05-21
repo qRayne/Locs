@@ -3,7 +3,7 @@ import { Pressable, Text, View, Modal, Image, TouchableOpacity, Alert, Linking, 
 import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import globalStyles from '../styles/globalStyles';
 import profileStyles from '../styles/profileStyles';
@@ -17,7 +17,7 @@ export default function Profile({ navigation }) {
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
     const [pronoms, setPronoms] = useState('');
-    const [lien, setLien] = useState('');
+    const [liens, setLiens] = useState('');
     const [occupation, setOccupation] = useState('');
     const [interets, setInterets] = useState('');
 
@@ -27,48 +27,88 @@ export default function Profile({ navigation }) {
 
     // on attend que la page charge avant de se get les infos
     useEffect(() => {
-        async function getInfos() {
-            const token = await AsyncStorage.getItem('token');
-
-            if (token) {
-                const decoded = jwtDecode(token);
-                const username = decoded.username;
-                try {
-                    // on ce get les principales infos de l'utilisateurs
-                    const profildata = await fetch(`${URL}/profil-info/?username=` + encodeURIComponent(username));
-                    const profilPrivateMessages = await fetch(`${URL}/user-private-messages/?username=` + encodeURIComponent(username));
-                    const jsonProfil = await profildata.json();
-                    const jsonPrivateMessages = await profilPrivateMessages.json();
-                    // on recupère l'image en base64 et on la transforme en image
-                    const base64Image = jsonProfil.facialPhoto.data;
-                    const bufferImage = Buffer.from(base64Image, 'base64');
-
-                    setFacialPhoto(bufferImage);
-                    setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
-                    setUsername(username);
-                    setPronoms(jsonProfil.pronouns);
-                    setLien(jsonProfil.socialMediaLien);
-
-                    setInterets(jsonProfil.interests);
-                    setOccupation(jsonProfil.occupation);
-
-                    setdelocdList(jsonProfil.DeLocdList);
-                    setPrivateMessageList(jsonPrivateMessages);
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        }
-
         getInfos();
     }, []);
+
+    async function getInfos() {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token) {
+            const decoded = jwtDecode(token);
+            const username = decoded.username;
+            try {
+                // on ce get les principales infos de l'utilisateurs
+                const profildata = await fetch(`${URL}/profil-info/?username=` + encodeURIComponent(username));
+                const profilPrivateMessages = await fetch(`${URL}/user-private-messages/?username=` + encodeURIComponent(username));
+                const jsonProfil = await profildata.json();
+                const jsonPrivateMessages = await profilPrivateMessages.json();
+                // on recupère l'image en base64 et on la transforme en image
+                const base64Image = jsonProfil.facialPhoto.data;
+                const bufferImage = Buffer.from(base64Image, 'base64');
+
+                setFacialPhoto(bufferImage);
+                setFullName(jsonProfil.firstName + " " + jsonProfil.lastName);
+                setUsername(username);
+                setPronoms(jsonProfil.pronouns);
+                setLiens(jsonProfil.socialMediaLinks[0]);
+
+                setInterets(jsonProfil.interests);
+                setOccupation(jsonProfil.occupation);
+
+                setdelocdList(jsonProfil.DeLocdList);
+                setPrivateMessageList(jsonPrivateMessages);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
+    async function updateProfil() {
+        const token = await AsyncStorage.getItem('token');
+
+        if (token) {
+            const decoded = jwtDecode(token);
+            const connectionUsername = decoded.username;
+            try {
+                const response = await fetch(`${URL}/update-profil-info?username=${encodeURIComponent(connectionUsername)}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        pronouns: pronoms,
+                        interests: interets,
+                        socialMediaLinks: liens,
+                        occupation: occupation
+                    })
+                });
+                const responseData = await response.json();
+                switch (response.status) {
+                    case 200:
+                        console.log("changement effectuer");
+                        break;
+                    case 404:
+                    case 409:
+                        Alert.alert(responseData.message);
+                        break;
+                    default:
+                        console.log(responseData.message);
+                        break;
+                }
+                getInfos();
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+    }
 
     return (
         <View style={globalStyles.container}>
             <View style={profileStyles.topright}>
                 <Pressable
-                    onPressIn={() =>{ navigation.navigate('Deloc', { pm: privateMessageList });
-                }}>
+                    onPressIn={() => {
+                        navigation.navigate('Deloc', { pm: privateMessageList });
+                    }}>
                     <Image style={globalStyles.icon} source={require("../assets/img/logo/Locs.png")} />
                 </Pressable>
             </View>
@@ -107,13 +147,13 @@ export default function Profile({ navigation }) {
                         {" " + fullName}
                     </Text>
 
-                    {lien 
-                        ? <Text style={globalStyles.text2} onPress={() => Linking.openURL(lien) }>
+                    {liens
+                        ? <Text style={globalStyles.text2} onPress={() => Linking.openURL(liens)}>
                             <MaterialCommunityIcons name="earth" color={"lightgrey"} size={20} />
-                            {" " + lien} 
+                            {" " + liens}
                         </Text>
                         : <MaterialCommunityIcons name="earth" color={"lightgrey"} size={20} />
-                        
+
                     }
 
                     {occupation
@@ -123,7 +163,7 @@ export default function Profile({ navigation }) {
                         </Text>
                         : <MaterialCommunityIcons name="briefcase-outline" color={"lightgrey"} size={20} />
                     }
-                    
+
                     {interets
                         ? <Text style={globalStyles.text2}>
                             <MaterialCommunityIcons name="palette-outline" color={"lightgrey"} size={20} />
@@ -184,42 +224,38 @@ export default function Profile({ navigation }) {
                     <View style={globalStyles.modalView}>
                         <TextInput
                             style={globalStyles.inputbox}
-                            placeholder="Username"
-                            placeholderTextColor={"#95AAE4"}
-                            value={username}
-                            // onChangeText={setUsername}
-                        />
-                        <TextInput
-                            style={globalStyles.inputbox}
                             placeholder="Pronoms"
                             placeholderTextColor={"#95AAE4"}
                             value={pronoms}
-                            // onChangeText={setPronoms}
+                            onChangeText={setPronoms}
                         />
                         <TextInput
                             style={globalStyles.inputbox}
                             placeholder="Interests"
                             placeholderTextColor={"#95AAE4"}
                             value={interets}
-                            // onChangeText={setInterests}
+                            onChangeText={setInterets}
                         />
                         <TextInput
                             style={globalStyles.inputbox}
                             placeholder="Liens"
                             placeholderTextColor={"#95AAE4"}
-                            value={lien}
-                            // onChangeText={setLien}
+                            value={liens}
+                            onChangeText={setLiens}
                         />
                         <TextInput
                             style={globalStyles.inputbox}
                             placeholder="Occupation"
                             placeholderTextColor={"#95AAE4"}
                             value={occupation}
-                            // onChangeText={setOccupation}
+                            onChangeText={setOccupation}
                         />
                         <Pressable
                             style={globalStyles.button}
-                            onPressIn={() => setEditVisible(!editVisible)}>
+                            onPressIn={() => {
+                                setEditVisible(!editVisible);
+                                updateProfil();
+                            }}>
                             <Text style={globalStyles.text}>ok</Text>
                         </Pressable>
                     </View>
