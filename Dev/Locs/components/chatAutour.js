@@ -1,6 +1,6 @@
 import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { createChatRoom } from './newChatroom';

@@ -1,7 +1,7 @@
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Alert, Modal, Pressable, Text, TextInput, View, LogBox } from 'react-native';
 import { calculateDistanceBetweenLocations, calculateBoundsBetweenLocations } from './distanceCalculation';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Alert, Text, View, LogBox } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import { createChatRoom } from './newChatroom';
 import * as Loc from 'expo-location';
@@ -10,9 +10,9 @@ import locationStyles from '../styles/locationStyles';
 import globalStyles from '../styles/globalStyles';
 import ChatAutour from './chatAutour';
 
-const { KEY } = require('./constNames.js')
 const darkMapStyle = require('../styles/darkMapStyles.json')
 const lightMapStyle = require('../styles/lightMapStyles.json')
+const { KEY } = require('./constNames.js')
 
 
 export default function Location({ navigation }) {

@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Pressable, Text, TextInput, View, Alert, Image, TouchableOpacity } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Pressable, Text, View, TouchableOpacity } from 'react-native'
 import globalStyles from '../styles/globalStyles';
 import Profile from './profile';
 
@@ -22,9 +20,10 @@ export default function Deloc({ navigation, route }) {
       {privateMessageList && privateMessageList.length > 0
         ? (<>
             {privateMessageList.map((chatroom, index) => (
-                <TouchableOpacity key={index} onPress={() => redirectToPrivateRoom(chatroom)}>
+                <TouchableOpacity key={index} 
+                  onPress={() => redirectToPrivateRoom(chatroom)}>
                     <Text style={globalStyles.undertext}>
-                        {chatroom.place.name}
+                      {chatroom.place.name}
                     </Text>
                 </TouchableOpacity>
             ))}

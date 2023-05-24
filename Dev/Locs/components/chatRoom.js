@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createChatRoom } from './newChatroom';
-import { Pressable, Text, TextInput, View, Modal, Image, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { Pressable, Text, TextInput, View, Image, Alert, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';

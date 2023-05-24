@@ -148,7 +148,7 @@ export default function Profile({ navigation }) {
                     </Text>
 
                     {liens
-                        ? <Text style={globalStyles.text2} onPress={() => Linking.openURL(liens)}>
+                        ? <Text style={globalStyles.text2} onPress={() => Linking.openURL("https://"+ liens)}>
                             <MaterialCommunityIcons name="earth" color={"lightgrey"} size={20} />
                             {" " + liens}
                         </Text>
@@ -198,8 +198,7 @@ export default function Profile({ navigation }) {
                         {/* liste de deloc, comme la liste de followers, cliquer dessus ouvre leur profile */}
                         {delocdList.length > 0
                             ? (delocdList.map((username, index) => (
-                                <Text key={index}>{username}</Text>
-                            ))
+                                <Text key={index}>{username}</Text>))
                             )
                             : <Text> Go DeLoc some people! </Text>}
                         <Pressable

@@ -1,10 +1,13 @@
+import { Pressable, Text, TextInput, View, Image, Alert } from 'react-native';
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View, Image,Alert } from 'react-native';
+
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import globalStyles from '../styles/globalStyles';
-import profilerStyles from '../styles/profilerStyles';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import profilerStyles from '../styles/profilerStyles';
+import globalStyles from '../styles/globalStyles';
+
 const { URL } = require('./constNames.js')
 
 
@@ -15,26 +18,10 @@ export default function Profiler({ navigation }) {
     const [nom, setNom] = useState("");
     const [pronoms, setPronoms] = useState("");
     const [interests, setInterests] = useState("");
-    //const [ddn, setDdn] = useState("");
     const [lien, setLien] = useState("");
     const [occupation, setOccupation] = useState("");
     const [image, setImage] = useState(null);
     const [base64Image, setBase64Image] = useState(null);
-
-    //const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-    // const showDatePicker = () => {
-    //     setDatePickerVisibility(true);
-    // };
-
-    // const hideDatePicker = () => {
-    //     setDatePickerVisibility(false);
-    // };
-
-    // const handleConfirm = (date) => {
-    //     console.warn("A date has been picked: ", date);
-    //     hideDatePicker();
-    // };
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
