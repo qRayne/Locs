@@ -16,6 +16,7 @@ export default function ChatAutour({ navigation }) {
   const [nearestLocation, setNearestLocation] = useState("");
   const [radiusOfSearch, setRadiusOfSearch] = useState(25);
   const [modalVisible, setModalVisible] = useState(true);
+  const [functionCalled, setFunctionCalled] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lat, setLat] = useState("");
@@ -92,19 +93,28 @@ export default function ChatAutour({ navigation }) {
     getLocationOfUser();
     const places = await getChatRoomsByUserLocation(userLocation, radiusOfSearch);
     setChatRooms(places);
-    setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch));
-
-    
-    if (nearestLocation !== ""){
-      setChatRooms(filterChatrooms());
-      setLoading(false);
-    }
-    else{
-      setNearestLocation(getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch)); // je recall la function qui pose problème
-    }
-
-    console.log(nearestLocation);
+    setFunctionCalled(true);
   }
+  
+  function getNearestLocation() {
+    if (chatRooms.length !== 0) {
+      const newNearestLocation = getWritableChatRoomWithinRadius(chatRooms, userLocation, radiusOfSearch);
+      setNearestLocation(newNearestLocation);
+  
+      if (newNearestLocation !== "") {
+        setChatRooms(filterChatrooms());
+        setLoading(false);
+        setFunctionCalled(false);
+      }
+    }
+  }
+  
+  useEffect(() => {
+    if (functionCalled) {
+      getNearestLocation();
+    }
+  }, [functionCalled]);
+  
 
   // function permettant de filter la liste de chatrooms pour toujours afficher le chatroom le plus proche
   // aucun paramètre car on accède déjà aux chatrooms et à la localisation 
