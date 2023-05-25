@@ -1,21 +1,15 @@
 <img src="./Dev/Locs/assets/img/logo/logo.png" alt="Locs logo" title="Locs" align="right" height="75"  />
 
 # Locs
-
 Discutez, partagez et échangez avec eux.
 
 Que ce soient des photos, de la musique ou vos pensées, notre réseau social permettra à un utilisateur de parler dans le chat public de sa localisation.
 
-De plus, votre identité est anonyme jusqu'au moment d'accepter l'échange d'information avec un autre utilisateur.
+De plus, votre identité est anonyme jusqu'au moment d'accepter l'échange de votre information avec un autre utilisateur.
 
 Dites maintenant adieu à l'ennui et bonjour aux nouvelles connexions avec LOCs.
 
 ## Installation
-
-Pour pouvoir tester l'application il faudra soit avoir un Emulateur android ou iphone selon votre ordinateur.
-
-Vous pouvez installer celui d'android studio sur ce lien : https://developer.android.com/studio et ainsi créer un émulateur.
-
 Pour que l'application marche, il faut rouler deux lignes de commandes visées sur deux endroits:
 
 ```bash
@@ -41,21 +35,28 @@ Dans le deuxieme, il faut run:
 nodemon api
 ```
 
-Voilà! l'application et fonctionnelle
-Il faudra maintenant seulement scanner le code QR et ce dernier roulera sur Android et iOS!
-Vous pouvez également appuyez sur le bouton a pour open Android tout en ayant l'émulateur allumer pour ainsi demarrer l'application sur l'émulateur
+Maintenant vous avez deux choix:
+* Scanner le code QR sur votre appareil mobile
+* Rouler un emulateur
 
-## Mise en Garde
-Il faudra également mettre l'ip de votre ordinateur dans le fichier constnames.js qui est dans locs/dev/locs/components pour pouvoir utiliser notre application
-Car le serveur n'est qu'un serveur local et doit utiliser votre ip pour ainsi instancier le serveur.
+Le premier choix est plus facile et convenient mais requiert l'installation de ExpoGo
 
-<img src="./C61/Sprint3/docs/npxexpostart.png">
-<img src="./C61/Sprint3/docs/installexpogo.png" height="720">
-<img src="./C61/Sprint3/docs/installexpogoa.png" height="720">
-<img src="./C61/Sprint3/docs/runexpogo.png" height="720">
+Le deuxieme vous requiert soit d'installer [Android Studio](https://developer.android.com/studio) pour un emulateur Android
+ou d'avoir un ordinateur qui roule macOS avec l'application [Xcode](https://apps.apple.com/ca/app/xcode/id497799835?mt=12) pour simuler l'iPhone
+
+Voilà, l'application est fonctionnelle!
+
+<p align="middle">
+  <img src="./C61/Sprint3/docs/npxexpostart.png">
+  <img src="./C61/Sprint3/docs/installexpogo.png" height="700">
+  <img src="./C61/Sprint3/docs/installexpogoa.png" height="700">
+  <img src="./C61/Sprint3/docs/runexpogo.png" height="700">
+</p>
+
+### Mise en Garde
+Il faudra changer la valeur de IP dans constNames.js pour rouler le serveur localement sur votre ordinateur
 
 ## Utilisation
-
 Quand l'application est ouverte, elle ouvre sur la page de connexion
 
 #### Login et Register
@@ -88,9 +89,9 @@ Voici quelques référence qu'ont a utilisée pour programmer **Locs**:
 
 ## Dependances
 ### Application
-[react-native-maps](https://github.com/react-native-maps/react-native-maps)
-[react-native-google-maps-autocomplete](https://www.npmjs.com/package/react-native-google-places-autocomplete)
-[@react-navigation](https://github.com/react-navigation/react-navigation)
+* [react-native-maps](https://github.com/react-native-maps/react-native-maps)
+* [react-native-google-maps-autocomplete](https://www.npmjs.com/package/react-native-google-places-autocomplete)
+* [@react-navigation](https://github.com/react-navigation/react-navigation)
 * @expo-google-fonts/galdeano
 * @expo/vector-icons
 * @react-native-async-storage/async-storage
