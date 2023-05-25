@@ -159,6 +159,7 @@ server.get('/chatRoom-messages', async (req, res) => {
 // pour register un user 
 server.post('/create-User', async (req, res) => {
     const { email, password } = req.body;
+    email = email.toLowerCase();
 
     if (!/.+\@.+\..+/.test(email)) {
         return res.status(400).send({ message: 'Invalid email' });
