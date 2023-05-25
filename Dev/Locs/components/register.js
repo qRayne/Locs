@@ -54,6 +54,14 @@ export default function Register({ navigation }) {
           source={require('../assets/splash.png')}
         />
       </View>
+
+      <View style={globalStyles.space}>
+        <Text style={globalStyles.font}> Password needs minimum</Text>
+        <Text style={globalStyles.font}> 8 characters, </Text>
+        <Text style={globalStyles.font}> 1 uppercase and lowercase letter, </Text>
+        <Text style={globalStyles.font}> a symbol and a number </Text>
+      </View>
+
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Email"

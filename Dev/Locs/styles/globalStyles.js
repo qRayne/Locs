@@ -3,7 +3,6 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const globalStyles = StyleSheet.create({
 
-
     // PALETTE 
     //    Blue:          #5578DA
     //    Raisin Black:  #272932
@@ -172,6 +171,10 @@ const globalStyles = StyleSheet.create({
     icon:{
       width: 50,
       height: 50
+    },
+
+    space:{
+      marginBottom: 15
     }
 
   });
