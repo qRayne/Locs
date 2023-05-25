@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pressable, Text, View, Modal, Image, TouchableOpacity, Alert, Linking, TextInput } from 'react-native';
+import { Pressable, Text, View, Modal, Image, Alert, Linking, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Buffer } from 'buffer';

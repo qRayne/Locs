@@ -1,7 +1,6 @@
 import { Pressable, Text, View, TouchableOpacity } from 'react-native'
 import { useEffect, useState } from 'react';
 import globalStyles from '../styles/globalStyles';
-import Profile from './profile';
 import jwtDecode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

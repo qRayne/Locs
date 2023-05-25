@@ -5,7 +5,6 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import profilerStyles from '../styles/profilerStyles';
 import globalStyles from '../styles/globalStyles';
 
 const { URL } = require('./constNames.js')

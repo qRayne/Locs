@@ -8,7 +8,6 @@ import * as Loc from 'expo-location';
 
 import locationStyles from '../styles/locationStyles';
 import globalStyles from '../styles/globalStyles';
-import ChatAutour from './chatAutour';
 
 const darkMapStyle = require('../styles/darkMapStyles.json')
 const lightMapStyle = require('../styles/lightMapStyles.json')

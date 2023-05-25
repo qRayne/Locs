@@ -1,4 +1,4 @@
-import { Pressable, Text, View, Modal, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Pressable, Text, View, Modal,LogBox, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { getWritableChatRoomWithinRadius } from './nearbyLocationAlgorithm'
 import React, { useState, useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -36,6 +36,8 @@ export default function ChatAutour({ navigation }) {
         getLocationOfUser();
       }
     })();
+    // si le bug de location not accepted juste reload l'app c'est un problème avec la librarire
+    LogBox.ignoreAllLogs(); // évite le bug de location not accepted
   }, []);
 
   function createChatRoomOnClick(place) {
