@@ -60,7 +60,6 @@ export default function Deloc({ navigation, route }) {
       <Pressable
         style={globalStyles.button}
         onPressIn={() => {
-          console.log("go back");
           navigation.navigate('Home', { screen: "Profile" });
         }}>
         <Text style={globalStyles.text}> Back </Text>

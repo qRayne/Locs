@@ -46,9 +46,6 @@ export default function Chatroom({ navigation, route }) {
           }),
         })
           .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-          })
           .catch((error) => {
             Alert.alert('Server error');
             navigation.navigate(previousPage);

@@ -85,14 +85,12 @@ export default function Profile({ navigation }) {
                 const responseData = await response.json();
                 switch (response.status) {
                     case 200:
-                        console.log("changement effectuer");
                         break;
                     case 404:
                     case 409:
                         Alert.alert(responseData.message);
                         break;
                     default:
-                        console.log(responseData.message);
                         break;
                 }
                 getInfos();

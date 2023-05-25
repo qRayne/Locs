@@ -28,14 +28,6 @@ export default function Avatar({ navigation }) {
           <Image style={avatarStyles.image} source={possibleAvatars[avatarName]} />
         </Pressable>
       ))}
-
-      <Pressable
-        style={globalStyles.button}
-        onPressIn={() => {
-          console.log("move to profiler screen")
-        }}>
-        <Text style={globalStyles.text}>Next</Text>
-      </Pressable>
     </View>
   );
 }

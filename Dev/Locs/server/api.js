@@ -99,7 +99,7 @@ server.post('/create-chatRoom', async (req, res) => {
 
     const chatRoomObject = new ChatRoom(req.body);
 
-    await chatRoomObject.save().then(() => console.log(chatRoomObject));
+    await chatRoomObject.save();
 });
 
 // pour savoir si un chatroom existe deja
@@ -176,7 +176,7 @@ server.post('/create-User', async (req, res) => {
     const hashedPassword = await bcrypt.hash(userObject.password, 10);
     userObject.password = hashedPassword;
 
-    await userObject.save().then(() => console.log(userObject));
+    await userObject.save();
     res.send(userObject._id);
 });
 

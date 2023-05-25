@@ -83,7 +83,6 @@ export default function Login({ navigation }) {
 
       <Pressable
         onPressIn={() => {
-          console.log("move to register screen");
           navigation.navigate('Register');
         }}>
         <Text style={globalStyles.register}> Register? </Text>

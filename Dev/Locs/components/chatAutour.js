@@ -221,7 +221,6 @@ export default function ChatAutour({ navigation }) {
       <Pressable
         style={profileStyles.topright}
         onPressIn={() => {
-          console.log("move to register screen");
           navigation.navigate('Login');
         }}>
         {/* <Text style={globalStyles.register}> Logout? </Text> */}

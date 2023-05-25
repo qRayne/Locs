@@ -87,7 +87,6 @@ export default function Location({ navigation }) {
     const userLocation = { latitude: userlat, longitude: userlng };
     const placeLocation = { latitude: lat, longitude: lng }
     const distance = calculateDistanceBetweenLocations(userLocation, placeLocation);
-    console.log(distance);
     return calculateBoundsBetweenLocations(userLocation, placeLocation, distance);
   }
 

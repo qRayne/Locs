@@ -27,7 +27,6 @@ export default function Register({ navigation }) {
         switch (response.status) {
           case 200:
             await AsyncStorage.setItem('user_id', responseData);
-            console.log("Successfully registered");
             navigation.navigate('Avatar');
             break;
           case 400:
