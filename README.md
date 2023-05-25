@@ -12,6 +12,10 @@ Dites maintenant adieu à l'ennui et bonjour aux nouvelles connexions avec LOCs.
 
 ## Installation
 
+Pour pouvoir tester l'application il faudra soit avoir un Emulateur android ou iphone selon votre ordinateur.
+
+Vous pouvez installer celui d'android studio sur ce lien : https://developer.android.com/studio et ainsi créer un émulateur.
+
 Pour que l'application marche, il faut rouler deux lignes de commandes visées sur deux endroits:
 
 ```bash
@@ -39,6 +43,11 @@ nodemon api
 
 Voilà! l'application et fonctionnelle
 Il faudra maintenant seulement scanner le code QR et ce dernier roulera sur Android et iOS!
+Vous pouvez également appuyez sur le bouton a pour open Android tout en ayant l'émulateur allumer pour ainsi demarrer l'application sur l'émulateur
+
+## Mise en Garde
+Il faudra également mettre l'ip de votre ordinateur dans le fichier constnames.js qui est dans locs/dev/locs/components pour pouvoir utiliser notre application
+Car le serveur n'est qu'un serveur local et doit utiliser votre ip pour ainsi instancier le serveur.
 
 <img src="./C61/Sprint3/docs/npxexpostart.png">
 <img src="./C61/Sprint3/docs/installexpogo.png" height="720">
