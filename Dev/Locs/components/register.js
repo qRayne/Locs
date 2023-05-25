@@ -57,18 +57,21 @@ export default function Register({ navigation }) {
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Email"
+        placeholderTextColor={"#95AAE4"}
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Comfirmez votre email"
+        placeholderTextColor={"#95AAE4"}
         value={remail}
         onChangeText={setRemail}
       />
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Mot de passe"
+        placeholderTextColor={"#95AAE4"}
         secureTextEntry={true}
         value={pwd}
         onChangeText={setPwd}
@@ -76,6 +79,7 @@ export default function Register({ navigation }) {
       <TextInput
         style={globalStyles.inputbox}
         placeholder="Re-entrer mot de passe"
+        placeholderTextColor={"#95AAE4"}
         secureTextEntry={true}
         value={rpwd}
         onChangeText={setRpwd}

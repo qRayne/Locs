@@ -104,48 +104,56 @@ export default function Profiler({ navigation }) {
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Username"
+                placeholderTextColor={"#95AAE4"}
                 value={username}
                 onChangeText={setUsername}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Prenom"
+                placeholderTextColor={"#95AAE4"}
                 value={prenom}
                 onChangeText={setPrenom}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Nom"
+                placeholderTextColor={"#95AAE4"}
                 value={nom}
                 onChangeText={setNom}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Pronoms"
+                placeholderTextColor={"#95AAE4"}
                 value={pronoms}
                 onChangeText={setPronoms}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Interests"
+                placeholderTextColor={"#95AAE4"}
                 value={interests}
                 onChangeText={setInterests}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Age"
+                placeholderTextColor={"#95AAE4"}
                 value={age}
                 onChangeText={setAge}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Liens"
+                placeholderTextColor={"#95AAE4"}
                 value={lien}
                 onChangeText={setLien}
             />
             <TextInput
                 style={globalStyles.inputbox}
                 placeholder="Occupation"
+                placeholderTextColor={"#95AAE4"}
                 value={occupation}
                 onChangeText={setOccupation}
             />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createChatRoom } from './newChatroom';
-import { Pressable, Text, TextInput, View, Image, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { Pressable, Text, TextInput, View, Image, Alert, FlatList, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../styles/globalStyles';
 import chatStyles from '../styles/chatStyles';
@@ -10,9 +10,12 @@ const { possibleAvatars } = require('./constNames');
 const { URL } = require('./constNames.js');
 
 export default function Chatroom({ navigation, route }) {
-  const [chat, setChat] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
   const [currentlySelectedUser, setCurrentlySelectedUser] = useState("");
+  const [delocModalVisible, setDelocModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chat, setChat] = useState('');
+
   const [isPublicChatroom, setIsPublicChatroom] = useState('');
   const chatRoomName = route.params.chatRoomName;
   const chatRoomType = route.params.chatRoomType;
@@ -74,14 +77,21 @@ export default function Chatroom({ navigation, route }) {
         const chatRoomName = [username, currentlySelectedUser].sort().join('_');
         const response = await fetch(`${URL}/check-privateChatroom?name=` + encodeURIComponent(chatRoomName));
         const messageResponse = await response.text();
-        if (messageResponse === "The chatroom does not exist") {
+        if (messageResponse === "The chatroom doesnt exist") {
           const chatRoom = { placeName: chatRoomName, coordinate: { latitude: 0, longitude: 0 } };
-          await createChatRoom(chatRoom, false);
+          createChatRoom(chatRoom, false).then(
+            navigation.navigate('ChatRoom', {
+              chatRoomName: chatRoomName, chatRoomType: "Private chat",
+              chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'ChatRoom'
+            })
+          );
         }
-        navigation.navigate('ChatRoom', {
-          chatRoomName: chatRoomName, chatRoomType: "Private chat",
-          chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'ChatRoom'
-        });
+        else{
+          navigation.navigate('ChatRoom', {
+            chatRoomName: chatRoomName, chatRoomType: "Private chat",
+            chatRoomTypeAdress: "", nearestLocation: true, previousPage: 'ChatRoom'
+          });
+        }
       }
     }
   }
@@ -91,46 +101,45 @@ export default function Chatroom({ navigation, route }) {
 
     // vue que alert est une fonction async
     // il faut lui "promettre" une valeur de retour
-    const wannaDeloc = await new Promise((resolve) => {
-      Alert.alert('Deloc', 'Are you sure you want to DeLoc ' + currentlySelectedUser + "?\n all your private information will be shared with them", [
-        {
-          text: 'NO',
-          style: 'cancel',
-          onPress: () => resolve(false),
-        },
-        {
-          text: 'YES',
-          onPress: () => resolve(true),
-        },
-      ]);
-    });
+    // const wannaDeloc = await new Promise((resolve) => {
+    //   Alert.alert('Deloc', 'Are you sure you want to DeLoc ' + currentlySelectedUser + "?\nAll your private information will be shared with them", [
+    //     {
+    //       text: 'NO',
+    //       style: 'cancel',
+    //       onPress: () => resolve(false),
+    //     },
+    //     {
+    //       text: 'YES',
+    //       onPress: () => resolve(true),
+    //     },
+    //   ]);
+    // });
 
-    if (wannaDeloc) {
-      if (token) {
-        try {
-          const decoded = jwtDecode(token);
-          const username = decoded.username;
+    // if (wannaDeloc) {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const username = decoded.username;
 
-          const response = await fetch(`${URL}/delocs-betweenUsers?currentUsername=` + encodeURIComponent(username) +
-            `&selectedUsername=` + encodeURIComponent(currentlySelectedUser));
+        const response = await fetch(`${URL}/delocs-betweenUsers?currentUsername=` + encodeURIComponent(username) +
+          `&selectedUsername=` + encodeURIComponent(currentlySelectedUser));
 
-          switch (response.status) {
-            case 200:
-              Alert.alert('DeLoc successful ' + currentlySelectedUser)
-              break;
-            case 400:
-              Alert.alert("You have already DeLoc'd:" + currentlySelectedUser)
-              break;
-          }
-          navigation.navigate('Profile');
-        } catch (error) {
-          console.error(error);
+        switch (response.status) {
+          case 200:
+            Alert.alert('DeLoc successful ' + currentlySelectedUser)
+            break;
+          case 400:
+            Alert.alert("You have already DeLoc'd:" + currentlySelectedUser)
+            break;
         }
+        navigation.navigate('Profile');
+      } catch (error) {
+        console.error(error);
       }
-      else {
-        Alert.alert('Sending Message Failed', 'Login to DeLoc');
-        navigation.navigate('Login');
-      }
+    }
+    else {
+      Alert.alert('Sending Message Failed', 'Login to DeLoc');
+      navigation.navigate('Login');
     }
   }
 
@@ -178,7 +187,16 @@ export default function Chatroom({ navigation, route }) {
           data={chatMessages}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => setCurrentlySelectedUser(item.sender)}>
+            <TouchableOpacity 
+              onPress={() => {
+                setCurrentlySelectedUser(item.sender)
+                { isPublicChatroom
+                  ? (setModalVisible(true))
+                  : (<> {currentlySelectedUser
+                          ? (setDelocModalVisible(true))
+                          : (null)}
+                  </>)
+              }}}>
               <View style={globalStyles.row}>
                 <View style={globalStyles.column}>
                   <View style={globalStyles.row}>
@@ -206,32 +224,55 @@ export default function Chatroom({ navigation, route }) {
         </View>
       </View>
 
-      <View style={globalStyles.row}>
-        {isPublicChatroom 
-        ? (
-          <View style={globalStyles.row}>
-            <Pressable onPressIn={() => { goToChatPrivate(); }}>
-              <Text style={chatStyles.centerText}> Start private chat </Text>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible)
+        }}>
+
+        <View style={globalStyles.centeredView}>
+          <View style={globalStyles.modalView}>
+            
+            <Text style={globalStyles.font}> Open Private chat with this user? </Text>
+
+            <Pressable
+              style={globalStyles.button}
+              onPressIn={() => {
+                setModalVisible(!modalVisible);
+                goToChatPrivate();
+              }} >
+              <Text style={globalStyles.text}>ok</Text>
             </Pressable>
           </View>
-        ) : (
-          <>
-            {currentlySelectedUser ? (
-              <Pressable onPressIn={() => { delocUsers(); }}>
-                <Text> Deloc {currentlySelectedUser}? </Text>
-              </Pressable>
-            ) : (
-              null
-            )}
-          </>
-        )}
-        <Pressable
-          onPressIn={() => {
-            logout();
-          }}>
-          <Text style={chatStyles.centerText}> Logout? </Text>
-        </Pressable>
-      </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={delocModalVisible}
+        onRequestClose={() => {
+          setDelocModalVisible(!delocModalVisible)
+        }}>
+
+        <View style={globalStyles.centeredView}>
+          <View style={globalStyles.modalView}>
+            <Text style={globalStyles.font}> Deloc {currentlySelectedUser}? </Text>
+            <Pressable
+              style={globalStyles.button}
+              onPressIn={() => {
+                delocUsers(); 
+                setDelocModalVisible(!delocModalVisible);
+              }}>
+              <Text style={globalStyles.text}>ok</Text>
+            </Pressable>
+
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
